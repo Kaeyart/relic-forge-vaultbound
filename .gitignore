@@ -1,0 +1,38 @@
+# Godot 4 editor/import cache
+.godot/
+.import/
+
+# Godot generated/imported files
+*.import
+*.translation
+
+# Exports/builds
+build/
+builds/
+exports/
+*.pck
+*.exe
+*.x86_64
+*.app
+*.apk
+*.aab
+
+# Local/editor junk
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+*.swp
+*~
+
+# Logs
+*.log
+
+# Local backups / downloaded patch zips
+*_backup/
+backups/
+Game_backups/
+*.zip
+
+# Export presets may contain local paths or credentials
+export_presets.cfg

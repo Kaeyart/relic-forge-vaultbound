@@ -1,0 +1,5 @@
+RELIC FORGE: VAULTBOUND
+Patch 003 - Cleanup / Skill Draft / Cascade Buildcraft Expansion
+Generated for Godot 4.x.
+
+Focus: clearer onboarding, start-empty skill draft, 16-depth dungeon pacing, richer skill/passive trees, chain-trigger builds, free respec, more QoL.

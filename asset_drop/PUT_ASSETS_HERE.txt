@@ -1,0 +1,12 @@
+This folder is reserved for the future art pass.
+
+Patch 001 does not need external assets. It uses procedural shapes so build systems can be tested immediately.
+
+When an asset pack is selected, place imported sprites/tiles/icons here temporarily before organizing them into:
+
+res://art/characters/
+res://art/enemies/
+res://art/tiles/
+res://art/vfx/
+res://art/icons/
+res://art/ui/
