@@ -1,9 +1,13 @@
 class_name RVGameState
 extends RefCounted
 
-const SAVE_VERSION = 14
+const SAVE_VERSION = 16
 
 var mode: String = "hub"
+
+# Patch 016G: buildcraft UI/runtime state.
+var panel_mode: String = ""
+var forge_message: String = ""
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 var arena: Rect2 = Rect2(60.0, 84.0, 1160.0, 566.0)
@@ -21,6 +25,7 @@ var invuln: float = 0.0
 var level: int = 1
 var xp: float = 0.0
 var mastery_points: int = 0
+var refund_points: int = 0
 var gold: int = 0
 
 var materials: Dictionary = {
@@ -88,10 +93,35 @@ var rooms_cleared: int = 0
 var kills: int = 0
 var deaths: int = 0
 
+# Patch 016 buildcraft state.
+var passive_atlas_allocated: Array = []
+var passive_atlas_refund_stack: Array = []
+var passive_atlas_cursor: int = 0
+var build_stats: Dictionary = {}
+var build_flags: Array = []
+
+var skill_gem_sockets: Dictionary = {}
+var support_gem_inventory: Dictionary = {}
+var gem_board_skill_cursor: int = 0
+var gem_board_support_cursor: int = 0
+
+var spirit_max: int = 100
+var spirit_reserved: int = 0
+var spirit_gems_enabled: Dictionary = {}
+var spirit_cursor: int = 0
+
+var crafting_shards: Dictionary = {}
+var glyph_counts: Dictionary = {}
+var rune_counts: Dictionary = {}
+var forge_focus_index: int = 0
+var forge_affix_cursor: int = 0
+
+var buildcraft_panel: String = ""
+
 func init() -> void:
 	rng.randomize()
 
-	if equipped["weapon"].is_empty():
+	if typeof(equipped.get("weapon", {})) != TYPE_DICTIONARY or equipped["weapon"].is_empty():
 		equipped["weapon"] = {
 			"name": "Cracked Initiate Focus",
 			"slot": "weapon",
@@ -101,13 +131,22 @@ func init() -> void:
 			"desc": "Starter focus."
 		}
 
+	if active_skills.size() == 0:
+		active_skills = ["Fireball", "Cleave"]
+
 	for skill in active_skills:
 		if not skill_cooldowns.has(skill):
 			skill_cooldowns[skill] = 0.0
 
+	if not passive_atlas_allocated.has("center"):
+		passive_atlas_allocated.append("center")
+
+	for skill_name in skill_ranks.keys():
+		if not skill_gem_sockets.has(skill_name):
+			skill_gem_sockets[skill_name] = []
+
 	recompute_stats()
 	full_restore()
-
 
 func reset_combat_runtime() -> void:
 	enemies.clear()
@@ -118,21 +157,19 @@ func reset_combat_runtime() -> void:
 	floating_text.clear()
 	kills = 0
 
-
 func enter_hub() -> void:
 	mode = "hub"
 	player_pos = Vector2(640.0, 370.0)
 	reset_combat_runtime()
 	full_restore()
 	focus_clear()
-
+	buildcraft_panel = ""
 
 func full_restore() -> void:
 	recompute_stats()
 	player_hp = max_hp
 	player_mana = max_mana
 	invuln = 0.0
-
 
 func recompute_stats() -> void:
 	max_hp = 120.0 + float(level - 1) * 5.0
@@ -151,23 +188,24 @@ func recompute_stats() -> void:
 	max_mana += float(passives.get("void", 0)) * 3.0
 	max_mana += float(passives.get("relic", 0)) * 2.0
 
+	# Buildcraft aggregate stats from the passive atlas and gem/spirit systems.
+	max_hp += float(build_stats.get("max_hp", 0.0))
+	max_mana += float(build_stats.get("max_mana", 0.0))
+
+	spirit_reserved = min(spirit_reserved, spirit_max)
 	player_hp = min(player_hp, max_hp)
 	player_mana = min(player_mana, max_mana)
-
 
 func focus_clear() -> void:
 	focused_object = {}
 	prompt = ""
 
-
 func add_notice(text: String) -> void:
 	notice = text
 	notice_time = 2.2
 
-
 func xp_to_next() -> float:
 	return 160.0 + pow(float(level), 1.35) * 70.0
-
 
 func to_save_dict() -> Dictionary:
 	return {
@@ -175,6 +213,7 @@ func to_save_dict() -> Dictionary:
 		"level": level,
 		"xp": xp,
 		"mastery_points": mastery_points,
+		"refund_points": refund_points,
 		"gold": gold,
 		"materials": materials,
 		"active_skills": active_skills,
@@ -186,38 +225,136 @@ func to_save_dict() -> Dictionary:
 		"stash": stash,
 		"rooms_cleared": rooms_cleared,
 		"kills": kills,
-		"deaths": deaths
+		"deaths": deaths,
+		"passive_atlas_allocated": passive_atlas_allocated,
+		"passive_atlas_refund_stack": passive_atlas_refund_stack,
+		"passive_atlas_cursor": passive_atlas_cursor,
+		"build_stats": build_stats,
+		"build_flags": build_flags,
+		"skill_gem_sockets": skill_gem_sockets,
+		"support_gem_inventory": support_gem_inventory,
+		"gem_board_skill_cursor": gem_board_skill_cursor,
+		"gem_board_support_cursor": gem_board_support_cursor,
+		"spirit_max": spirit_max,
+		"spirit_reserved": spirit_reserved,
+		"spirit_gems_enabled": spirit_gems_enabled,
+		"spirit_cursor": spirit_cursor,
+		"crafting_shards": crafting_shards,
+		"glyph_counts": glyph_counts,
+		"rune_counts": rune_counts,
+		"forge_focus_index": forge_focus_index,
+		"forge_affix_cursor": forge_affix_cursor
 	}
 
-
 func apply_save_dict(data: Dictionary) -> void:
+	panel_mode = str(data.get("panel_mode", ""))
 	level = int(data.get("level", level))
 	xp = float(data.get("xp", xp))
 	mastery_points = int(data.get("mastery_points", mastery_points))
+	refund_points = int(data.get("refund_points", refund_points))
 	gold = int(data.get("gold", gold))
 
-	if typeof(data.get("materials", {})) == TYPE_DICTIONARY:
-		materials.merge(data["materials"], true)
+	var materials_value: Variant = data.get("materials", null)
+	if typeof(materials_value) == TYPE_DICTIONARY:
+		materials.merge(materials_value, true)
 
-	if typeof(data.get("active_skills", [])) == TYPE_ARRAY:
-		active_skills = data["active_skills"]
+	var active_skills_value: Variant = data.get("active_skills", null)
+	if typeof(active_skills_value) == TYPE_ARRAY:
+		active_skills = active_skills_value
+
+	if active_skills.size() == 0:
+		active_skills = ["Fireball", "Cleave"]
 
 	selected_skill = int(data.get("selected_skill", selected_skill))
+	selected_skill = clamp(selected_skill, 0, max(0, active_skills.size() - 1))
 
-	if typeof(data.get("skill_ranks", {})) == TYPE_DICTIONARY:
-		skill_ranks.merge(data["skill_ranks"], true)
+	var skill_ranks_value: Variant = data.get("skill_ranks", null)
+	if typeof(skill_ranks_value) == TYPE_DICTIONARY:
+		skill_ranks.merge(skill_ranks_value, true)
 
-	if typeof(data.get("passives", {})) == TYPE_DICTIONARY:
-		passives.merge(data["passives"], true)
+	var passives_value: Variant = data.get("passives", null)
+	if typeof(passives_value) == TYPE_DICTIONARY:
+		passives.merge(passives_value, true)
 
-	if typeof(data.get("equipped", {})) == TYPE_DICTIONARY:
-		equipped.merge(data["equipped"], true)
+	var equipped_value: Variant = data.get("equipped", null)
+	if typeof(equipped_value) == TYPE_DICTIONARY:
+		equipped.merge(equipped_value, true)
 
-	if typeof(data.get("backpack", [])) == TYPE_ARRAY:
-		backpack = data["backpack"]
+	var backpack_value: Variant = data.get("backpack", null)
+	if typeof(backpack_value) == TYPE_ARRAY:
+		backpack = backpack_value
 
-	if typeof(data.get("stash", [])) == TYPE_ARRAY:
-		stash = data["stash"]
+	var stash_value: Variant = data.get("stash", null)
+	if typeof(stash_value) == TYPE_ARRAY:
+		stash = stash_value
 
+	rooms_cleared = int(data.get("rooms_cleared", rooms_cleared))
+	kills = int(data.get("kills", kills))
 	deaths = int(data.get("deaths", deaths))
+
+	var passive_atlas_allocated_value: Variant = data.get("passive_atlas_allocated", null)
+	if typeof(passive_atlas_allocated_value) == TYPE_ARRAY:
+		passive_atlas_allocated = passive_atlas_allocated_value
+
+	var passive_atlas_refund_stack_value: Variant = data.get("passive_atlas_refund_stack", null)
+	if typeof(passive_atlas_refund_stack_value) == TYPE_ARRAY:
+		passive_atlas_refund_stack = passive_atlas_refund_stack_value
+
+	passive_atlas_cursor = int(data.get("passive_atlas_cursor", passive_atlas_cursor))
+
+	var build_stats_value: Variant = data.get("build_stats", null)
+	if typeof(build_stats_value) == TYPE_DICTIONARY:
+		build_stats = build_stats_value
+
+	var build_flags_value: Variant = data.get("build_flags", null)
+	if typeof(build_flags_value) == TYPE_ARRAY:
+		build_flags = build_flags_value
+
+	var skill_gem_sockets_value: Variant = data.get("skill_gem_sockets", null)
+	if typeof(skill_gem_sockets_value) == TYPE_DICTIONARY:
+		skill_gem_sockets = skill_gem_sockets_value
+
+	var support_gem_inventory_value: Variant = data.get("support_gem_inventory", null)
+	if typeof(support_gem_inventory_value) == TYPE_DICTIONARY:
+		support_gem_inventory = support_gem_inventory_value
+
+	gem_board_skill_cursor = int(data.get("gem_board_skill_cursor", gem_board_skill_cursor))
+	gem_board_support_cursor = int(data.get("gem_board_support_cursor", gem_board_support_cursor))
+
+	spirit_max = int(data.get("spirit_max", spirit_max))
+	spirit_reserved = int(data.get("spirit_reserved", spirit_reserved))
+
+	var spirit_gems_enabled_value: Variant = data.get("spirit_gems_enabled", null)
+	if typeof(spirit_gems_enabled_value) == TYPE_DICTIONARY:
+		spirit_gems_enabled = spirit_gems_enabled_value
+
+	spirit_cursor = int(data.get("spirit_cursor", spirit_cursor))
+
+	var crafting_shards_value: Variant = data.get("crafting_shards", null)
+	if typeof(crafting_shards_value) == TYPE_DICTIONARY:
+		crafting_shards.merge(crafting_shards_value, true)
+
+	var glyph_counts_value: Variant = data.get("glyph_counts", null)
+	if typeof(glyph_counts_value) == TYPE_DICTIONARY:
+		glyph_counts.merge(glyph_counts_value, true)
+
+	var rune_counts_value: Variant = data.get("rune_counts", null)
+	if typeof(rune_counts_value) == TYPE_DICTIONARY:
+		rune_counts.merge(rune_counts_value, true)
+
+	forge_focus_index = int(data.get("forge_focus_index", forge_focus_index))
+	forge_affix_cursor = int(data.get("forge_affix_cursor", forge_affix_cursor))
+
+	# Defaults for older saves made before Patch 016 buildcraft existed.
+	if not passive_atlas_allocated.has("center"):
+		passive_atlas_allocated.append("center")
+
+	for skill_name in skill_ranks.keys():
+		if not skill_gem_sockets.has(skill_name):
+			skill_gem_sockets[skill_name] = []
+
+	spirit_reserved = clamp(spirit_reserved, 0, spirit_max)
+	selected_skill = clamp(selected_skill, 0, max(0, active_skills.size() - 1))
+
+	refund_points = max(0, refund_points)
 	recompute_stats()
