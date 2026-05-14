@@ -1,74 +1,101 @@
 extends Node2D
 
+# Patch 008 hub/activity loop bridge.
+var patch008_hub_director = null
+
+
+# Patch 007 persistent RPG foundation bridge.
+var patch007_persistent_rpg_director = null
+
+
+# Patch 005 combat readability bridge.
+var patch005_visual_layer = null
+var patch005_fx = []
+var patch005_last_projectile_count = 0
+var patch005_last_zone_count = 0
+var patch005_last_trap_count = 0
+var patch005_last_loot_count = 0
+var patch005_last_enemy_count = 0
+var patch005_last_hp = 120.0
+var patch005_shake = 0.0
+
+
+# Patch 004 UI rebuild bridge.
+var patch004_ui_root: CanvasLayer = null
+var patch004_last_notice_count: int = 0
+
+
+
+
 # RELIC FORGE: VAULTBOUND - Patch 003
 # Larger buildcraft dungeon-crawler slice. Still one scene/script for reliability, but now with procedural room layouts,
 # cleanup + build explosion patch: skill drafts, respec, longer dungeon pacing, cascade triggers, richer skill trees, and clearer UI.
 
-const ARENA := Rect2(60, 84, 1160, 566)
-const WORLD_CENTER := Vector2(640, 370)
+const ARENA = Rect2(60, 84, 1160, 566)
+const WORLD_CENTER = Vector2(640, 370)
 
-var rng := RandomNumberGenerator.new()
+var rng = RandomNumberGenerator.new()
 
-var player_pos := WORLD_CENTER
-var player_radius := 15.0
-var player_hp := 120.0
-var player_mana := 100.0
-var dash_time := 0.0
-var dash_cooldown := 0.0
-var dash_dir := Vector2.RIGHT
-var invuln_time := 0.0
-var skill_cd := {}
-var selected_skill := 0
-var active_skills := []
-var all_skill_names := ["Fireball", "Cleave", "Frost Nova", "Storm Lance", "Void Rift", "Blade Trap"]
-var skill_draft_choices := []
-var starter_picks_remaining := 0
-var skill_draft_returns_to_route := false
-var cast_counter := 0
-var focus_time := 0.0
-var guard_time := 0.0
-var level := 1
-var xp := 0.0
-var xp_to_next := 90.0
-var gold := 0
-var room_index := 1
-var rooms_cleared := 0
-var kills := 0
-var run_state := "combat" # combat, reward, route, game_over, victory
-var choice_mode := ""
-var reward_choices := []
-var route_choices := []
-var passive_choices := []
-var passive_returns_to_route := false
-var build_panel_visible := true
-var paused_by_choice := false
-var message_log := []
-var nearest_loot_index := -1
+var player_pos = WORLD_CENTER
+var player_radius = 15.0
+var player_hp = 120.0
+var player_mana = 100.0
+var dash_time = 0.0
+var dash_cooldown = 0.0
+var dash_dir = Vector2.RIGHT
+var invuln_time = 0.0
+var skill_cd = {}
+var selected_skill = 0
+var active_skills = []
+var all_skill_names = ["Fireball", "Cleave", "Frost Nova", "Storm Lance", "Void Rift", "Blade Trap"]
+var skill_draft_choices = []
+var starter_picks_remaining = 0
+var skill_draft_returns_to_route = false
+var cast_counter = 0
+var focus_time = 0.0
+var guard_time = 0.0
+var level = 1
+var xp = 0.0
+var xp_to_next = 90.0
+var gold = 0
+var room_index = 1
+var rooms_cleared = 0
+var kills = 0
+var run_state = "combat" # combat, reward, route, game_over, victory
+var choice_mode = ""
+var reward_choices = []
+var route_choices = []
+var passive_choices = []
+var passive_returns_to_route = false
+var build_panel_visible = true
+var paused_by_choice = false
+var message_log = []
+var nearest_loot_index = -1
 
-var enemies := []
-var projectiles := []
-var enemy_projectiles := []
-var zones := []
-var loot := []
-var floating_text := []
-var minions := []
-var delayed_casts := []
-var obstacles := []
-var traps := []
-var chests := []
-var room_decor := []
-var inventory := []
-var current_room := {"type":"Combat", "biome":"Ash Crypt", "mods":[], "threat":1.0, "elite":false, "treasure":false}
-var run_depth := 0
-var max_depth := 16 # Target pacing: 16 combat/reward route steps plus boss, roughly 20-30 minutes once enemy HP/room count is tuned.
-var open_panel := "build" # build, inventory, skilltree, dungeon
-var skill_points := {"Fireball":0, "Cleave":0, "Frost Nova":0, "Storm Lance":0, "Void Rift":0, "Blade Trap":0}
-var skill_xp := {"Fireball":0.0, "Cleave":0.0, "Frost Nova":0.0, "Storm Lance":0.0, "Void Rift":0.0, "Blade Trap":0.0}
-var skill_xp_next := {"Fireball":55.0, "Cleave":55.0, "Frost Nova":55.0, "Storm Lance":55.0, "Void Rift":55.0, "Blade Trap":55.0}
-var owned_skill_nodes := {"Fireball":[], "Cleave":[], "Frost Nova":[], "Storm Lance":[], "Void Rift":[], "Blade Trap":[]}
-var last_room_rewarded_skill_point := 0
+var enemies = []
+var projectiles = []
+var enemy_projectiles = []
+var zones = []
+var loot = []
+var floating_text = []
+var minions = []
+var delayed_casts = []
+var obstacles = []
+var traps = []
+var chests = []
+var room_decor = []
+var inventory = []
+var current_room = {"type":"Combat", "biome":"Ash Crypt", "mods":[], "threat":1.0, "elite":false, "treasure":false}
+var run_depth = 0
+var max_depth = 16 # Target pacing: 16 combat/reward route steps plus boss, roughly 20-30 minutes once enemy HP/room count is tuned.
+var open_panel = "build" # build, inventory, skilltree, dungeon
+var skill_points = {"Fireball":0, "Cleave":0, "Frost Nova":0, "Storm Lance":0, "Void Rift":0, "Blade Trap":0}
+var skill_xp = {"Fireball":0.0, "Cleave":0.0, "Frost Nova":0.0, "Storm Lance":0.0, "Void Rift":0.0, "Blade Trap":0.0}
+var skill_xp_next = {"Fireball":55.0, "Cleave":55.0, "Frost Nova":55.0, "Storm Lance":55.0, "Void Rift":55.0, "Blade Trap":55.0}
+var owned_skill_nodes = {"Fireball":[], "Cleave":[], "Frost Nova":[], "Storm Lance":[], "Void Rift":[], "Blade Trap":[]}
+var last_room_rewarded_skill_point = 0
 
-var equipped := {
+var equipped = {
 	"weapon": null,
 	"offhand": null,
 	"head": null,
@@ -80,8 +107,8 @@ var equipped := {
 	"ring2": null,
 	"relic": null
 }
-var owned_passives := []
-var passive_points := 0
+var owned_passives = []
+var passive_points = 0
 
 var hud_label: Label
 var build_label: Label
@@ -90,7 +117,7 @@ var log_label: Label
 var loot_label: Label
 var help_label: Label
 
-const SKILLS := {
+const SKILLS = {
 	"Fireball": {
 		"cooldown": 0.45, "cost": 8.0, "damage": 18.0, "speed": 570.0, "radius": 9.0,
 		"tags": ["Fire", "Projectile", "Spell", "Burn"],
@@ -123,7 +150,7 @@ const SKILLS := {
 	}
 }
 
-const ENEMY_TYPES := {
+const ENEMY_TYPES = {
 	"Ash Grunt": {"hp": 58.0, "speed": 82.0, "radius": 16.0, "damage": 11.0, "color": Color(0.72, 0.25, 0.15), "xp": 22.0, "role": "chaser"},
 	"Bone Archer": {"hp": 46.0, "speed": 58.0, "radius": 14.0, "damage": 9.0, "color": Color(0.82, 0.77, 0.62), "xp": 26.0, "role": "shooter"},
 	"Iron Brute": {"hp": 138.0, "speed": 48.0, "radius": 24.0, "damage": 22.0, "color": Color(0.42, 0.45, 0.49), "xp": 48.0, "role": "brute"},
@@ -134,7 +161,7 @@ const ENEMY_TYPES := {
 	"Vault Warden": {"hp": 840.0, "speed": 58.0, "radius": 36.0, "damage": 18.0, "color": Color(0.55, 0.22, 0.85), "xp": 220.0, "role": "boss"}
 }
 
-const ITEM_POOL := [
+const ITEM_POOL = [
 	{"name":"Training Staff", "slot":"weapon", "rarity":"Common", "desc":"Plain starter weapon. It is intentionally boring so loot feels obvious.", "stats":{"spell_damage":0.05}, "flags":[]},
 	{"name":"Rustblade of Open Veins", "slot":"weapon", "rarity":"Rare", "desc":"Slash skills apply bleed. Melee damage is higher, but spells are weaker.", "stats":{"melee_damage":0.24, "spell_damage":-0.08}, "flags":["slash_bleed"]},
 	{"name":"Ashwand of Split Embers", "slot":"weapon", "rarity":"Rare", "desc":"Fire projectiles split wider. Excellent for burn and projectile-count builds.", "stats":{"fire_damage":0.18, "projectile_count":2, "global_damage":-0.10}, "flags":[]},
@@ -175,7 +202,7 @@ const ITEM_POOL := [
 	{"name":"Refund Idol", "slot":"relic", "rarity":"Rare", "desc":"Respec-friendly prototype relic. Gives global damage and reminds you that O refunds trees.", "stats":{"global_damage":0.08}, "flags":["respec_idol"]}
 ]
 
-const PASSIVE_POOL := [
+const PASSIVE_POOL = [
 	{"id":"ember_engine", "name":"Ember Engine", "desc":"Burning enemies explode on death.", "stats":{"burn_power":0.18}, "flags":["burn_death_explode"]},
 	{"id":"frostfire_theorem", "name":"Frostfire Theorem", "desc":"Fire hits against frozen enemies create steam explosions.", "stats":{"fire_damage":0.08, "cold_damage":0.08}, "flags":["frostfire_steam"]},
 	{"id":"storm_after_dodge", "name":"Storm After Dodge", "desc":"Dashing emits lightning and grants a small cooldown-reduction bonus.", "stats":{"cooldown_reduction":0.05}, "flags":["dash_thunder"]},
@@ -214,7 +241,7 @@ const PASSIVE_POOL := [
 	{"id":"late_run_scaling", "name":"Runaway Thesis", "desc":"Global damage rises with dungeon depth. Weak early, strong in 20-30 minute runs.", "stats":{}, "flags":["depth_scaling"]}
 ]
 
-const ROOM_BIOMES := {
+const ROOM_BIOMES = {
 	"Ash Crypt": {"color": Color(0.16, 0.10, 0.09), "mods":["Scorched Floor", "Burning Corpses"]},
 	"Frost Ossuary": {"color": Color(0.08, 0.13, 0.16), "mods":["Cold Air", "Slippery Bones"]},
 	"Storm Vault": {"color": Color(0.09, 0.10, 0.18), "mods":["Arc Lines", "Charged Shrines"]},
@@ -223,7 +250,7 @@ const ROOM_BIOMES := {
 	"Void Reliquary": {"color": Color(0.11, 0.07, 0.16), "mods":["Curse Pressure", "Mirror Acolytes"]}
 }
 
-const SKILL_TREE_NODES := {
+const SKILL_TREE_NODES = {
 	"Fireball": [
 		{"id":"fire_split", "name":"Triple Spark", "desc":"Fireball fires two extra sparks with wider spread.", "stats":{"projectile_count":2, "fire_damage":-0.06}, "flags":["fire_split"]},
 		{"id":"fire_meteor", "name":"Meteor Clause", "desc":"If you own Meteor-ready gear, Fireball becomes a delayed high-impact meteor.", "stats":{"fire_damage":0.18}, "flags":["fire_meteor"]},
@@ -295,13 +322,17 @@ const SKILL_TREE_NODES := {
 func _ready() -> void:
 	rng.randomize()
 	_setup_ui()
+	_setup_patch004_ui_rebuild()
+	_setup_patch005_combat_readability()
+	_setup_patch007_persistent_rpg_foundation()
+	_setup_patch008_hub_activity_loop()
 	equipped["weapon"] = ITEM_POOL[0].duplicate(true)
 	_reset_run()
 	log_msg("Patch 003 loaded: cleanup, skill drafts, respec, longer route pacing, and cascade build engines are active.")
 	log_msg("Start by drafting 2 skills. Press G for the guide, K for skill trees, O to respec/refund trees.")
 
 func _setup_ui() -> void:
-	var layer := CanvasLayer.new()
+	var layer = CanvasLayer.new()
 	add_child(layer)
 
 	hud_label = Label.new()
@@ -405,6 +436,8 @@ func _reset_run() -> void:
 	start_opening_skill_draft()
 
 func _process(delta: float) -> void:
+	_patch005_combat_readability_process(delta)
+	_update_patch004_ui_rebuild()
 	_update_timers(delta)
 	_handle_continuous_input(delta)
 	if run_state == "combat" and choice_mode == "":
@@ -461,7 +494,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			interact_or_equip()
 			return
 		if event.keycode in [KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9]:
-			var idx := int(event.keycode - KEY_1)
+			var idx = int(event.keycode - KEY_1)
 			if choice_mode != "":
 				choose_active_option(idx)
 			else:
@@ -479,10 +512,10 @@ func _unhandled_input(event: InputEvent) -> void:
 func _handle_continuous_input(delta: float) -> void:
 	if run_state == "game_over" or run_state == "victory":
 		return
-	var stats := get_stats()
+	var stats = get_stats()
 	if choice_mode != "":
 		return
-	var move := Vector2.ZERO
+	var move = Vector2.ZERO
 	if Input.is_key_pressed(KEY_W):
 		move.y -= 1.0
 	if Input.is_key_pressed(KEY_S):
@@ -506,7 +539,7 @@ func _handle_continuous_input(delta: float) -> void:
 			spawn_explosion(player_pos, 135.0, 16.0, ["Lightning", "Area", "Dash"], "dash thunder")
 		check_perfect_dodge_focus(stats)
 
-	var next_pos := player_pos
+	var next_pos = player_pos
 	if dash_time > 0.0:
 		next_pos += dash_dir * 690.0 * delta
 	else:
@@ -518,7 +551,7 @@ func _handle_continuous_input(delta: float) -> void:
 		cast_skill(active_skills[selected_skill])
 
 func _update_timers(delta: float) -> void:
-	var stats := get_stats()
+	var stats = get_stats()
 	for k in skill_cd.keys():
 		skill_cd[k] = max(0.0, skill_cd[k] - delta)
 	dash_time = max(0.0, dash_time - delta)
@@ -544,12 +577,12 @@ func cast_skill(skill_name: String) -> void:
 	if not SKILLS.has(skill_name):
 		return
 	var skill = SKILLS[skill_name]
-	var stats := get_stats()
-	var cd := float(skill["cooldown"]) * max(0.18, 1.0 - stats["cooldown_reduction"])
+	var stats = get_stats()
+	var cd: float = float(skill["cooldown"]) * max(0.18, 1.0 - stats["cooldown_reduction"])
 	if skill_cd.get(skill_name, 0.0) > 0.0:
 		return
-	var cost := float(skill.get("cost", 0.0))
-	var can_cast := true
+	var cost = float(skill.get("cost", 0.0))
+	var can_cast = true
 	if player_mana >= cost:
 		player_mana -= cost
 	elif has_flag(stats, "blood_cast") and has_tag(skill["tags"], "Spell") and player_hp > 22.0:
@@ -570,11 +603,11 @@ func cast_skill(skill_name: String) -> void:
 		queue_chain_skill(skill_name, 0.12, 0.55, 1)
 		floating("echo armed", player_pos + Vector2(0, -42), Color(0.74, 0.69, 1.0))
 
-func _cast_skill_now(skill_name: String, is_echo: bool, power_scale: float, chain_depth := 0) -> void:
-	var stats := get_stats()
+func _cast_skill_now(skill_name: String, is_echo: bool, power_scale: float, chain_depth = 0) -> void:
+	var stats = get_stats()
 	var skill = SKILLS[skill_name]
 	var base_tags = skill["tags"].duplicate()
-	var power := power_scale
+	var power = power_scale
 	if focus_time > 0.0 and not is_echo:
 		power *= 1.55
 		focus_time = 0.0
@@ -584,27 +617,27 @@ func _cast_skill_now(skill_name: String, is_echo: bool, power_scale: float, chai
 	match skill_name:
 		"Fireball":
 			if has_flag(stats, "fire_meteor") and has_flag(stats, "meteor_ready"):
-				var target_m := player_pos + aim_dir() * 260.0
+				var target_m = player_pos + aim_dir() * 260.0
 				zones.append({"pos": clamp_to_arena(target_m, 70.0), "radius": 92.0, "time": 0.62, "duration": 0.82, "damage": scaled_damage(float(skill["damage"]) * power * 2.15, ["Fire", "Area", "Spell", "Burn"], stats), "tags": ["Fire", "Area", "Spell", "Burn"], "triggered": false, "visual": "METEOR", "color": Color(1.0, 0.32, 0.06, 0.30)})
 				floating("meteor", target_m + Vector2(0, -40), Color(1.0, 0.55, 0.20))
 			else:
-				var count := int(max(1, stats["projectile_count"]))
+				var count = int(max(1, stats["projectile_count"]))
 				if has_flag(stats, "fire_split"):
 					count += 2
-				var spread := 0.13 * float(count - 1)
+				var spread = 0.13 * float(count - 1)
 				for i in range(count):
-					var a := aim_dir().angle() - spread * 0.5 + (spread / max(1, count - 1)) * i
+					var a: float = aim_dir().angle() - spread * 0.5 + (spread / max(1, count - 1)) * i
 					spawn_projectile(player_pos + vec_from_angle(a) * 20.0, vec_from_angle(a) * float(skill["speed"]), scaled_damage(float(skill["damage"]) * power, base_tags, stats), float(skill["radius"]), base_tags, "Fireball", 1.2)
 		"Storm Lance":
-			var count2 := int(max(1, stats["projectile_count"] - 1))
-			var spread2 := 0.08 * float(count2 - 1)
+			var count2 = int(max(1, stats["projectile_count"] - 1))
+			var spread2 = 0.08 * float(count2 - 1)
 			for j in range(count2):
-				var a2 := aim_dir().angle() - spread2 * 0.5 + (spread2 / max(1, count2 - 1)) * j
+				var a2: float = aim_dir().angle() - spread2 * 0.5 + (spread2 / max(1, count2 - 1)) * j
 				spawn_projectile(player_pos + vec_from_angle(a2) * 20.0, vec_from_angle(a2) * float(skill["speed"]), scaled_damage(float(skill["damage"]) * power, base_tags, stats), float(skill["radius"]), base_tags, "Storm Lance", 0.95)
 		"Cleave":
 			cast_cleave(scaled_damage(float(skill["damage"]) * power, base_tags, stats), base_tags, stats)
 		"Frost Nova":
-			var before_hits := count_enemies_in_radius(player_pos, float(skill["radius"]))
+			var before_hits = count_enemies_in_radius(player_pos, float(skill["radius"]))
 			spawn_explosion(player_pos, float(skill["radius"]), scaled_damage(float(skill["damage"]) * power, base_tags, stats), base_tags, "Frost Nova")
 			if has_flag(stats, "nova_field"):
 				zones.append({"pos": player_pos, "radius": float(skill["radius"]) * 0.72, "time": 0.15, "duration": 2.2, "tick": 0.45, "tick_cd": 0.0, "damage": scaled_damage(5.0 * power, ["Cold", "Area", "Spell"], stats), "tags": ["Cold", "Area", "Spell", "Freeze"], "visual": "ice field", "color": Color(0.36, 0.74, 1.0, 0.18)})
@@ -612,7 +645,7 @@ func _cast_skill_now(skill_name: String, is_echo: bool, power_scale: float, chai
 				focus_time = 2.0 + stats.get("focus_duration", 0.0)
 				floating("calm focus", player_pos + Vector2(0, -52), Color(0.75, 0.95, 1.0))
 		"Void Rift":
-			var target := player_pos + aim_dir() * 135.0
+			var target = player_pos + aim_dir() * 135.0
 			zones.append({"pos": target, "radius": float(skill["radius"]), "time": 0.85, "duration": 1.15, "damage": scaled_damage(float(skill["damage"]) * power, base_tags, stats), "tags": base_tags.duplicate(), "triggered": false, "pull": has_flag(stats, "rift_pull"), "visual": "Void Rift", "color": Color(0.55, 0.18, 0.95, 0.28)})
 		"Blade Trap":
 			place_blade_trap(player_pos + aim_dir() * 78.0, scaled_damage(float(skill["damage"]) * power, base_tags, stats), base_tags, stats, 1.0)
@@ -623,17 +656,17 @@ func queue_chain_skill(skill_name: String, delay: float, power: float, depth: in
 		return
 	delayed_casts.append({"skill": skill_name, "time": delay, "power": power, "chain_depth": depth})
 	floating("queue " + skill_name, player_pos + Vector2(0, -66), Color(0.84, 0.74, 1.0))
-	var stats := get_stats()
+	var stats = get_stats()
 	if has_flag(stats, "chain_mana_refund"):
 		player_mana = min(stats["max_mana"], player_mana + 3.0)
 
 func trigger_chain_reactions(source_skill: String, is_echo: bool, power: float, chain_depth: int) -> void:
-	var stats := get_stats()
+	var stats = get_stats()
 	if chain_depth >= 4:
 		return
 	if is_echo and not has_flag(stats, "cascade_engine"):
 		return
-	var next_depth := chain_depth + 1
+	var next_depth = chain_depth + 1
 	if source_skill == "Fireball":
 		if has_flag(stats, "fire_calls_lance"): queue_chain_skill("Storm Lance", 0.08, 0.45 * power, next_depth)
 		if has_flag(stats, "fire_calls_nova"): queue_chain_skill("Frost Nova", 0.16, 0.36 * power, next_depth)
@@ -656,7 +689,7 @@ func trigger_chain_reactions(source_skill: String, is_echo: bool, power: float, 
 		if has_flag(stats, "cleave_calls_trap"): queue_chain_skill("Blade Trap", 0.10, 0.44 * power, next_depth)
 		if has_flag(stats, "cleave_calls_lance"): queue_chain_skill("Storm Lance", 0.09, 0.42 * power, next_depth)
 	if has_flag(stats, "cascade_engine") and rng.randf() < (0.20 + 0.08 * float(chain_depth)):
-		var pool := all_skill_names.duplicate()
+		var pool = all_skill_names.duplicate()
 		pool.erase(source_skill)
 		queue_chain_skill(pool[rng.randi_range(0, pool.size() - 1)], 0.18, 0.34 * power, next_depth)
 	if has_flag(stats, "fivefold_cascade") and not is_echo and cast_counter > 0 and cast_counter % 5 == 0:
@@ -665,13 +698,13 @@ func trigger_chain_reactions(source_skill: String, is_echo: bool, power: float, 
 				queue_chain_skill(s, 0.08 + 0.04 * float(all_skill_names.find(s)), 0.28 * power, next_depth)
 
 func cast_cleave(damage: float, tags: Array, stats: Dictionary) -> void:
-	var dir := aim_dir()
-	var arc := float(SKILLS["Cleave"]["arc"])
-	var range_v := float(SKILLS["Cleave"]["range"])
+	var dir: Vector2 = aim_dir()
+	var arc = float(SKILLS["Cleave"]["arc"])
+	var range_v = float(SKILLS["Cleave"]["range"])
 	for e in enemies:
-		var to_e := e["pos"] - player_pos
+		var to_e: Vector2 = e["pos"] - player_pos
 		if to_e.length() <= range_v + e["radius"]:
-			var diff := abs(wrapf(to_e.angle() - dir.angle(), -PI, PI))
+			var diff = abs(wrapf(to_e.angle() - dir.angle(), -PI, PI))
 			if diff <= arc * 0.5:
 				deal_damage(e, damage, tags, player_pos, "Cleave")
 	if has_flag(stats, "cleave_circle"):
@@ -696,7 +729,7 @@ func _update_projectiles(delta: float) -> void:
 		var p = projectiles[i]
 		p["life"] -= delta
 		p["pos"] += p["vel"] * delta
-		var remove := p["life"] <= 0.0 or not ARENA.grow(35.0).has_point(p["pos"]) or point_hits_obstacle(p["pos"], p["radius"])
+		var remove: bool = p["life"] <= 0.0 or not ARENA.grow(35.0).has_point(p["pos"]) or point_hits_obstacle(p["pos"], p["radius"])
 		for e in enemies:
 			if p["hit_ids"].has(e["id"]):
 				continue
@@ -706,11 +739,11 @@ func _update_projectiles(delta: float) -> void:
 				if has_tag(p["tags"], "Fire"):
 					spawn_explosion(p["pos"], 44.0, p["damage"] * 0.38, ["Fire", "Area", "Burn"], "impact")
 				if has_tag(p["tags"], "Lightning"):
-					var stats_now := get_stats()
+					var stats_now = get_stats()
 					chain_lightning(e, p["damage"] * 0.58, stats_now)
 					if has_flag(stats_now, "lance_fork") and str(p.get("skill", "")) == "Storm Lance":
 						for fork_angle in [-0.42, 0.42]:
-							var fd := p["vel"].normalized().rotated(fork_angle)
+							var fd: Vector2 = p["vel"].normalized().rotated(fork_angle)
 							spawn_projectile(p["pos"] + fd * 12.0, fd * 610.0, p["damage"] * 0.44, max(5.0, p["radius"] * 0.72), ["Lightning", "Projectile", "Spell", "Chain"], "Forked Lance", 0.52)
 				if int(p.get("pierce", 0)) <= 0:
 					remove = true
@@ -725,7 +758,7 @@ func _update_enemy_projectiles(delta: float) -> void:
 		var p = enemy_projectiles[i]
 		p["life"] -= delta
 		p["pos"] += p["vel"] * delta
-		var remove := p["life"] <= 0.0 or not ARENA.grow(45.0).has_point(p["pos"])
+		var remove: bool = p["life"] <= 0.0 or not ARENA.grow(45.0).has_point(p["pos"])
 		if p["pos"].distance_to(player_pos) <= p["radius"] + player_radius:
 			player_take_damage(p["damage"], p["pos"])
 			remove = true
@@ -744,7 +777,7 @@ func _update_zones(delta: float) -> void:
 		z["time"] -= delta
 		if z.get("pull", false):
 			for e_pull in enemies:
-				var to_center := z["pos"] - e_pull["pos"]
+				var to_center: Vector2 = z["pos"] - e_pull["pos"]
 				if to_center.length() < z["radius"] * 1.35 and to_center.length() > 1.0:
 					e_pull["pos"] += to_center.normalized() * 125.0 * delta
 		if z.has("tick"):
@@ -768,13 +801,13 @@ func _update_enemies(delta: float) -> void:
 		if e["hp"] <= 0.0:
 			continue
 		var data = ENEMY_TYPES[e["type"]]
-		var role := str(data["role"])
-		var speed := float(data["speed"])
+		var role = str(data["role"])
+		var speed = float(data["speed"])
 		if e["statuses"].has("freeze"):
 			speed *= 0.25
-		var to_player := player_pos - e["pos"]
-		var dist := to_player.length()
-		var dir := Vector2.ZERO
+		var to_player: Vector2 = player_pos - e["pos"]
+		var dist: float = to_player.length()
+		var dir: Vector2 = Vector2.ZERO
 		if dist > 0.01:
 			dir = to_player / dist
 		e["ai_cd"] = max(0.0, e["ai_cd"] - delta)
@@ -798,7 +831,7 @@ func _update_enemies(delta: float) -> void:
 			else:
 				e["pos"] -= dir.rotated(0.7) * speed * 0.35 * delta
 			if e["ai_cd"] <= 0.0:
-				var target := player_pos
+				var target = player_pos
 				zones.append({"pos": target, "radius": 52.0, "time": 0.55, "duration": 0.72, "damage": float(data["damage"]) + 3.0, "tags": ["Fire", "Area"], "triggered": false, "visual": "spit warning", "color": Color(1.0, 0.25, 0.05, 0.28)})
 				e["ai_cd"] = 1.7
 		elif role == "hound":
@@ -850,15 +883,15 @@ func _update_boss(e: Dictionary, delta: float, dir: Vector2, dist: float) -> voi
 	var data = ENEMY_TYPES[e["type"]]
 	e["pos"] += dir * float(data["speed"]) * 0.42 * delta
 	if e["ai_cd"] <= 0.0:
-		var pattern := rng.randi_range(0, 2)
+		var pattern = rng.randi_range(0, 2)
 		if pattern == 0:
 			for n in range(12):
-				var a := TAU * float(n) / 12.0
+				var a: float = TAU * float(n) / 12.0
 				spawn_enemy_projectile(e["pos"] + vec_from_angle(a) * 32.0, vec_from_angle(a) * 250.0, 10.0 + room_index, 8.0, Color(0.77, 0.32, 1.0), 3.0)
 			log_msg("Vault Warden releases a radial curse pattern.")
 		elif pattern == 1:
 			for n2 in range(4):
-				var off := Vector2(rng.randf_range(-260, 260), rng.randf_range(-170, 170))
+				var off = Vector2(rng.randf_range(-260, 260), rng.randf_range(-170, 170))
 				zones.append({"pos": player_pos + off * 0.25, "radius": 68.0, "time": 0.72, "duration": 0.92, "damage": 18.0 + room_index, "tags": ["Void", "Area"], "triggered": false, "visual": "warden sigil", "color": Color(0.65, 0.16, 1.0, 0.26)})
 			log_msg("Vault Warden marks the floor. Move.")
 		else:
@@ -875,12 +908,12 @@ func _update_boss(e: Dictionary, delta: float, dir: Vector2, dist: float) -> voi
 func _update_statuses(delta: float) -> void:
 	for e in enemies:
 		var statuses: Dictionary = e["statuses"]
-		var keys := statuses.keys()
+		var keys = statuses.keys()
 		for s in keys:
 			var st = statuses[s]
 			st["time"] -= delta
 			if s == "burn" or s == "bleed" or s == "poison":
-				var tick := float(st.get("dps", 0.0)) * delta
+				var tick = float(st.get("dps", 0.0)) * delta
 				e["hp"] -= tick
 				if rng.randf() < 0.12:
 					floating(str(s), e["pos"] + Vector2(rng.randf_range(-12, 12), -30), status_color(s))
@@ -898,14 +931,14 @@ func _update_minions(delta: float) -> void:
 		if m["life"] <= 0.0:
 			minions.remove_at(i)
 			continue
-		var orbit_angle := float(m.get("angle", 0.0)) + delta * 2.6
+		var orbit_angle = float(m.get("angle", 0.0)) + delta * 2.6
 		m["angle"] = orbit_angle
 		m["pos"] = player_pos + vec_from_angle(orbit_angle) * 52.0
 		m["cd"] = max(0.0, m["cd"] - delta)
 		if m["cd"] <= 0.0:
-			var target := nearest_enemy(m["pos"], 460.0)
+			var target = nearest_enemy(m["pos"], 460.0)
 			if target != null:
-				var dir := (target["pos"] - m["pos"]).normalized()
+				var dir: Vector2 = (target["pos"] - m["pos"]).normalized()
 				if str(m.get("kind", "bone")) == "blood":
 					spawn_projectile(m["pos"], dir * 560.0, scaled_damage(10.0, ["Physical", "Projectile", "Minion", "Blood"], get_stats()), 7.0, ["Physical", "Projectile", "Minion", "Bleed"], "Blood Orb", 0.95)
 				else:
@@ -915,8 +948,8 @@ func _update_minions(delta: float) -> void:
 func deal_damage(e: Dictionary, raw_damage: float, tags: Array, source_pos: Vector2, source_name: String) -> void:
 	if e["hp"] <= 0.0:
 		return
-	var stats := get_stats()
-	var damage := raw_damage
+	var stats = get_stats()
+	var damage = raw_damage
 	if has_flag(stats, "execute_low_hp") and e["hp"] / e["max_hp"] <= 0.25:
 		damage *= 1.28
 	if e["statuses"].has("shock"):
@@ -927,7 +960,7 @@ func deal_damage(e: Dictionary, raw_damage: float, tags: Array, source_pos: Vect
 		damage *= 1.22
 	if has_flag(stats, "bleed_payoff") and e["statuses"].has("bleed") and has_tag(tags, "Melee"):
 		damage *= 1.20
-	var crit := rng.randf() < stats["crit_chance"]
+	var crit: bool = rng.randf() < stats["crit_chance"]
 	if crit:
 		damage *= stats["crit_mult"]
 	e["hp"] -= damage
@@ -976,7 +1009,7 @@ func on_enemy_death(e: Dictionary) -> void:
 	if e.get("dead", false):
 		return
 	e["dead"] = true
-	var stats := get_stats()
+	var stats = get_stats()
 	kills += 1
 	xp += float(ENEMY_TYPES[e["type"]]["xp"])
 	gold += rng.randi_range(2, 7)
@@ -993,7 +1026,7 @@ func on_enemy_death(e: Dictionary) -> void:
 	if has_flag(stats, "curse_mana_refund") and e["statuses"].has("curse"):
 		player_mana = min(stats["max_mana"], player_mana + 9.0)
 	if has_flag(stats, "corpse_spark"):
-		var n := nearest_enemy(e["pos"], 360.0)
+		var n = nearest_enemy(e["pos"], 360.0)
 		if n != null:
 			deal_damage(n, scaled_damage(16.0 + level * 2.0, ["Lightning", "Spell"], stats), ["Lightning", "Spell", "Chain"], e["pos"], "corpse spark")
 	if has_flag(stats, "bone_wisp_on_kill") and rng.randf() < 0.45:
@@ -1029,7 +1062,7 @@ func player_take_damage(amount: float, source_pos: Vector2) -> void:
 func start_passive_choice() -> void:
 	choice_mode = "passive"
 	passive_choices.clear()
-	var available := []
+	var available = []
 	for p in PASSIVE_POOL:
 		if not owned_passives.has(p["id"]):
 			available.append(p)
@@ -1076,7 +1109,7 @@ func choose_active_option(idx: int) -> void:
 
 func make_skill_draft_choices() -> void:
 	skill_draft_choices.clear()
-	var available := []
+	var available = []
 	for s in all_skill_names:
 		if not active_skills.has(s):
 			available.append(s)
@@ -1084,7 +1117,7 @@ func make_skill_draft_choices() -> void:
 	for i in range(min(4, available.size())):
 		skill_draft_choices.append(available[i])
 	if skill_draft_choices.size() == 0:
-		var fallback := get_selected_skill_name()
+		var fallback = get_selected_skill_name()
 		if fallback != "":
 			skill_points[fallback] = int(skill_points.get(fallback, 0)) + 1
 		choice_mode = "route" if skill_draft_returns_to_route else ""
@@ -1092,7 +1125,7 @@ func make_skill_draft_choices() -> void:
 
 func choose_skill_draft(idx: int) -> void:
 	if idx < 0 or idx >= skill_draft_choices.size(): return
-	var s := str(skill_draft_choices[idx])
+	var s = str(skill_draft_choices[idx])
 	if not active_skills.has(s):
 		active_skills.append(s)
 		selected_skill = active_skills.size() - 1
@@ -1124,14 +1157,14 @@ func apply_reward_choice(choice: Dictionary) -> void:
 			start_passive_choice()
 			return
 		"forge":
-			var stats := get_stats()
+			var stats = get_stats()
 			player_hp = min(stats["max_hp"], player_hp + 44.0)
 			player_mana = min(stats["max_mana"], player_mana + 70.0)
 			if rng.randf() < 0.35:
 				_drop_item(player_pos + Vector2(0, -65), true)
 			log_msg("Forge reward: restored health/mana and may add gear.")
 		"skill":
-			var skill_name := get_selected_skill_name()
+			var skill_name = get_selected_skill_name()
 			if skill_name == "":
 				starter_picks_remaining = 1
 				skill_draft_returns_to_route = true
@@ -1168,7 +1201,7 @@ func _check_room_clear() -> void:
 			choice_mode = "reward"
 			if rooms_cleared - last_room_rewarded_skill_point >= 2 and active_skills.size() > 0:
 				last_room_rewarded_skill_point = rooms_cleared
-				var skill_name := get_selected_skill_name()
+				var skill_name = get_selected_skill_name()
 				skill_points[skill_name] = int(skill_points.get(skill_name, 0)) + 1
 				log_msg("Dungeon mastery: +1 " + skill_name + " skill point. Press K to spend it.")
 			make_reward_choices()
@@ -1180,7 +1213,7 @@ func make_reward_choices() -> void:
 		{"type":"skill", "name":"Skill Study", "desc":"Gain +1 point for your selected skill tree. Press K to spend it."},
 		{"type":"passive", "name":"Passive Shrine", "desc":"Gain and spend a passive point. Good for steering archetypes."}
 	]
-	var fourth := rng.randi_range(0, 3)
+	var fourth = rng.randi_range(0, 3)
 	if fourth == 0:
 		reward_choices.append({"type":"skill_draft", "name":"Skill Draft", "desc":"Learn a new active skill, or widen your chain engine."})
 	elif fourth == 1:
@@ -1195,26 +1228,26 @@ func make_route_choices() -> void:
 	if run_depth >= max_depth - 1:
 		route_choices = [{"name":"Boss Door", "type":"Boss", "biome":"Void Reliquary", "desc":"Fight the Vault Warden. Clear it to win the contract.", "elite":true, "treasure":false, "mods":["Curse Pressure", "Boss Arena"], "threat":1.55}]
 		return
-	var types := ["Combat", "Elite", "Treasure", "Shrine", "Forge", "Skill Trial", "Reliquary", "Gauntlet", "Library"]
-	var biomes := ROOM_BIOMES.keys()
+	var types = ["Combat", "Elite", "Treasure", "Shrine", "Forge", "Skill Trial", "Reliquary", "Gauntlet", "Library"]
+	var biomes = ROOM_BIOMES.keys()
 	for i in range(3):
-		var t := types[rng.randi_range(0, types.size() - 1)]
+		var t = types[rng.randi_range(0, types.size() - 1)]
 		if run_depth < 2 and (t == "Skill Trial" or t == "Gauntlet"):
 			t = "Combat"
-		var b := biomes[rng.randi_range(0, biomes.size() - 1)]
-		var mods := []
+		var b = biomes[rng.randi_range(0, biomes.size() - 1)]
+		var mods = []
 		var biome_data = ROOM_BIOMES[b]
 		mods.append(biome_data["mods"][rng.randi_range(0, biome_data["mods"].size() - 1)])
 		if rng.randf() < 0.45 + float(run_depth) * 0.03:
 			mods.append(random_contract_mod())
-		var threat := 1.0 + run_depth * 0.08
+		var threat = 1.0 + run_depth * 0.08
 		if t == "Elite": threat += 0.32
 		if t == "Treasure" or t == "Library": threat -= 0.10
 		if t == "Gauntlet": threat += 0.22
 		route_choices.append({"name": b + " - " + t, "type":t, "biome":b, "desc": room_desc(t, mods), "elite":t == "Elite", "treasure":t == "Treasure", "mods":mods, "threat":threat})
 
-func spawn_room(elite := false, treasure := false) -> void:
-	var route := {"name":"Ash Crypt - Combat", "type":"Combat", "biome":"Ash Crypt", "desc":"Starter contract room.", "elite":elite, "treasure":treasure, "mods":[], "threat":1.0}
+func spawn_room(elite = false, treasure = false) -> void:
+	var route = {"name":"Ash Crypt - Combat", "type":"Combat", "biome":"Ash Crypt", "desc":"Starter contract room.", "elite":elite, "treasure":treasure, "mods":[], "threat":1.0}
 	spawn_room_from_route(route)
 
 func spawn_room_from_route(route: Dictionary) -> void:
@@ -1228,14 +1261,14 @@ func spawn_room_from_route(route: Dictionary) -> void:
 	chests.clear()
 	room_decor.clear()
 	generate_room_layout(route)
-	var room_type := str(route.get("type", "Combat"))
+	var room_type = str(route.get("type", "Combat"))
 	if room_type == "Boss":
 		spawn_enemy("Vault Warden", WORLD_CENTER + Vector2(220, 0))
 		spawn_enemy("Mirror Acolyte", WORLD_CENTER + Vector2(-260, -130))
 		spawn_enemy("Oathless Knight", WORLD_CENTER + Vector2(-260, 130))
 		log_msg("Boss room: Vault Warden spawned in " + str(route.get("biome", "Void Reliquary")) + ".")
 		return
-	var count := 3 + room_index + int(run_depth * 0.6)
+	var count = 3 + room_index + int(run_depth * 0.6)
 	if route.get("elite", false): count += 4
 	if room_type == "Treasure": count = max(2, count - 2)
 	if room_type == "Shrine": count = max(2, count - 3)
@@ -1245,13 +1278,13 @@ func spawn_room_from_route(route: Dictionary) -> void:
 	if room_type == "Library": count = max(2, count - 2)
 	if room_type == "Reliquary": count += 1
 	for i in range(count):
-		var types := enemy_pool_for_room(route)
+		var types = enemy_pool_for_room(route)
 		spawn_enemy(types[rng.randi_range(0, types.size() - 1)], random_spawn_pos())
 	if route.get("treasure", false) or room_type == "Treasure":
 		spawn_chest(WORLD_CENTER + Vector2(0, -90), true)
 	if room_type == "Library":
 		spawn_chest(WORLD_CENTER + Vector2(0, -90), true)
-		var s_lib := get_selected_skill_name()
+		var s_lib = get_selected_skill_name()
 		if s_lib != "":
 			skill_points[s_lib] = int(skill_points.get(s_lib, 0)) + 1
 			log_msg("Library room: +1 " + s_lib + " skill point.")
@@ -1264,7 +1297,7 @@ func spawn_room_from_route(route: Dictionary) -> void:
 	if room_type == "Shrine":
 		zones.append({"pos": WORLD_CENTER + Vector2(0, -105), "radius": 58.0, "time": 0.25, "duration": 999.0, "visual": "shrine", "color": Color(1.0, 0.86, 0.35, 0.17)})
 	if room_type == "Skill Trial" and active_skills.size() > 0:
-		var skill_name := get_selected_skill_name()
+		var skill_name = get_selected_skill_name()
 		skill_points[skill_name] = int(skill_points.get(skill_name, 0)) + 1
 		log_msg("Skill Trial started: +1 " + skill_name + " point granted upfront.")
 	log_msg("Room " + str(room_index) + ": " + str(route.get("name", room_type)) + " | Mods: " + ", ".join(route.get("mods", [])) + ".")
@@ -1279,7 +1312,7 @@ func spawn_enemy(type_name: String, pos: Vector2) -> void:
 	})
 
 func random_spawn_pos() -> Vector2:
-	var side := rng.randi_range(0, 3)
+	var side = rng.randi_range(0, 3)
 	match side:
 		0: return Vector2(rng.randf_range(ARENA.position.x + 40, ARENA.end.x - 40), ARENA.position.y + 35)
 		1: return Vector2(rng.randf_range(ARENA.position.x + 40, ARENA.end.x - 40), ARENA.end.y - 35)
@@ -1287,17 +1320,17 @@ func random_spawn_pos() -> Vector2:
 		_: return Vector2(ARENA.end.x - 35, rng.randf_range(ARENA.position.y + 40, ARENA.end.y - 40))
 
 func _drop_item(pos: Vector2, force_good: bool) -> void:
-	var pool := ITEM_POOL.duplicate(true)
+	var pool = ITEM_POOL.duplicate(true)
 	if not force_good and rng.randf() < 0.45:
 		# Prefer non-legendary drops in normal rooms so legendaries still feel like spikes.
-		var reduced := []
+		var reduced = []
 		for item in pool:
 			if item["rarity"] != "Legendary":
 				reduced.append(item)
 		pool = reduced
 	var item = pool[rng.randi_range(1, pool.size() - 1)].duplicate(true)
 	# Add a small random affix to non-starter drops.
-	var affixes := [
+	var affixes = [
 		{"text":"of Heat", "stats":{"fire_damage":0.06}},
 		{"text":"of Speed", "stats":{"move_speed":10.0}},
 		{"text":"of Focus", "stats":{"crit_chance":0.03}},
@@ -1314,9 +1347,9 @@ func _drop_item(pos: Vector2, force_good: bool) -> void:
 
 func _update_loot_tracking() -> void:
 	nearest_loot_index = -1
-	var best := 99999.0
+	var best = 99999.0
 	for i in range(loot.size()):
-		var d := player_pos.distance_to(loot[i]["pos"])
+		var d = player_pos.distance_to(loot[i]["pos"])
 		if d < best and d <= 76.0:
 			best = d
 			nearest_loot_index = i
@@ -1325,7 +1358,7 @@ func equip_nearest_loot() -> void:
 	if nearest_loot_index < 0:
 		return
 	var item = loot[nearest_loot_index]["item"]
-	var slot := str(item["slot"])
+	var slot = str(item["slot"])
 	if slot == "ring":
 		if equipped["ring1"] == null:
 			equipped["ring1"] = item
@@ -1337,12 +1370,12 @@ func equip_nearest_loot() -> void:
 		equipped[slot] = item
 	loot.remove_at(nearest_loot_index)
 	log_msg("Equipped: " + item["name"] + " [" + item["slot"] + "]")
-	var stats := get_stats()
+	var stats = get_stats()
 	player_hp = min(player_hp, stats["max_hp"])
 	player_mana = min(player_mana, stats["max_mana"])
 
 func get_stats() -> Dictionary:
-	var stats := {
+	var stats = {
 		"max_hp": 120.0, "max_mana": 100.0, "mana_regen": 17.0, "move_speed": 250.0,
 		"global_damage": 1.0, "spell_damage": 1.0, "melee_damage": 1.0, "projectile_damage": 1.0,
 		"fire_damage": 1.0, "cold_damage": 1.0, "lightning_damage": 1.0, "physical_damage": 1.0,
@@ -1360,7 +1393,7 @@ func get_stats() -> Dictionary:
 			merge_item_stats(stats, p)
 	for skill_name in owned_skill_nodes.keys():
 		for node_id in owned_skill_nodes[skill_name]:
-			var node := find_skill_node(skill_name, node_id)
+			var node = find_skill_node(skill_name, node_id)
 			if node != null:
 				merge_item_stats(stats, node)
 	if has_flag(stats, "contract_eater"):
@@ -1387,7 +1420,7 @@ func has_flag(stats: Dictionary, flag: String) -> bool:
 	return stats.get("flags", {}).has(flag)
 
 func scaled_damage(base: float, tags: Array, stats: Dictionary) -> float:
-	var d := base * stats["global_damage"]
+	var d = base * stats["global_damage"]
 	if has_tag(tags, "Spell"): d *= stats["spell_damage"]
 	if has_tag(tags, "Melee"): d *= stats["melee_damage"]
 	if has_tag(tags, "Projectile"): d *= stats["projectile_damage"]
@@ -1402,13 +1435,13 @@ func scaled_damage(base: float, tags: Array, stats: Dictionary) -> float:
 	return max(1.0, d)
 
 func chain_lightning(first_enemy: Dictionary, damage: float, stats: Dictionary) -> void:
-	var chains := 1
+	var chains = 1
 	if has_flag(stats, "chain_plus"):
 		chains += 1
-	var current := first_enemy
-	var hit := {first_enemy["id"]: true}
+	var current = first_enemy
+	var hit = {first_enemy["id"]: true}
 	for i in range(chains):
-		var next := nearest_enemy(current["pos"], 260.0, hit)
+		var next = nearest_enemy(current["pos"], 260.0, hit)
 		if next == null:
 			return
 		hit[next["id"]] = true
@@ -1416,13 +1449,13 @@ func chain_lightning(first_enemy: Dictionary, damage: float, stats: Dictionary) 
 		zones.append({"pos": (current["pos"] + next["pos"]) * 0.5, "radius": 18.0, "time": 0.08, "duration": 0.14, "visual": "chain", "color": Color(0.45, 0.72, 1.0, 0.42)})
 		current = next
 
-func nearest_enemy(from_pos: Vector2, max_dist: float, ignored := {}) -> Variant:
+func nearest_enemy(from_pos: Vector2, max_dist: float, ignored = {}) -> Variant:
 	var best = null
-	var best_d := max_dist
+	var best_d = max_dist
 	for e in enemies:
 		if ignored.has(e["id"]):
 			continue
-		var d := from_pos.distance_to(e["pos"])
+		var d = from_pos.distance_to(e["pos"])
 		if d < best_d:
 			best_d = d
 			best = e
@@ -1455,11 +1488,11 @@ func _update_floating_text(delta: float) -> void:
 			floating_text.remove_at(i)
 
 func _update_ui() -> void:
-	var stats := get_stats()
-	var skill_lines := []
+	var stats = get_stats()
+	var skill_lines = []
 	for i in range(active_skills.size()):
-		var s := active_skills[i]
-		var mark := "> " if i == selected_skill else "  "
+		var s = active_skills[i]
+		var mark = "> " if i == selected_skill else "  "
 		skill_lines.append(mark + str(i + 1) + ": " + s + " cd " + str(snapped(skill_cd.get(s, 0.0), 0.1)))
 	if active_skills.size() == 0:
 		skill_lines.append("No skills yet: choose a Skill Draft.")
@@ -1479,7 +1512,7 @@ func _update_ui() -> void:
 	choice_label.text = choice_text()
 
 func build_text(stats: Dictionary) -> String:
-	var text := "BUILD PANEL\n"
+	var text = "BUILD PANEL\n"
 	text += "Damage x" + str(snapped(stats["global_damage"], 0.01)) + " | CDR " + str(int(stats["cooldown_reduction"] * 100.0)) + "% | Crit " + str(int(stats["crit_chance"] * 100.0)) + "%\n"
 	text += "Proj " + str(stats["projectile_count"]) + " | Fire " + str(snapped(stats["fire_damage"], 0.01)) + " | Cold " + str(snapped(stats["cold_damage"], 0.01)) + " | Lightning " + str(snapped(stats["lightning_damage"], 0.01)) + "\n\n"
 	text += "EQUIPMENT\n"
@@ -1487,7 +1520,7 @@ func build_text(stats: Dictionary) -> String:
 		var item = equipped[slot]
 		text += slot + ": " + (item["name"] if item != null else "-") + "\n"
 	text += "\nFLAGS\n"
-	var flags := stats["flags"].keys()
+	var flags = stats["flags"].keys()
 	text += (", ".join(flags) if flags.size() > 0 else "none") + "\n\n"
 	text += "ROOM: " + str(current_room.get("type", "Combat")) + " / " + str(current_room.get("biome", "Ash Crypt")) + "\n"
 	text += "PASSIVES\n"
@@ -1501,29 +1534,29 @@ func build_text(stats: Dictionary) -> String:
 
 func choice_text() -> String:
 	if choice_mode == "skill_draft":
-		var sd := "SKILL DRAFT"
+		var sd = "SKILL DRAFT"
 		if starter_picks_remaining > 0:
 			sd += " - choose " + str(starter_picks_remaining) + " more"
 		sd += "\n\nStart narrow. Pick 1-2 skills you actually want to build around; later rewards can add more.\n\n"
 		for i in range(skill_draft_choices.size()):
-			var s := str(skill_draft_choices[i])
+			var s = str(skill_draft_choices[i])
 			var d = SKILLS[s]
 			sd += str(i + 1) + ") " + s + "\n" + str(d.get("desc", "")) + "\nTags: " + ", ".join(d.get("tags", [])) + "\n\n"
 		return sd
 	if choice_mode == "passive":
-		var t := "CHOOSE PASSIVE  |  Points left: " + str(passive_points) + "\n\n"
+		var t = "CHOOSE PASSIVE  |  Points left: " + str(passive_points) + "\n\n"
 		for i in range(passive_choices.size()):
 			var p = passive_choices[i]
 			t += str(i + 1) + ") " + p["name"] + "\n" + p["desc"] + "\n\n"
 		return t
 	elif choice_mode == "reward":
-		var tr := "ROOM CLEARED: CHOOSE REWARD\n\n"
+		var tr = "ROOM CLEARED: CHOOSE REWARD\n\n"
 		for i in range(reward_choices.size()):
 			var c = reward_choices[i]
 			tr += str(i + 1) + ") " + c["name"] + "\n" + c["desc"] + "\n\n"
 		return tr
 	elif choice_mode == "route":
-		var rr := "CHOOSE NEXT ROOM\n\n"
+		var rr = "CHOOSE NEXT ROOM\n\n"
 		for i in range(route_choices.size()):
 			var c2 = route_choices[i]
 			rr += str(i + 1) + ") " + c2["name"] + "\n" + c2["desc"] + "\n\n"
@@ -1551,7 +1584,7 @@ func _draw() -> void:
 		draw_arc(tr["pos"], tr["radius"], 0, TAU, 32, Color(tc.r, tc.g, tc.b, 0.7), 2.0)
 	for ch in chests:
 		var cp: Vector2 = ch["pos"]
-		var cc := Color(1.0, 0.78, 0.25) if ch.get("good", false) else Color(0.62, 0.48, 0.28)
+		var cc = Color(1.0, 0.78, 0.25) if ch.get("good", false) else Color(0.62, 0.48, 0.28)
 		draw_rect(Rect2(cp - Vector2(15, 10), Vector2(30, 20)), cc, true)
 		draw_rect(Rect2(cp - Vector2(15, 10), Vector2(30, 20)), Color(0.08, 0.05, 0.02), false, 2.0)
 
@@ -1562,13 +1595,13 @@ func _draw() -> void:
 
 	for l in loot:
 		var item = l["item"]
-		var c2 := rarity_color(item["rarity"])
+		var c2 = rarity_color(item["rarity"])
 		var p: Vector2 = l["pos"]
 		draw_colored_polygon([p + Vector2(0, -11), p + Vector2(11, 0), p + Vector2(0, 11), p + Vector2(-11, 0)], c2)
 		draw_circle(p, 16.0, Color(c2.r, c2.g, c2.b, 0.16))
 
 	for p2 in projectiles:
-		var pc := zone_color(p2["tags"])
+		var pc = zone_color(p2["tags"])
 		draw_circle(p2["pos"], p2["radius"], Color(pc.r, pc.g, pc.b, 0.92))
 		draw_circle(p2["pos"], p2["radius"] + 5.0, Color(pc.r, pc.g, pc.b, 0.20))
 	for ep in enemy_projectiles:
@@ -1576,7 +1609,7 @@ func _draw() -> void:
 		draw_circle(ep["pos"], ep["radius"] + 4.0, Color(ep["color"].r, ep["color"].g, ep["color"].b, 0.18))
 
 	for m in minions:
-		var mc := Color(1.0, 0.15, 0.20) if str(m.get("kind", "bone")) == "blood" else Color(0.63, 0.88, 1.0)
+		var mc = Color(1.0, 0.15, 0.20) if str(m.get("kind", "bone")) == "blood" else Color(0.63, 0.88, 1.0)
 		draw_circle(m["pos"], 8.0, mc)
 		draw_circle(m["pos"], 14.0, Color(mc.r, mc.g, mc.b, 0.16))
 
@@ -1587,15 +1620,15 @@ func _draw() -> void:
 			c3 = Color(0.55, 0.85, 1.0)
 		draw_circle(e["pos"], e["radius"], c3)
 		draw_arc(e["pos"], e["radius"] + 2.0, 0, TAU, 30, Color(0.05, 0.04, 0.05), 2.0)
-		var hp_w := e["radius"] * 2.2
-		var hp_pct := clamp(e["hp"] / e["max_hp"], 0.0, 1.0)
+		var hp_w: float = e["radius"] * 2.2
+		var hp_pct = clamp(e["hp"] / e["max_hp"], 0.0, 1.0)
 		draw_rect(Rect2(e["pos"] + Vector2(-hp_w * 0.5, -e["radius"] - 14), Vector2(hp_w, 4)), Color(0.12, 0.05, 0.05), true)
 		draw_rect(Rect2(e["pos"] + Vector2(-hp_w * 0.5, -e["radius"] - 14), Vector2(hp_w * hp_pct, 4)), Color(0.86, 0.12, 0.10), true)
 		_draw_status_pips(e)
 
 	# Player
-	var aim := aim_dir()
-	var pc_player := Color(0.38, 0.72, 1.0) if invuln_time <= 0.0 else Color(0.82, 0.92, 1.0)
+	var aim = aim_dir()
+	var pc_player = Color(0.38, 0.72, 1.0) if invuln_time <= 0.0 else Color(0.82, 0.92, 1.0)
 	draw_circle(player_pos, player_radius, pc_player)
 	draw_circle(player_pos, player_radius + 5.0, Color(pc_player.r, pc_player.g, pc_player.b, 0.17))
 	draw_line(player_pos, player_pos + aim * 38.0, Color(1.0, 0.94, 0.55), 3.0)
@@ -1603,9 +1636,9 @@ func _draw() -> void:
 		draw_arc(player_pos, 28.0, 0, TAU, 48, Color(1.0, 0.93, 0.24, 0.9), 2.0)
 
 	# Floating text uses default theme font.
-	var font := ThemeDB.get_fallback_font()
+	var font = ThemeDB.get_fallback_font()
 	for ft in floating_text:
-		var alpha := clamp(float(ft["life"]) / 0.75, 0.0, 1.0)
+		var alpha = clamp(float(ft["life"]) / 0.75, 0.0, 1.0)
 		var col: Color = ft["color"]
 		col.a = alpha
 		draw_string(font, ft["pos"], ft["text"], HORIZONTAL_ALIGNMENT_CENTER, 120, 14, col)
@@ -1628,11 +1661,11 @@ func get_selected_skill_name() -> String:
 func respec_all_trees() -> void:
 	if run_state == "reward":
 		passive_returns_to_route = true
-	var refunded_passives := owned_passives.size()
+	var refunded_passives = owned_passives.size()
 	passive_points += refunded_passives
 	owned_passives.clear()
 	for s in owned_skill_nodes.keys():
-		var refund := owned_skill_nodes[s].size()
+		var refund: int = owned_skill_nodes[s].size()
 		skill_points[s] = int(skill_points.get(s, 0)) + refund
 		owned_skill_nodes[s].clear()
 	open_panel = "guide"
@@ -1642,7 +1675,7 @@ func respec_all_trees() -> void:
 		start_passive_choice()
 
 func guide_text(stats: Dictionary) -> String:
-	var t := "PATCH 003 GUIDE / CLEANUP NOTES\n"
+	var t = "PATCH 003 GUIDE / CLEANUP NOTES\n"
 	t += "Run goal: start almost empty, draft 2 skills, then push 1-2 favorites into absurd chain builds over a 16-depth contract.\n\n"
 	t += "Core loop: clear room -> choose reward -> choose next route. A full tuned run target is 20-30 minutes.\n\n"
 	t += "Build engine: skills have tags. Items, passives, and skill nodes add flags. Flags create chains like Fireball -> Storm Lance -> Frost Nova -> Fireball, or Rift -> Trap -> Fireball.\n\n"
@@ -1656,7 +1689,7 @@ func guide_text(stats: Dictionary) -> String:
 	return t
 
 func inventory_text(stats: Dictionary) -> String:
-	var t := "INVENTORY / EQUIP TEST\n"
+	var t = "INVENTORY / EQUIP TEST\n"
 	t += "Press 1-6 to equip an inventory item. Ground items still use E.\n\n"
 	if inventory.size() == 0:
 		t += "Inventory empty. Open chests, kill elites, or press F for a test drop.\n"
@@ -1674,21 +1707,21 @@ func inventory_text(stats: Dictionary) -> String:
 func skill_tree_text(stats: Dictionary) -> String:
 	if active_skills.size() == 0:
 		return "SKILL TREE\nNo skills learned yet. Choose a starting Skill Draft first.\n"
-	var skill_name := active_skills[selected_skill]
-	var t := "SKILL TREE: " + skill_name + "\n"
+	var skill_name = active_skills[selected_skill]
+	var t = "SKILL TREE: " + skill_name + "\n"
 	t += "Points: " + str(skill_points.get(skill_name, 0)) + " | XP " + str(int(skill_xp.get(skill_name, 0.0))) + "/" + str(int(skill_xp_next.get(skill_name, 55.0))) + "\n"
 	t += "Press 1-9 to unlock a listed node. Select skill with 1-6 when another panel is open or after leaving this panel.\n\n"
 	var nodes = SKILL_TREE_NODES[skill_name]
 	for i in range(nodes.size()):
 		var n = nodes[i]
-		var owned := owned_skill_nodes[skill_name].has(n["id"])
+		var owned = owned_skill_nodes[skill_name].has(n["id"])
 		t += str(i + 1) + ") " + ("[OWNED] " if owned else "") + n["name"] + "\n"
 		t += "   " + n["desc"] + "\n"
 	t += "\nCurrent skill flags: " + ", ".join(owned_skill_nodes[skill_name]) + "\n"
 	return t
 
 func dungeon_text(stats: Dictionary) -> String:
-	var t := "DUNGEON CONTRACT\n"
+	var t = "DUNGEON CONTRACT\n"
 	t += "Depth " + str(run_depth) + "/" + str(max_depth) + " | Room " + str(room_index) + " | Cleared " + str(rooms_cleared) + "\n"
 	t += "Current: " + str(current_room.get("name", current_room.get("type", "Combat"))) + "\n"
 	t += "Biome: " + str(current_room.get("biome", "Ash Crypt")) + " | Threat x" + str(snapped(float(current_room.get("threat", 1.0)), 0.01)) + "\n"
@@ -1753,7 +1786,7 @@ func equip_inventory_index(idx: int) -> void:
 	inventory.remove_at(idx)
 
 func equip_item_direct(item: Dictionary) -> void:
-	var slot := str(item["slot"])
+	var slot = str(item["slot"])
 	if slot == "ring":
 		if equipped["ring1"] == null:
 			equipped["ring1"] = item
@@ -1764,14 +1797,14 @@ func equip_item_direct(item: Dictionary) -> void:
 	else:
 		equipped[slot] = item
 	log_msg("Equipped: " + item["name"] + " [" + slot + "]")
-	var stats := get_stats()
+	var stats = get_stats()
 	player_hp = min(player_hp, stats["max_hp"])
 	player_mana = min(player_mana, stats["max_mana"])
 
 func open_chest(idx: int) -> void:
 	if idx < 0 or idx >= chests.size(): return
 	var chest = chests[idx]
-	var drops := 2 if chest.get("good", false) else 1
+	var drops = 2 if chest.get("good", false) else 1
 	for i in range(drops):
 		_drop_item(chest["pos"] + Vector2(rng.randf_range(-32,32), rng.randf_range(-20,20)), chest.get("good", false))
 	chests.remove_at(idx)
@@ -1781,7 +1814,7 @@ func spawn_chest(pos: Vector2, good: bool) -> void:
 	chests.append({"pos": clamp_to_arena(pos, 30.0), "good": good})
 
 func place_blade_trap(pos: Vector2, damage: float, tags: Array, stats: Dictionary, scale: float) -> void:
-	var radius := 48.0 + stats.get("trap_radius", 0.0)
+	var radius = 48.0 + stats.get("trap_radius", 0.0)
 	traps.append({"pos": clamp_to_arena(pos, radius), "radius": radius * scale, "damage": damage * scale, "tags": tags.duplicate(), "armed": true, "life": 8.0, "owner":"player", "arm_time": 0.18, "color": Color(1.0, 0.78, 0.28, 0.48)})
 	if has_flag(stats, "double_trap") and scale >= 1.0:
 		traps.append({"pos": clamp_to_arena(player_pos - aim_dir() * 54.0, radius), "radius": radius * 0.62, "damage": damage * 0.62, "tags": tags.duplicate(), "armed": true, "life": 6.0, "owner":"player", "arm_time": 0.25, "color": Color(1.0, 0.78, 0.28, 0.34)})
@@ -1806,32 +1839,32 @@ func _update_room_hazards(delta: float) -> void:
 				tr["life"] = 0.0
 
 func generate_room_layout(route: Dictionary) -> void:
-	var biome := str(route.get("biome", "Ash Crypt"))
+	var biome = str(route.get("biome", "Ash Crypt"))
 	var base_color: Color = ROOM_BIOMES.get(biome, ROOM_BIOMES["Ash Crypt"])["color"]
-	var obstacle_count := 3 + rng.randi_range(0, 3) + int(run_depth / 3)
+	var obstacle_count = 3 + rng.randi_range(0, 3) + int(run_depth / 3)
 	if route.get("type", "Combat") == "Boss": obstacle_count = 4
 	if str(route.get("type", "Combat")) == "Treasure": obstacle_count += 1
 	for i in range(obstacle_count):
-		var w := rng.randf_range(54, 130)
-		var h := rng.randf_range(38, 104)
-		var p := Vector2(rng.randf_range(ARENA.position.x + 120, ARENA.end.x - 160), rng.randf_range(ARENA.position.y + 110, ARENA.end.y - 135))
-		var r := Rect2(p, Vector2(w, h))
+		var w = rng.randf_range(54, 130)
+		var h = rng.randf_range(38, 104)
+		var p = Vector2(rng.randf_range(ARENA.position.x + 120, ARENA.end.x - 160), rng.randf_range(ARENA.position.y + 110, ARENA.end.y - 135))
+		var r = Rect2(p, Vector2(w, h))
 		if r.grow(70).has_point(WORLD_CENTER):
 			continue
 		obstacles.append({"rect": r, "color": Color(base_color.r + 0.08, base_color.g + 0.08, base_color.b + 0.08)})
-	var trap_count := rng.randi_range(1, 3) + int(run_depth / 3)
+	var trap_count = rng.randi_range(1, 3) + int(run_depth / 3)
 	var mods: Array = route.get("mods", [])
 	if mods.has("Extra Traps") or mods.has("Tight Geometry"):
 		trap_count += 2
 	if route.get("type", "Combat") == "Boss": trap_count += 2
 	for j in range(trap_count):
-		var tp := Vector2(rng.randf_range(ARENA.position.x + 90, ARENA.end.x - 90), rng.randf_range(ARENA.position.y + 90, ARENA.end.y - 90))
+		var tp = Vector2(rng.randf_range(ARENA.position.x + 90, ARENA.end.x - 90), rng.randf_range(ARENA.position.y + 90, ARENA.end.y - 90))
 		if tp.distance_to(WORLD_CENTER) < 130.0: continue
 		traps.append({"pos": tp, "radius": rng.randf_range(24, 42), "damage": 8.0 + run_depth * 1.6, "tags": ["Trap", "Area", "Physical"], "armed": true, "life": 999.0, "owner":"room", "arm_time": 0.0, "color": Color(1.0, 0.18, 0.12, 0.34)})
 
 func enemy_pool_for_room(route: Dictionary) -> Array:
-	var pool := ["Ash Grunt", "Ash Grunt", "Bone Archer", "Cinder Spitter"]
-	var biome := str(route.get("biome", "Ash Crypt"))
+	var pool = ["Ash Grunt", "Ash Grunt", "Bone Archer", "Cinder Spitter"]
+	var biome = str(route.get("biome", "Ash Crypt"))
 	var mods: Array = route.get("mods", [])
 	if run_depth >= 2 or route.get("elite", false): pool.append("Iron Brute")
 	if biome == "Rot Garden" or mods.has("Rot Hounds"): pool.append("Rot Hound")
@@ -1841,11 +1874,11 @@ func enemy_pool_for_room(route: Dictionary) -> Array:
 	return pool
 
 func random_contract_mod() -> String:
-	var mods := ["Extra Traps", "Elite Patrol", "Tight Geometry", "Unstable Shrines", "Projectile Crossfire", "Cursed Reward", "Rot Hounds", "Armored Patrol", "Curse Pressure"]
+	var mods = ["Extra Traps", "Elite Patrol", "Tight Geometry", "Unstable Shrines", "Projectile Crossfire", "Cursed Reward", "Rot Hounds", "Armored Patrol", "Curse Pressure"]
 	return mods[rng.randi_range(0, mods.size() - 1)]
 
 func room_desc(t: String, mods: Array) -> String:
-	var d := ""
+	var d = ""
 	match t:
 		"Combat": d = "Standard encounter. Balanced XP, loot, and room pressure."
 		"Elite": d = "Harder encounter. More enemy density and better drops."
@@ -1858,20 +1891,20 @@ func room_desc(t: String, mods: Array) -> String:
 	return d + " Mods: " + (", ".join(mods) if mods.size() > 0 else "none")
 
 func resolve_obstacle_collision(pos: Vector2, radius: float) -> Vector2:
-	var out := pos
+	var out = pos
 	for ob in obstacles:
 		var r: Rect2 = ob["rect"]
-		var nearest := Vector2(clamp(out.x, r.position.x, r.end.x), clamp(out.y, r.position.y, r.end.y))
-		var delta := out - nearest
-		var dist := delta.length()
+		var nearest = Vector2(clamp(out.x, r.position.x, r.end.x), clamp(out.y, r.position.y, r.end.y))
+		var delta = out - nearest
+		var dist: float = delta.length()
 		if dist < radius and dist > 0.001:
 			out += delta.normalized() * (radius - dist + 0.5)
 		elif r.has_point(out):
-			var left := abs(out.x - r.position.x)
-			var right := abs(r.end.x - out.x)
-			var top := abs(out.y - r.position.y)
-			var bottom := abs(r.end.y - out.y)
-			var m := min(min(left, right), min(top, bottom))
+			var left = abs(out.x - r.position.x)
+			var right = abs(r.end.x - out.x)
+			var top = abs(out.y - r.position.y)
+			var bottom = abs(r.end.y - out.y)
+			var m = min(min(left, right), min(top, bottom))
 			if m == left: out.x = r.position.x - radius
 			elif m == right: out.x = r.end.x + radius
 			elif m == top: out.y = r.position.y - radius
@@ -1886,7 +1919,7 @@ func point_hits_obstacle(pos: Vector2, radius: float) -> bool:
 	return false
 
 func count_enemies_in_radius(pos: Vector2, radius: float) -> int:
-	var c := 0
+	var c = 0
 	for e in enemies:
 		if e["pos"].distance_to(pos) <= radius + e["radius"]:
 			c += 1
@@ -1898,13 +1931,13 @@ func apply_player_poison(duration: float) -> void:
 	floating("poisoned", player_pos + Vector2(0, -46), Color(0.4, 1.0, 0.3))
 
 func _draw_status_pips(e: Dictionary) -> void:
-	var offset := -18.0
+	var offset = -18.0
 	for s in e["statuses"].keys():
 		draw_circle(e["pos"] + Vector2(offset, e["radius"] + 9.0), 4.0, status_color(s))
 		offset += 10.0
 
 func aim_dir() -> Vector2:
-	var d := get_global_mouse_position() - player_pos
+	var d = get_global_mouse_position() - player_pos
 	if d.length() <= 0.01:
 		return Vector2.RIGHT
 	return d.normalized()
@@ -1953,3 +1986,587 @@ func rarity_color(r: String) -> Color:
 		"Legendary": return Color(1.0, 0.38, 0.12)
 		"Mythic": return Color(1.0, 0.22, 0.86)
 		_: return Color(1.0, 1.0, 1.0)
+
+
+# -------------------------------------------------------------------
+# Patch 004 UI rebuild bridge
+# -------------------------------------------------------------------
+
+func _setup_patch004_ui_rebuild() -> void:
+	if patch004_ui_root != null:
+		return
+
+	_patch004_hide_legacy_ui()
+
+	var ui_script = load("res://scripts/ui/MinimalHUD.gd")
+	if ui_script == null:
+		push_warning("Patch 004 UI script missing.")
+		return
+
+	patch004_ui_root = CanvasLayer.new()
+	patch004_ui_root.name = "Patch004UI"
+	patch004_ui_root.set_script(ui_script)
+	add_child(patch004_ui_root)
+
+	build_panel_visible = false
+
+
+func _patch004_hide_legacy_ui() -> void:
+	if hud_label != null:
+		hud_label.visible = false
+	if build_label != null:
+		build_label.visible = false
+	if choice_label != null:
+		choice_label.visible = false
+	if log_label != null:
+		log_label.visible = false
+	if loot_label != null:
+		loot_label.visible = false
+	if help_label != null:
+		help_label.visible = false
+
+
+func _update_patch004_ui_rebuild() -> void:
+	_patch004_hide_legacy_ui()
+
+	if patch004_ui_root == null:
+		return
+	if not patch004_ui_root.has_method("update_ui"):
+		return
+
+	var stats = _patch004_collect_stats()
+	var cooldowns = {}
+	var mana_costs = {}
+
+	for skill_name in active_skills:
+		var sn = str(skill_name)
+		cooldowns[sn] = float(skill_cd.get(sn, 0.0))
+		if SKILLS.has(sn):
+			mana_costs[sn] = float(SKILLS[sn].get("cost", 0.0))
+		else:
+			mana_costs[sn] = 0.0
+
+	var choice_payload = _patch004_choice_payload()
+	var notice = ""
+	if message_log.size() > patch004_last_notice_count:
+		patch004_last_notice_count = message_log.size()
+		var latest = str(message_log[message_log.size() - 1])
+		if latest.find("Patch 003 loaded") == -1:
+			notice = latest
+
+	var data = {
+		"hp": player_hp,
+		"hp_max": float(stats.get("max_hp", 120.0)),
+		"mana": player_mana,
+		"mana_max": float(stats.get("max_mana", 100.0)),
+		"level": level,
+		"depth": run_depth,
+		"max_depth": max_depth,
+		"passive_points": passive_points,
+		"room_type": str(current_room.get("type", "Combat")) if typeof(current_room) == TYPE_DICTIONARY else "Combat",
+		"room_biome": str(current_room.get("biome", "Unknown")) if typeof(current_room) == TYPE_DICTIONARY else "Unknown",
+		"enemies": enemies.size(),
+		"active_skills": active_skills,
+		"selected_skill": selected_skill,
+		"cooldowns": cooldowns,
+		"mana_costs": mana_costs,
+		"open_panel": open_panel,
+		"drawer_visible": build_panel_visible,
+		"interact_hint": _patch004_interact_hint(),
+		"build_summary": _patch004_build_summary(stats),
+		"inventory_summary": _patch004_inventory_summary(),
+		"skilltree_summary": _patch004_skilltree_summary(),
+		"dungeon_summary": _patch004_dungeon_summary(),
+		"choice_active": bool(choice_payload.get("active", false)),
+		"choice_title": str(choice_payload.get("title", "")),
+		"choice_subtitle": str(choice_payload.get("subtitle", "")),
+		"choices": choice_payload.get("choices", []),
+		"notice": notice
+	}
+
+	patch004_ui_root.call("update_ui", data)
+
+
+func _patch004_collect_stats() -> Dictionary:
+	if has_method("build_stats"):
+		return call("build_stats")
+	if has_method("get_player_stats"):
+		return call("get_player_stats")
+	if has_method("combined_stats"):
+		return call("combined_stats")
+
+	var out = {
+		"max_hp": 120.0,
+		"max_mana": 100.0,
+		"global_damage": 0.0,
+		"fire_damage": 0.0,
+		"cold_damage": 0.0,
+		"lightning_damage": 0.0,
+		"void_damage": 0.0,
+		"trap_damage": 0.0,
+		"melee_damage": 0.0,
+		"flags": []
+	}
+
+	for slot_name in equipped.keys():
+		var item = equipped.get(slot_name)
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		var item_stats = item.get("stats", {})
+		for k in item_stats.keys():
+			if not out.has(k):
+				out[k] = 0.0
+			out[k] = float(out.get(k, 0.0)) + float(item_stats.get(k, 0.0))
+		for f in item.get("flags", []):
+			if not out["flags"].has(f):
+				out["flags"].append(f)
+
+	return out
+
+
+func _patch004_interact_hint() -> String:
+	if nearest_loot_index >= 0 and nearest_loot_index < loot.size():
+		return "E  Pick up"
+	if chests.size() > 0:
+		for chest in chests:
+			if typeof(chest) == TYPE_DICTIONARY:
+				var cpos = chest.get("pos", null)
+				if cpos != null and player_pos.distance_to(cpos) < 48.0:
+					return "E  Open chest"
+	return ""
+
+
+func _patch004_build_summary(stats: Dictionary) -> String:
+	var lines = []
+	lines.append("Build")
+	lines.append("")
+	lines.append("Level " + str(level) + "  ·  Kills " + str(kills) + "  ·  Gold " + str(gold))
+	lines.append("Depth " + str(run_depth) + "/" + str(max_depth))
+	lines.append("")
+
+	if active_skills.size() > 0:
+		lines.append("Skills")
+		for skill_name in active_skills:
+			lines.append("• " + str(skill_name))
+	else:
+		lines.append("No skills drafted yet.")
+
+	lines.append("")
+	lines.append("Engines")
+	var flags = stats.get("flags", [])
+	var shown = 0
+	for f in flags:
+		var fs = str(f)
+		if fs.find("cascade") != -1 or fs.find("calls") != -1 or fs.find("frostfire") != -1 or fs.find("death") != -1 or fs.find("chain") != -1 or fs.find("poison") != -1 or fs.find("bleed") != -1:
+			lines.append("• " + fs)
+			shown += 1
+			if shown >= 8:
+				break
+	if shown == 0:
+		lines.append("• No major engine yet")
+
+	lines.append("")
+	lines.append("Scaling")
+	lines.append("• Global  " + str(snapped(float(stats.get("global_damage", 0.0)) * 100.0, 0.1)) + "%")
+	lines.append("• Fire    " + str(snapped(float(stats.get("fire_damage", 0.0)) * 100.0, 0.1)) + "%")
+	lines.append("• Cold    " + str(snapped(float(stats.get("cold_damage", 0.0)) * 100.0, 0.1)) + "%")
+	lines.append("• Lightning " + str(snapped(float(stats.get("lightning_damage", 0.0)) * 100.0, 0.1)) + "%")
+	lines.append("• Void    " + str(snapped(float(stats.get("void_damage", 0.0)) * 100.0, 0.1)) + "%")
+	lines.append("")
+	lines.append("P build  ·  I inventory  ·  K skill tree  ·  M dungeon")
+
+	return "\n".join(lines)
+
+
+func _patch004_inventory_summary() -> String:
+	var lines = []
+	lines.append("Inventory")
+	lines.append("")
+	lines.append("Equipped")
+	for slot_name in equipped.keys():
+		var item = equipped.get(slot_name)
+		var item_name = "empty"
+		if typeof(item) == TYPE_DICTIONARY:
+			item_name = str(item.get("name", "unknown"))
+		lines.append("• " + str(slot_name) + ": " + item_name)
+
+	lines.append("")
+	lines.append("Backpack")
+	if inventory.size() == 0:
+		lines.append("• empty")
+	else:
+		var idx = 1
+		for item in inventory:
+			if typeof(item) == TYPE_DICTIONARY:
+				lines.append(str(idx) + ". " + str(item.get("name", "unknown")) + " [" + str(item.get("rarity", "")) + "]")
+				idx += 1
+				if idx > 9:
+					lines.append("...")
+					break
+	return "\n".join(lines)
+
+
+func _patch004_skilltree_summary() -> String:
+	var lines = []
+	lines.append("Skill Tree")
+	lines.append("")
+
+	if active_skills.size() == 0:
+		lines.append("Choose a skill draft first.")
+		return "\n".join(lines)
+
+	var idx = clamp(selected_skill, 0, active_skills.size() - 1)
+	var skill_name = str(active_skills[idx])
+	var owned = owned_skill_nodes.get(skill_name, [])
+
+	lines.append("Selected: " + skill_name)
+	lines.append("Points: " + str(skill_points.get(skill_name, 0)))
+	lines.append("XP: " + str(int(float(skill_xp.get(skill_name, 0.0)))) + " / " + str(int(float(skill_xp_next.get(skill_name, 55.0)))))
+	lines.append("")
+	lines.append("Owned Nodes")
+	if owned.size() == 0:
+		lines.append("• none")
+	else:
+		for node in owned:
+			lines.append("• " + str(node))
+
+	lines.append("")
+	lines.append("O  refund all")
+	return "\n".join(lines)
+
+
+func _patch004_dungeon_summary() -> String:
+	var lines = []
+	lines.append("Dungeon")
+	lines.append("")
+	lines.append("Run state: " + str(run_state))
+	lines.append("Depth: " + str(run_depth) + "/" + str(max_depth))
+	lines.append("Rooms cleared: " + str(rooms_cleared))
+	lines.append("Kills: " + str(kills))
+	lines.append("")
+
+	if typeof(current_room) == TYPE_DICTIONARY:
+		lines.append("Current Room")
+		lines.append("• Type: " + str(current_room.get("type", "Combat")))
+		lines.append("• Biome: " + str(current_room.get("biome", "Unknown")))
+		lines.append("• Threat: " + str(current_room.get("threat", 1.0)))
+		var mods = current_room.get("mods", [])
+		if mods.size() == 0:
+			lines.append("• Mods: none")
+		else:
+			lines.append("• Mods: " + ", ".join(mods))
+	return "\n".join(lines)
+
+
+func _patch004_choice_payload() -> Dictionary:
+	var payload = {"active": false, "title": "", "subtitle": "", "choices": []}
+
+	if starter_picks_remaining > 0 and skill_draft_choices.size() > 0:
+		payload["active"] = true
+		payload["title"] = "SKILL DRAFT"
+		payload["subtitle"] = "Choose " + str(starter_picks_remaining) + " starting skill(s) with number keys"
+		var arr = []
+		for skill_name in skill_draft_choices:
+			arr.append({"name": str(skill_name), "desc": str(SKILLS.get(str(skill_name), {}).get("desc", ""))})
+		payload["choices"] = arr
+		return payload
+
+	if choice_mode == "reward" and reward_choices.size() > 0:
+		payload["active"] = true
+		payload["title"] = "REWARD"
+		payload["subtitle"] = "Choose one reward"
+		var arr2 = []
+		for c in reward_choices:
+			if typeof(c) == TYPE_DICTIONARY:
+				arr2.append({"name": str(c.get("name", "Reward")), "desc": str(c.get("desc", ""))})
+		payload["choices"] = arr2
+		return payload
+
+	if choice_mode == "route" and route_choices.size() > 0:
+		payload["active"] = true
+		payload["title"] = "ROUTE"
+		payload["subtitle"] = "Choose the next room"
+		var arr3 = []
+		for c in route_choices:
+			if typeof(c) == TYPE_DICTIONARY:
+				var name_text = str(c.get("type", "Room"))
+				if c.has("biome"):
+					name_text += " · " + str(c.get("biome", ""))
+				var desc_text = "Threat " + str(c.get("threat", 1.0))
+				if c.has("mods"):
+					var mods = c.get("mods", [])
+					if mods.size() > 0:
+						desc_text += " · " + ", ".join(mods)
+				arr3.append({"name": name_text, "desc": desc_text})
+		payload["choices"] = arr3
+		return payload
+
+	if choice_mode == "passive" and passive_choices.size() > 0:
+		payload["active"] = true
+		payload["title"] = "PASSIVE SHRINE"
+		payload["subtitle"] = "Choose one passive"
+		var arr4 = []
+		for c in passive_choices:
+			if typeof(c) == TYPE_DICTIONARY:
+				arr4.append({"name": str(c.get("name", "Passive")), "desc": str(c.get("desc", ""))})
+		payload["choices"] = arr4
+		return payload
+
+	return payload
+
+
+# -------------------------------------------------------------------
+# Patch 005: Combat Readability + Skill Feel
+# -------------------------------------------------------------------
+
+func _setup_patch005_combat_readability() -> void:
+	if patch005_visual_layer != null:
+		return
+
+	var visual_script = load("res://scripts/visuals/CombatReadabilityLayer.gd")
+	if visual_script == null:
+		push_warning("Patch 005 combat readability layer missing.")
+		return
+
+	patch005_visual_layer = Control.new()
+	patch005_visual_layer.name = "Patch005CombatReadabilityLayer"
+	patch005_visual_layer.set_script(visual_script)
+	add_child(patch005_visual_layer)
+
+	patch005_last_projectile_count = projectiles.size()
+	patch005_last_zone_count = zones.size()
+	patch005_last_trap_count = traps.size()
+	patch005_last_loot_count = loot.size()
+	patch005_last_enemy_count = enemies.size()
+	patch005_last_hp = player_hp
+
+
+func _patch005_combat_readability_process(delta) -> void:
+	if patch005_visual_layer == null:
+		return
+
+	_patch005_detect_visual_events()
+	_patch005_update_fx(delta)
+
+	patch005_shake = max(0.0, patch005_shake - delta * 26.0)
+
+	var selected_name = ""
+	if active_skills.size() > 0 and selected_skill >= 0 and selected_skill < active_skills.size():
+		selected_name = str(active_skills[selected_skill])
+
+	var data = {
+		"arena": ARENA,
+		"player_pos": player_pos,
+		"aim_pos": get_global_mouse_position(),
+		"hp": player_hp,
+		"hp_max": _patch005_max_hp(),
+		"dash_cooldown": dash_cooldown,
+		"selected_skill_name": selected_name,
+		"combat_active": run_state == "combat" and not paused_by_choice,
+		"current_room": current_room,
+		"enemies": _patch005_enemy_visuals(),
+		"projectiles": projectiles,
+		"enemy_projectiles": enemy_projectiles,
+		"zones": zones,
+		"traps": traps,
+		"loot": loot,
+		"chests": chests,
+		"fx": patch005_fx,
+		"shake": patch005_shake
+	}
+
+	patch005_visual_layer.call("set_visual_data", data)
+
+
+func _patch005_detect_visual_events() -> void:
+	if player_hp < patch005_last_hp:
+		patch005_shake = max(patch005_shake, 7.0)
+		_patch005_add_fx(player_pos, 44.0, Color(1.0, 0.15, 0.08, 0.9), "burst")
+	patch005_last_hp = player_hp
+
+	if enemies.size() < patch005_last_enemy_count:
+		patch005_shake = max(patch005_shake, 3.5)
+		_patch005_add_fx(player_pos + Vector2(randf_range(-120, 120), randf_range(-80, 80)), 58.0, Color(1.0, 0.72, 0.30, 0.8), "burst")
+	patch005_last_enemy_count = enemies.size()
+
+	if projectiles.size() > patch005_last_projectile_count:
+		var start_index = patch005_last_projectile_count
+		while start_index < projectiles.size():
+			var p = projectiles[start_index]
+			if typeof(p) == TYPE_DICTIONARY:
+				var pos = p.get("pos", player_pos)
+				var tags = p.get("tags", [])
+				_patch005_add_fx(pos, 34.0, _patch005_color_from_tags(tags), "line", p.get("vel", Vector2.RIGHT))
+			start_index += 1
+	patch005_last_projectile_count = projectiles.size()
+
+	if zones.size() > patch005_last_zone_count:
+		var zi = patch005_last_zone_count
+		while zi < zones.size():
+			var z = zones[zi]
+			if typeof(z) == TYPE_DICTIONARY:
+				_patch005_add_fx(z.get("pos", player_pos), float(z.get("radius", 70.0)), _patch005_color_from_tags(z.get("tags", [])), "burst")
+			zi += 1
+	patch005_last_zone_count = zones.size()
+
+	if traps.size() > patch005_last_trap_count:
+		var ti = patch005_last_trap_count
+		while ti < traps.size():
+			var tr = traps[ti]
+			if typeof(tr) == TYPE_DICTIONARY:
+				_patch005_add_fx(tr.get("pos", player_pos), 46.0, Color(1.0, 0.74, 0.26, 0.9), "pulse")
+			ti += 1
+	patch005_last_trap_count = traps.size()
+
+	if loot.size() > patch005_last_loot_count:
+		var li = patch005_last_loot_count
+		while li < loot.size():
+			var l = loot[li]
+			if typeof(l) == TYPE_DICTIONARY:
+				_patch005_add_fx(l.get("pos", player_pos), 38.0, Color(1.0, 0.84, 0.34, 0.9), "burst")
+			li += 1
+	patch005_last_loot_count = loot.size()
+
+
+func _patch005_update_fx(delta: float) -> void:
+	var kept = []
+	for f in patch005_fx:
+		if typeof(f) != TYPE_DICTIONARY:
+			continue
+		f["life"] = float(f.get("life", 0.0)) - delta
+		if float(f.get("life", 0.0)) > 0.0:
+			kept.append(f)
+	patch005_fx = kept
+
+
+func _patch005_add_fx(pos: Vector2, radius: float, color: Color, kind: String, dir = Vector2.RIGHT) -> void:
+	patch005_fx.append({
+		"pos": pos,
+		"radius": radius,
+		"color": color,
+		"kind": kind,
+		"dir": dir,
+		"angle": dir.angle() if typeof(dir) == TYPE_VECTOR2 else 0.0,
+		"life": 0.42,
+		"max_life": 0.42
+	})
+
+
+func _patch005_enemy_visuals() -> Array:
+	var out = []
+	for e in enemies:
+		if typeof(e) != TYPE_DICTIONARY:
+			continue
+		var copy = e.duplicate(true)
+		var kind = str(copy.get("type", copy.get("name", "")))
+		if kind == "" and copy.has("enemy_type"):
+			kind = str(copy.get("enemy_type"))
+		if kind == "":
+			kind = _patch005_guess_enemy_kind(copy)
+		copy["type"] = kind
+		if not copy.has("role"):
+			copy["role"] = _patch005_role_for_enemy(kind)
+		out.append(copy)
+	return out
+
+
+func _patch005_guess_enemy_kind(e: Dictionary) -> String:
+	var r = float(e.get("radius", 16.0))
+	var hp = float(e.get("hp", 50.0))
+	if r >= 32.0 or hp > 400.0:
+		return "Vault Warden"
+	if r >= 22.0 or hp > 115.0:
+		return "Iron Brute"
+	if r <= 13.5:
+		return "Rot Hound"
+	return "Ash Grunt"
+
+
+func _patch005_role_for_enemy(kind: String) -> String:
+	var k = kind.to_lower()
+	if k.find("warden") != -1:
+		return "boss"
+	if k.find("archer") != -1:
+		return "shooter"
+	if k.find("spitter") != -1:
+		return "spitter"
+	if k.find("hound") != -1:
+		return "hound"
+	if k.find("brute") != -1 or k.find("knight") != -1:
+		return "brute"
+	if k.find("acolyte") != -1:
+		return "acolyte"
+	return "chaser"
+
+
+func _patch005_color_from_tags(tags: Array) -> Color:
+	for tag in tags:
+		var s = str(tag)
+		if s == "Fire" or s == "Burn":
+			return Color(1.0, 0.34, 0.10, 0.9)
+		if s == "Cold" or s == "Freeze":
+			return Color(0.42, 0.82, 1.0, 0.9)
+		if s == "Lightning" or s == "Chain":
+			return Color(0.76, 0.90, 1.0, 0.9)
+		if s == "Void" or s == "Curse":
+			return Color(0.72, 0.36, 1.0, 0.9)
+		if s == "Trap":
+			return Color(0.95, 0.72, 0.30, 0.9)
+		if s == "Slash" or s == "Physical" or s == "Melee":
+			return Color(1.0, 0.82, 0.50, 0.9)
+	return Color(0.95, 0.88, 0.72, 0.9)
+
+
+func _patch005_max_hp() -> float:
+	if has_method("build_stats"):
+		var stats = call("build_stats")
+		if typeof(stats) == TYPE_DICTIONARY:
+			return max(1.0, float(stats.get("max_hp", 120.0)))
+	if has_method("get_player_stats"):
+		var stats2 = call("get_player_stats")
+		if typeof(stats2) == TYPE_DICTIONARY:
+			return max(1.0, float(stats2.get("max_hp", 120.0)))
+	return 120.0
+
+
+# -------------------------------------------------------------------
+# Patch 007: Persistent RPG Foundation
+# -------------------------------------------------------------------
+
+func _setup_patch007_persistent_rpg_foundation() -> void:
+	if patch007_persistent_rpg_director != null:
+		return
+
+	# Patch 006 random mutation director is intentionally disabled if it exists.
+	var old_patch006 = get_node_or_null("Patch006CombatBuildDirector")
+	if old_patch006 != null:
+		old_patch006.queue_free()
+
+	var director_script = load("res://scripts/meta/PersistentRPGDirector.gd")
+	if director_script == null:
+		push_warning("Patch 007 persistent RPG director missing.")
+		return
+
+	patch007_persistent_rpg_director = CanvasLayer.new()
+	patch007_persistent_rpg_director.name = "Patch007PersistentRPGDirector"
+	patch007_persistent_rpg_director.set_script(director_script)
+	add_child(patch007_persistent_rpg_director)
+
+
+# -------------------------------------------------------------------
+# Patch 008: Hub + Activity Loop
+# -------------------------------------------------------------------
+
+func _setup_patch008_hub_activity_loop() -> void:
+	if patch008_hub_director != null:
+		return
+
+	var hub_script = load("res://scripts/hub/HubDirector.gd")
+	if hub_script == null:
+		push_warning("Patch 008 hub director missing.")
+		return
+
+	patch008_hub_director = Node2D.new()
+	patch008_hub_director.name = "Patch008HubDirector"
+	patch008_hub_director.set_script(hub_script)
+	add_child(patch008_hub_director)
