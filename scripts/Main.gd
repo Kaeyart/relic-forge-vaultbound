@@ -1,5 +1,9 @@
 extends Node2D
 
+# Patch 009 ARPG megafoundation bridge.
+var patch009_arpg_mega_director = null
+
+
 # Patch 008 hub/activity loop bridge.
 var patch008_hub_director = null
 
@@ -324,8 +328,7 @@ func _ready() -> void:
 	_setup_ui()
 	_setup_patch004_ui_rebuild()
 	_setup_patch005_combat_readability()
-	_setup_patch007_persistent_rpg_foundation()
-	_setup_patch008_hub_activity_loop()
+	_setup_patch009_arpg_megafoundation()
 	equipped["weapon"] = ITEM_POOL[0].duplicate(true)
 	_reset_run()
 	log_msg("Patch 003 loaded: cleanup, skill drafts, respec, longer route pacing, and cascade build engines are active.")
@@ -2570,3 +2573,22 @@ func _setup_patch008_hub_activity_loop() -> void:
 	patch008_hub_director.name = "Patch008HubDirector"
 	patch008_hub_director.set_script(hub_script)
 	add_child(patch008_hub_director)
+
+
+# -------------------------------------------------------------------
+# Patch 009: ARPG Megafoundation
+# -------------------------------------------------------------------
+
+func _setup_patch009_arpg_megafoundation() -> void:
+	if patch009_arpg_mega_director != null:
+		return
+
+	var arpg_script = load("res://scripts/arpg/ARPGMegaDirector.gd")
+	if arpg_script == null:
+		push_warning("Patch 009 ARPG director missing.")
+		return
+
+	patch009_arpg_mega_director = Node2D.new()
+	patch009_arpg_mega_director.name = "Patch009ARPGMegaDirector"
+	patch009_arpg_mega_director.set_script(arpg_script)
+	add_child(patch009_arpg_mega_director)
