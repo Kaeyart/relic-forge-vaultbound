@@ -92,26 +92,125 @@ static func draw_player(node: Node2D, state: RVGameState) -> void:
 	var hp_pct: float = clamp(state.player_hp / max(1.0, state.max_hp), 0.0, 1.0)
 	node.draw_arc(pos, 34.0, -PI * 0.5, -PI * 0.5 + TAU * hp_pct, 64, Color(0.80, 1.0, 0.62, 0.55), 3.0)
 
-
 static func draw_hud(node: Node2D, state: RVGameState, textures: Dictionary) -> void:
 	var font: Font = ThemeDB.fallback_font
-	var top: String = "Lv " + str(state.level) + "  XP " + str(int(state.xp)) + "/" + str(int(state.xp_to_next())) + "  MP " + str(state.mastery_points) + "  Gold " + str(state.gold) + "  Embers " + str(state.materials.get("embers", 0)) + "  Shards " + str(state.materials.get("shards", 0)) + "  Runes " + str(state.materials.get("runes", 0)) + "  Echo " + str(state.materials.get("echo_glass", 0))
-	node.draw_rect(Rect2(Vector2(14.0, 14.0), Vector2(1250.0, 30.0)), Color(0.018, 0.017, 0.020, 0.82), true); node.draw_string(font, Vector2(28.0, 35.0), top, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color(0.88, 0.84, 0.74))
-	var hp_pct: float = clamp(state.player_hp / max(1.0, state.max_hp), 0.0, 1.0); var mana_pct: float = clamp(state.player_mana / max(1.0, state.max_mana), 0.0, 1.0)
-	node.draw_rect(Rect2(Vector2(18.0, 620.0), Vector2(240.0, 12.0)), Color(0.08, 0.03, 0.03), true); node.draw_rect(Rect2(Vector2(18.0, 620.0), Vector2(240.0 * hp_pct, 12.0)), Color(0.90, 0.18, 0.12), true)
-	node.draw_rect(Rect2(Vector2(18.0, 640.0), Vector2(240.0, 12.0)), Color(0.03, 0.05, 0.08), true); node.draw_rect(Rect2(Vector2(18.0, 640.0), Vector2(240.0 * mana_pct, 12.0)), Color(0.25, 0.68, 1.0), true)
-	var start_x: float = 440.0
-	for i in range(6):
-		var pos: Vector2 = Vector2(start_x + float(i) * 62.0, 620.0); var selected: bool = i == state.selected_skill; var frame_color: Color = Color(1.0, 0.76, 0.35) if selected else Color(0.35, 0.32, 0.28)
-		node.draw_rect(Rect2(pos, Vector2(52.0, 52.0)), Color(0.030, 0.030, 0.036), true); node.draw_rect(Rect2(pos, Vector2(52.0, 52.0)), frame_color, false, 2.0)
-		if i < state.active_skills.size():
-			var skill: String = str(state.active_skills[i]); var col: Color = RVSkillDB.color(skill)
-			node.draw_circle(pos + Vector2(26.0, 24.0), 14.0, Color(col.r, col.g, col.b, 0.85)); node.draw_string(font, pos + Vector2(4.0, 48.0), str(i + 1), HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(0.94, 0.86, 0.68))
-	if state.prompt != "":
-		node.draw_rect(Rect2(Vector2(365.0, 675.0), Vector2(550.0, 28.0)), Color(0.018, 0.017, 0.020, 0.84), true); node.draw_string(font, Vector2(388.0, 695.0), state.prompt, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color(0.96, 0.88, 0.68))
-	if state.notice_time > 0.0:
-		node.draw_rect(Rect2(Vector2(440.0, 52.0), Vector2(400.0, 30.0)), Color(0.018, 0.017, 0.020, 0.84), true); node.draw_string(font, Vector2(465.0, 73.0), state.notice, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(1.0, 0.82, 0.44))
+	var screen_size: Vector2 = node.get_viewport_rect().size
 
+	# Compact top strip. This replaces the previous unclear top banner.
+	var top_left_rect: Rect2 = Rect2(Vector2(14.0, 12.0), Vector2(420.0, 28.0))
+	node.draw_rect(top_left_rect, Color(0.018, 0.017, 0.020, 0.78), true)
+	node.draw_rect(top_left_rect, Color(0.68, 0.52, 0.32, 0.22), false, 1.0)
+
+	var mode_text: String = "FORGEHOLD" if state.mode == "hub" else "CONTRACT DEPTH " + str(state.run_depth)
+	var top_text: String = mode_text + "  ·  Lv " + str(state.level)
+	top_text += "  XP " + str(int(state.xp)) + "/" + str(int(state.xp_to_next()))
+	top_text += "  MP " + str(state.mastery_points)
+	node.draw_string(font, Vector2(26.0, 32.0), top_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(0.88, 0.84, 0.74, 0.92))
+
+	# Small material/status row on the top-right, not a giant banner.
+	var right_text: String = "Gold " + str(state.gold)
+	right_text += "   Embers " + str(state.materials.get("embers", 0))
+	right_text += "   Shards " + str(state.materials.get("shards", 0))
+	right_text += "   Runes " + str(state.materials.get("runes", 0))
+	right_text += "   Echo " + str(state.materials.get("echo_glass", 0))
+	var right_rect: Rect2 = Rect2(Vector2(screen_size.x - 650.0, 12.0), Vector2(636.0, 28.0))
+	node.draw_rect(right_rect, Color(0.018, 0.017, 0.020, 0.68), true)
+	node.draw_rect(right_rect, Color(0.68, 0.52, 0.32, 0.18), false, 1.0)
+	node.draw_string(font, Vector2(right_rect.position.x + 14.0, 32.0), right_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(0.88, 0.84, 0.74, 0.88))
+
+	# Bottom-left HP/Mana: fill is drawn first, then frame is drawn on top.
+	# Fill proportions are intentionally inset so they stay inside the 015A frame art.
+	var bar_x: float = 16.0
+	var hp_y: float = screen_size.y - 112.0
+	var mana_y: float = screen_size.y - 76.0
+	var bar_size: Vector2 = Vector2(300.0, 75.0)
+	var fill_margin_x: float = bar_size.x * 0.165
+	var fill_margin_y: float = bar_size.y * 0.415
+	var fill_width: float = bar_size.x * 0.665
+	var fill_height: float = bar_size.y * 0.145
+
+	var hp_pct: float = clamp(state.player_hp / max(1.0, state.max_hp), 0.0, 1.0)
+	var mana_pct: float = clamp(state.player_mana / max(1.0, state.max_mana), 0.0, 1.0)
+
+	var hp_frame_rect: Rect2 = Rect2(Vector2(bar_x, hp_y), bar_size)
+	var mana_frame_rect: Rect2 = Rect2(Vector2(bar_x, mana_y), bar_size)
+	var hp_fill_bg: Rect2 = Rect2(hp_frame_rect.position + Vector2(fill_margin_x, fill_margin_y), Vector2(fill_width, fill_height))
+	var mana_fill_bg: Rect2 = Rect2(mana_frame_rect.position + Vector2(fill_margin_x, fill_margin_y), Vector2(fill_width, fill_height))
+
+	node.draw_rect(hp_fill_bg, Color(0.08, 0.025, 0.020, 0.90), true)
+	node.draw_rect(Rect2(hp_fill_bg.position, Vector2(hp_fill_bg.size.x * hp_pct, hp_fill_bg.size.y)), Color(0.88, 0.15, 0.10, 0.92), true)
+
+	node.draw_rect(mana_fill_bg, Color(0.020, 0.035, 0.07, 0.90), true)
+	node.draw_rect(Rect2(mana_fill_bg.position, Vector2(mana_fill_bg.size.x * mana_pct, mana_fill_bg.size.y)), Color(0.22, 0.62, 1.0, 0.92), true)
+
+	if textures.has("ui_health_bar_frame"):
+		node.draw_texture_rect(textures["ui_health_bar_frame"], hp_frame_rect, false, Color(1.0, 1.0, 1.0, 0.96))
+	else:
+		node.draw_rect(hp_fill_bg, Color(0.90, 0.18, 0.12, 0.82), false, 2.0)
+
+	if textures.has("ui_mana_bar_frame"):
+		node.draw_texture_rect(textures["ui_mana_bar_frame"], mana_frame_rect, false, Color(1.0, 1.0, 1.0, 0.96))
+	else:
+		node.draw_rect(mana_fill_bg, Color(0.25, 0.68, 1.0, 0.82), false, 2.0)
+
+	node.draw_string(font, hp_frame_rect.position + Vector2(67.0, 48.0), "HP " + str(int(state.player_hp)) + "/" + str(int(state.max_hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(0.92, 0.84, 0.74, 0.86))
+	node.draw_string(font, mana_frame_rect.position + Vector2(67.0, 48.0), "MP " + str(int(state.player_mana)) + "/" + str(int(state.max_mana)), HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(0.72, 0.86, 1.0, 0.86))
+
+	# Skill bar. In hub, 1-6 toggles from the full skill list. In combat, 1-6 selects active slots and Q/E cycles.
+	var slot_size: Vector2 = Vector2(58.0, 58.0)
+	var slot_gap: float = 10.0
+	var total_width: float = 6.0 * slot_size.x + 5.0 * slot_gap
+	var start_x: float = screen_size.x * 0.5 - total_width * 0.5
+	var slot_y: float = screen_size.y - 78.0
+	var all_skills: Array = ["Fireball", "Cleave", "Frost Nova", "Storm Lance", "Void Rift", "Blade Trap"]
+
+	for i in range(6):
+		var pos: Vector2 = Vector2(start_x + float(i) * (slot_size.x + slot_gap), slot_y)
+		var skill_name: String = ""
+		var slot_active: bool = false
+		var selected: bool = false
+
+		if state.mode == "hub":
+			skill_name = str(all_skills[i])
+			slot_active = state.active_skills.has(skill_name)
+			selected = slot_active
+		else:
+			if i < state.active_skills.size():
+				skill_name = str(state.active_skills[i])
+				slot_active = true
+			selected = i == state.selected_skill
+
+		var tex_key: String = "ui_skill_slot_selected" if selected else "ui_skill_slot_empty"
+		if textures.has(tex_key):
+			node.draw_texture_rect(textures[tex_key], Rect2(pos, slot_size), false, Color(1.0, 1.0, 1.0, 0.96 if slot_active else 0.42))
+		else:
+			var frame_color: Color = Color(1.0, 0.76, 0.35) if selected else Color(0.35, 0.32, 0.28)
+			node.draw_rect(Rect2(pos, slot_size), Color(0.030, 0.030, 0.036), true)
+			node.draw_rect(Rect2(pos, slot_size), frame_color, false, 2.0)
+
+		if skill_name != "":
+			var col: Color = RVSkillDB.color(skill_name)
+			var alpha: float = 0.88 if slot_active else 0.26
+			node.draw_circle(pos + slot_size * 0.5, 14.0, Color(col.r, col.g, col.b, alpha))
+			node.draw_string(font, pos + Vector2(5.0, 51.0), str(i + 1), HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(0.94, 0.86, 0.68, 0.90))
+
+	var controls: String = "Hub: 1-6 toggle skills · E interact · X secondary · F5 save" if state.mode == "hub" else "Combat: 1-6 select · Q/E cycle · LMB/Space cast · Esc hub"
+	node.draw_string(font, Vector2(start_x, slot_y - 8.0), controls, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(0.76, 0.72, 0.64, 0.72))
+
+	if state.prompt != "":
+		var prompt_rect: Rect2 = Rect2(Vector2(screen_size.x * 0.5 - 300.0, screen_size.y - 34.0), Vector2(600.0, 28.0))
+		node.draw_rect(prompt_rect, Color(0.018, 0.017, 0.020, 0.74), true)
+		node.draw_rect(prompt_rect, Color(0.68, 0.52, 0.32, 0.20), false, 1.0)
+		node.draw_string(font, prompt_rect.position + Vector2(16.0, 20.0), state.prompt, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(0.96, 0.88, 0.68, 0.92))
+
+	# Temporary notice. Smaller than before so it does not feel like a permanent top banner.
+	if state.notice_time > 0.0:
+		var notice_rect: Rect2 = Rect2(Vector2(screen_size.x * 0.5 - 220.0, 46.0), Vector2(440.0, 54.0))
+		if textures.has("ui_notice_banner"):
+			node.draw_texture_rect(textures["ui_notice_banner"], notice_rect, false, Color(1.0, 1.0, 1.0, 0.88))
+		else:
+			node.draw_rect(notice_rect, Color(0.018, 0.017, 0.020, 0.84), true)
+		node.draw_string(font, notice_rect.position + Vector2(42.0, 33.0), state.notice, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color(1.0, 0.82, 0.44, 0.96))
 
 static func draw_label(node: Node2D, pos: Vector2, text: String, color: Color) -> void:
 	var font: Font = ThemeDB.fallback_font; var size: Vector2 = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11)

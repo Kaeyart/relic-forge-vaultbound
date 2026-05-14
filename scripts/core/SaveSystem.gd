@@ -15,6 +15,8 @@ static func load_into(state: RVGameState) -> void:
 	var parsed: Variant = JSON.parse_string(file.get_as_text())
 	if typeof(parsed) == TYPE_DICTIONARY:
 		state.apply_save_dict(parsed)
+	else:
+		save(state)
 
 
 static func save(state: RVGameState) -> void:
@@ -23,3 +25,7 @@ static func save(state: RVGameState) -> void:
 		return
 
 	file.store_string(JSON.stringify(state.to_save_dict(), "\t"))
+
+
+static func save_path() -> String:
+	return SAVE_PATH
