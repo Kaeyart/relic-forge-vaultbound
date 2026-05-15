@@ -284,3 +284,34 @@ func _set_exit_visible(value: bool) -> void:
 func _clear_children(root: Node) -> void:
 	for child: Node in root.get_children():
 		child.queue_free()
+
+
+func dev_spawn_enemy(enemy_type: String, count: int = 1) -> void:
+	if state_ref == null:
+		return
+	var safe_count: int = max(1, count)
+	for i in range(safe_count):
+		var offset: Vector2 = Vector2(80.0 + float(i * 28), 0.0).rotated(float(i) * 0.65)
+		var spawn_pos: Vector2 = state_ref.player_pos + offset
+		var enemy_index: int = enemies_root.get_child_count() + i
+		var enemy_data: Dictionary = RVEnemyDB.make(enemy_type, spawn_pos, 1.0, enemy_index)
+		_spawn_enemy(enemy_data)
+	state_ref.add_notice("Dev: spawned " + str(safe_count) + " " + enemy_type)
+
+func dev_clear_enemies() -> void:
+	_clear_children(enemies_root)
+	if state_ref != null:
+		state_ref.add_notice("Dev: enemies cleared")
+
+func dev_force_reward() -> void:
+	if state_ref == null:
+		return
+	room_clear = true
+	reward_claimed = false
+	state_ref.room_reward_ready = true
+	state_ref.room_reward_claimed = false
+	state_ref.room_exit_ready = false
+	state_ref.room_objective = "Open the reward chest."
+	_set_reward_visible(true)
+	_set_exit_visible(false)
+	state_ref.add_notice("Dev: reward chest forced")

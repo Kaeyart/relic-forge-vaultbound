@@ -9,6 +9,7 @@ extends Node2D
 
 var state: RVGameState = RVGameState.new()
 var autosave_timer: float = 0.0
+var dev_tools_panel: Node = null
 
 func _ready() -> void:
 	state.init_new()
@@ -22,6 +23,7 @@ func _ready() -> void:
 	player.sync_from_state(state)
 	set_process(true)
 	set_process_unhandled_input(true)
+	_install_dev_tools()
 
 
 func _process(delta: float) -> void:
@@ -83,6 +85,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _handle_key(keycode: int) -> void:
+	if keycode == KEY_F10:
+		_toggle_dev_tools()
+		return
 	if state.panel_mode != "":
 		if keycode == KEY_ESCAPE:
 			state.panel_mode = ""
@@ -183,6 +188,32 @@ func _on_combat_finished() -> void:
 func _on_player_died() -> void:
 	_return_to_hub("You died")
 
+
+
+func _install_dev_tools() -> void:
+	if dev_tools_panel != null:
+		return
+	var scene_path: String = "res://scenes/ui/dev/DevToolsPanel.tscn"
+	if not ResourceLoader.exists(scene_path):
+		push_warning("Dev tools scene missing: " + scene_path)
+		return
+	var packed: PackedScene = load(scene_path)
+	dev_tools_panel = packed.instantiate()
+	add_child(dev_tools_panel)
+	if dev_tools_panel.has_method("bind"):
+		dev_tools_panel.call("bind", self, state, combat, hub, player, hud, panels)
+
+func _toggle_dev_tools() -> void:
+	if dev_tools_panel == null:
+		_install_dev_tools()
+	if dev_tools_panel != null and dev_tools_panel.has_method("toggle_panel"):
+		dev_tools_panel.call("toggle_panel")
+
+func dev_start_activity(activity: Dictionary) -> void:
+	_start_activity(activity)
+
+func dev_return_to_hub(message: String = "Dev: returned to hub") -> void:
+	_return_to_hub(message)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
