@@ -1,0 +1,113 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/CombatRoomRoot.gd" id="1_room"]
+[ext_resource type="Script" path="res://scripts/combat/CombatObstacle.gd" id="2_obstacle"]
+
+[node name="CombatArena" type="Node2D"]
+script = ExtResource("1_room")
+room_id = "training_room_01"
+room_name = "Training Room"
+objective_text = "Defeat all enemies, open the reward chest, then use the exit portal."
+arena_rect = Rect2(60, 84, 1160, 566)
+
+[node name="Floor" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(60, 84, 1220, 84, 1220, 650, 60, 650)
+color = Color(0.0352941, 0.027451, 0.0235294, 1)
+
+[node name="RoomBorder" type="Line2D" parent="."]
+points = PackedVector2Array(60, 84, 1220, 84, 1220, 650, 60, 650, 60, 84)
+width = 3.0
+default_color = Color(0.65, 0.38, 0.18, 0.55)
+
+[node name="SpawnPoints" type="Node2D" parent="."]
+
+[node name="PlayerSpawn" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(640, 560)
+
+[node name="EnemySpawn01" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(360, 220)
+
+[node name="EnemySpawn02" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(530, 185)
+
+[node name="EnemySpawn03" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(750, 185)
+
+[node name="EnemySpawn04" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(920, 220)
+
+[node name="EnemySpawn05" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(390, 390)
+
+[node name="EnemySpawn06" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(890, 390)
+
+[node name="EnemySpawn07" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(505, 480)
+
+[node name="EnemySpawn08" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(775, 480)
+
+[node name="Obstacles" type="Node2D" parent="."]
+
+[node name="Obstacle01" type="Node2D" parent="Obstacles"]
+position = Vector2(470, 315)
+script = ExtResource("2_obstacle")
+radius = 34.0
+
+[node name="ObstacleVisual" type="Polygon2D" parent="Obstacles/Obstacle01"]
+polygon = PackedVector2Array(-34, -18, -14, -34, 18, -28, 36, -5, 24, 25, -10, 32, -36, 12)
+color = Color(0.11, 0.09, 0.075, 1)
+
+[node name="Obstacle02" type="Node2D" parent="Obstacles"]
+position = Vector2(810, 315)
+script = ExtResource("2_obstacle")
+radius = 34.0
+
+[node name="ObstacleVisual" type="Polygon2D" parent="Obstacles/Obstacle02"]
+polygon = PackedVector2Array(-34, -18, -14, -34, 18, -28, 36, -5, 24, 25, -10, 32, -36, 12)
+color = Color(0.11, 0.09, 0.075, 1)
+
+[node name="Obstacle03" type="Node2D" parent="Obstacles"]
+position = Vector2(640, 255)
+script = ExtResource("2_obstacle")
+radius = 28.0
+
+[node name="ObstacleVisual" type="Polygon2D" parent="Obstacles/Obstacle03"]
+polygon = PackedVector2Array(-28, -14, -8, -29, 20, -21, 30, 4, 16, 24, -16, 22, -30, 2)
+color = Color(0.10, 0.08, 0.07, 1)
+
+[node name="Obstacle04" type="Node2D" parent="Obstacles"]
+position = Vector2(640, 430)
+script = ExtResource("2_obstacle")
+radius = 28.0
+
+[node name="ObstacleVisual" type="Polygon2D" parent="Obstacles/Obstacle04"]
+polygon = PackedVector2Array(-28, -14, -8, -29, 20, -21, 30, 4, 16, 24, -16, 22, -30, 2)
+color = Color(0.10, 0.08, 0.07, 1)
+
+[node name="RewardChest" type="Node2D" parent="."]
+position = Vector2(640, 285)
+visible = false
+
+[node name="ChestBase" type="Polygon2D" parent="RewardChest"]
+polygon = PackedVector2Array(-28, -14, 28, -14, 34, 12, 22, 26, -22, 26, -34, 12)
+color = Color(0.62, 0.42, 0.18, 1)
+
+[node name="ChestTrim" type="Line2D" parent="RewardChest"]
+points = PackedVector2Array(-28, -14, 28, -14, 34, 12, 22, 26, -22, 26, -34, 12, -28, -14)
+width = 3.0
+default_color = Color(1, 0.78, 0.34, 0.85)
+
+[node name="ExitPortal" type="Node2D" parent="."]
+position = Vector2(640, 600)
+visible = false
+
+[node name="PortalRing" type="Line2D" parent="ExitPortal"]
+points = PackedVector2Array(0, -34, 24, -24, 34, 0, 24, 24, 0, 34, -24, 24, -34, 0, -24, -24, 0, -34)
+width = 4.0
+default_color = Color(0.45, 0.85, 1, 0.78)
+
+[node name="PortalCore" type="Polygon2D" parent="ExitPortal"]
+polygon = PackedVector2Array(0, -24, 17, -17, 24, 0, 17, 17, 0, 24, -17, 17, -24, 0, -17, -17)
+color = Color(0.18, 0.48, 0.70, 0.35)

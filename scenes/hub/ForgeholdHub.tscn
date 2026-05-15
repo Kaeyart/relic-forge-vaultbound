@@ -56,6 +56,7 @@ vertical_alignment = 1
 [node name="InteractionArea" type="Area2D" parent="Stations/ActivityGates/DungeonRun" unique_id=1710391128]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/ActivityGates/DungeonRun/InteractionArea" unique_id=768945313]
+position = Vector2(-8, -1)
 shape = SubResource("CircleShape2D_station")
 
 [node name="MaterialHunt" type="Node2D" parent="Stations/ActivityGates" unique_id=1887502089]
@@ -86,6 +87,7 @@ vertical_alignment = 1
 [node name="InteractionArea" type="Area2D" parent="Stations/ActivityGates/MaterialHunt" unique_id=2088019509]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/ActivityGates/MaterialHunt/InteractionArea" unique_id=2124942208]
+position = Vector2(-8, -1)
 shape = SubResource("CircleShape2D_station")
 
 [node name="EliteHunt" type="Node2D" parent="Stations/ActivityGates" unique_id=1644435383]
@@ -116,6 +118,7 @@ vertical_alignment = 1
 [node name="InteractionArea" type="Area2D" parent="Stations/ActivityGates/EliteHunt" unique_id=1022592984]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/ActivityGates/EliteHunt/InteractionArea" unique_id=308733684]
+position = Vector2(-8, -1)
 shape = SubResource("CircleShape2D_station")
 
 [node name="BossTrial" type="Node2D" parent="Stations/ActivityGates" unique_id=2077247794]
@@ -146,6 +149,7 @@ vertical_alignment = 1
 [node name="InteractionArea" type="Area2D" parent="Stations/ActivityGates/BossTrial" unique_id=1560968523]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/ActivityGates/BossTrial/InteractionArea" unique_id=1337061969]
+position = Vector2(-9, 0)
 shape = SubResource("CircleShape2D_station")
 
 [node name="EndlessRift" type="Node2D" parent="Stations/ActivityGates" unique_id=1438663705]
@@ -176,6 +180,7 @@ vertical_alignment = 1
 [node name="InteractionArea" type="Area2D" parent="Stations/ActivityGates/EndlessRift" unique_id=148653855]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/ActivityGates/EndlessRift/InteractionArea" unique_id=605038120]
+position = Vector2(-9, -1)
 shape = SubResource("CircleShape2D_station")
 
 [node name="HubServices" type="Node2D" parent="Stations" unique_id=373417675]
@@ -234,6 +239,7 @@ vertical_alignment = 1
 [node name="InteractionArea" type="Area2D" parent="Stations/HubServices/Crafting" unique_id=964369442]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/HubServices/Crafting/InteractionArea" unique_id=610033939]
+position = Vector2(-6, 0)
 shape = SubResource("CircleShape2D_station")
 
 [node name="Stash" type="Node2D" parent="Stations/HubServices" unique_id=1599754842]
