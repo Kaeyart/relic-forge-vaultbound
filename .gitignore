@@ -5,3 +5,14 @@ export/
 *.bak
 *.autosave
 .clean_reinstall_backups/
+
+# Relic Forge local cleanup / generated scratch
+.local_project_backups/
+.manual_backups/
+.patch_backups/
+backups/
+*.swp
+*.swo
+*_broken_patch*.gd
+*_broken_patch*.tscn
+*.zip
