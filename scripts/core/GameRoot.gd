@@ -1,3 +1,4 @@
+class_name RVGameRoot
 extends Node2D
 
 @onready var hub: RVHubRoot = %Hub
@@ -17,12 +18,10 @@ func _ready() -> void:
 
 	combat.visible = false
 	hub.visible = true
-
 	combat.combat_finished.connect(_on_combat_finished)
 	combat.player_died.connect(_on_player_died)
 
 	player.sync_from_state(state)
-
 	set_process(true)
 	set_process_unhandled_input(true)
 
@@ -49,8 +48,11 @@ func _process(delta: float) -> void:
 
 
 func _update_player(delta: float) -> void:
-	var move: Vector2 = Vector2.ZERO
+	if state.panel_mode != "":
+		player.sync_from_state(state)
+		return
 
+	var move: Vector2 = Vector2.ZERO
 	if Input.is_key_pressed(KEY_W):
 		move.y -= 1.0
 	if Input.is_key_pressed(KEY_S):
@@ -66,10 +68,8 @@ func _update_player(delta: float) -> void:
 
 	state.player_pos.x = clamp(state.player_pos.x, 80.0, 1200.0)
 	state.player_pos.y = clamp(state.player_pos.y, 95.0, 620.0)
-
 	state.invuln = max(0.0, state.invuln - delta)
 	state.player_mana = min(state.max_mana, state.player_mana + 14.0 * delta)
-
 	player.sync_from_state(state)
 
 
@@ -81,7 +81,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event is InputEventMouseButton:
 		var mouse_event: InputEventMouseButton = event
-		if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT and state.mode == "combat":
+		if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT and state.mode == "combat" and state.panel_mode == "":
 			combat.cast_selected_skill(state, get_global_mouse_position())
 
 
@@ -90,6 +90,11 @@ func _handle_key(keycode: int) -> void:
 		if keycode == KEY_ESCAPE:
 			state.panel_mode = ""
 			return
+
+		if RVInventorySystem.handle_panel_key(state, keycode):
+			RVSaveSystem.save(state)
+			return
+
 		if RVBuildcraftSystem.handle_key(state, keycode):
 			RVSaveSystem.save(state)
 			return
@@ -111,11 +116,14 @@ func _handle_key(keycode: int) -> void:
 				var activity: Dictionary = hub.interact_primary(state)
 				if not activity.is_empty():
 					_start_activity(activity)
+				RVSaveSystem.save(state)
 			elif state.mode == "combat":
 				combat.interact(state)
+				RVSaveSystem.save(state)
 		KEY_X:
 			if state.mode == "hub" and hub.has_method("interact_secondary"):
 				hub.call("interact_secondary", state)
+				RVSaveSystem.save(state)
 		KEY_I:
 			state.toggle_panel("inventory")
 		KEY_C:
@@ -176,3 +184,8 @@ func _on_combat_finished() -> void:
 
 func _on_player_died() -> void:
 	_return_to_hub("You died")
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		RVSaveSystem.save(state)

@@ -1,11 +1,12 @@
 class_name RVGameState
 extends RefCounted
 
-const SAVE_VERSION: int = 21
+const SAVE_VERSION: int = 26
 
 var mode: String = "hub"
+var panel_mode: String = ""
+var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
-# Patch 024: scene-authored combat room flow.
 var combat_room_layout: Dictionary = {}
 var room_objective: String = ""
 var room_reward_ready: bool = false
@@ -13,9 +14,6 @@ var room_reward_claimed: bool = false
 var room_exit_ready: bool = false
 var reward_pos: Vector2 = Vector2(640.0, 285.0)
 var exit_pos: Vector2 = Vector2(640.0, 600.0)
-
-var panel_mode: String = ""
-var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 var player_pos: Vector2 = Vector2(640.0, 360.0)
 var player_radius: float = 15.0
@@ -89,6 +87,9 @@ var equipped: Dictionary = {
 
 var backpack: Array[Dictionary] = []
 var stash: Array[Dictionary] = []
+var inventory_cursor: int = 0
+var stash_cursor: int = 0
+var equipment_cursor: int = 0
 
 var current_activity: Dictionary = {}
 var room_index: int = 0
@@ -101,6 +102,7 @@ var focused_hub_station_name: String = ""
 var prompt_text: String = ""
 var notice_text: String = ""
 var notice_time: float = 0.0
+
 
 func init_new() -> void:
 	rng.randomize()
@@ -125,6 +127,9 @@ func ensure_defaults() -> void:
 		equipped["weapon"] = RVItemDB.make_starter_weapon()
 
 	selected_skill_index = clamp(selected_skill_index, 0, max(0, active_skills.size() - 1))
+	inventory_cursor = clamp(inventory_cursor, 0, max(0, backpack.size() - 1))
+	stash_cursor = clamp(stash_cursor, 0, max(0, stash.size() - 1))
+	equipment_cursor = clamp(equipment_cursor, 0, 9)
 
 
 func full_restore() -> void:
@@ -243,7 +248,10 @@ func to_save_dict() -> Dictionary:
 		"stash": stash,
 		"rooms_cleared": rooms_cleared,
 		"kills": kills,
-		"deaths": deaths
+		"deaths": deaths,
+		"inventory_cursor": inventory_cursor,
+		"stash_cursor": stash_cursor,
+		"equipment_cursor": equipment_cursor
 	}
 
 
@@ -296,6 +304,9 @@ func apply_save_dict(data: Dictionary) -> void:
 	rooms_cleared = int(data.get("rooms_cleared", rooms_cleared))
 	kills = int(data.get("kills", kills))
 	deaths = int(data.get("deaths", deaths))
+	inventory_cursor = int(data.get("inventory_cursor", inventory_cursor))
+	stash_cursor = int(data.get("stash_cursor", stash_cursor))
+	equipment_cursor = int(data.get("equipment_cursor", equipment_cursor))
 
 	ensure_defaults()
 	recompute_stats()
