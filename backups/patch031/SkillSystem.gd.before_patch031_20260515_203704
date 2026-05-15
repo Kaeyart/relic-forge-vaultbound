@@ -1,0 +1,136 @@
+class_name RVSkillSystem
+extends RefCounted
+
+static func update(state: RVGameState, delta: float) -> void:
+	for skill_name: String in state.skill_cooldowns.keys():
+		state.skill_cooldowns[skill_name] = max(0.0, float(state.skill_cooldowns[skill_name]) - delta)
+
+static func can_cast(state: RVGameState, skill_name: String) -> bool:
+	var skill_data: Dictionary = effective_skill_data(state, skill_name)
+	if skill_data.is_empty():
+		return false
+	if float(state.skill_cooldowns.get(skill_name, 0.0)) > 0.0:
+		return false
+	if state.player_mana < float(skill_data.get("mana_cost", 0.0)):
+		return false
+	return true
+
+static func pay_cost(state: RVGameState, skill_name: String) -> Dictionary:
+	var skill_data: Dictionary = effective_skill_data(state, skill_name)
+	var mana_cost: float = float(skill_data.get("mana_cost", 0.0))
+	var cooldown: float = float(skill_data.get("cooldown", 0.5))
+	state.player_mana -= mana_cost
+	state.skill_cooldowns[skill_name] = cooldown
+	return skill_data
+
+static func skill_damage(state: RVGameState, skill_name: String) -> float:
+	var skill_data: Dictionary = effective_skill_data(state, skill_name)
+	var value: float = float(skill_data.get("damage", 10.0))
+	var rank: int = int(state.skill_ranks.get(skill_name, 0))
+	value *= 1.0 + float(rank) * 0.08
+	var skill_tags: Array = skill_data.get("tags", RVSkillDB.tags(skill_name))
+	for slot_name: String in state.equipped.keys():
+		var item_value: Variant = state.equipped[slot_name]
+		if typeof(item_value) != TYPE_DICTIONARY:
+			continue
+		var item: Dictionary = item_value
+		if item.is_empty():
+			continue
+		var stats: Dictionary = item.get("stats", {})
+		value *= 1.0 + float(stats.get("Global Damage", 0.0))
+		if skill_tags.has("Spell"):
+			value *= 1.0 + float(stats.get("Spell Damage", 0.0))
+		if skill_tags.has("Melee") or skill_tags.has("Physical"):
+			value *= 1.0 + float(stats.get("Weapon Damage", 0.0))
+		for tag: Variant in skill_tags:
+			var stat_key: String = str(tag) + " Damage"
+			value *= 1.0 + float(stats.get(stat_key, 0.0))
+		value *= _unique_skill_damage_multiplier(item, skill_name)
+	for spirit_gem: Dictionary in state.spirit_gem_inventory:
+		if not bool(spirit_gem.get("enabled", false)):
+			continue
+		var spirit_data: Dictionary = RVSkillGemDB.spirit_data(str(spirit_gem.get("gem_id", "")))
+		var spirit_stats: Dictionary = spirit_data.get("stats", {})
+		value *= 1.0 + float(spirit_stats.get("Global Damage", 0.0))
+		for tag2: Variant in skill_tags:
+			var spirit_stat_key: String = str(tag2) + " Damage"
+			value *= 1.0 + float(spirit_stats.get(spirit_stat_key, 0.0))
+	return value
+
+static func effective_skill_data(state: RVGameState, skill_name: String) -> Dictionary:
+	var base_data: Dictionary = RVSkillDB.data(skill_name)
+	if base_data.is_empty():
+		return {}
+	var skill_data: Dictionary = RVSkillGemSystem.get_supported_skill_data(state, skill_name, base_data).duplicate(true)
+	var tags: Array = skill_data.get("tags", RVSkillDB.tags(skill_name)).duplicate()
+	var mana_mult: float = 1.0
+	var cooldown_mult: float = 1.0
+	var radius_mult: float = 1.0
+	for slot_name: String in state.equipped.keys():
+		var item_value: Variant = state.equipped[slot_name]
+		if typeof(item_value) != TYPE_DICTIONARY:
+			continue
+		var item: Dictionary = item_value
+		if item.is_empty():
+			continue
+		var stats: Dictionary = item.get("stats", {})
+		mana_mult *= max(0.20, 1.0 - float(stats.get("Mana Cost Reduction", 0.0)))
+		cooldown_mult *= max(0.20, 1.0 - float(stats.get("Cooldown Recovery", 0.0)))
+		if tags.has("Area"):
+			radius_mult *= 1.0 + float(stats.get("Area Size", 0.0))
+		_apply_unique_skill_data(item, skill_name, tags, skill_data)
+	skill_data["tags"] = tags
+	skill_data["mana_cost"] = max(1.0, float(skill_data.get("mana_cost", 0.0)) * mana_mult)
+	skill_data["cooldown"] = max(0.05, float(skill_data.get("cooldown", 0.2)) * cooldown_mult)
+	if skill_data.has("radius"):
+		skill_data["radius"] = float(skill_data.get("radius", 1.0)) * radius_mult
+	return skill_data
+
+static func _apply_unique_skill_data(item: Dictionary, skill_name: String, tags: Array, skill_data: Dictionary) -> void:
+	var flags: Array = item.get("flags", [])
+	if flags.has("fireball_void_conversion") and skill_name == "Fireball":
+		if not tags.has("Void"):
+			tags.append("Void")
+		skill_data["damage"] = float(skill_data.get("damage", 10.0)) * 1.16
+	if flags.has("cleave_scorches") and skill_name == "Cleave":
+		if not tags.has("Fire"):
+			tags.append("Fire")
+		if not tags.has("Area"):
+			tags.append("Area")
+		skill_data["radius"] = float(skill_data.get("radius", 70.0)) * 1.12
+	if flags.has("blade_trap_void") and skill_name == "Blade Trap":
+		if not tags.has("Void"):
+			tags.append("Void")
+		skill_data["damage"] = float(skill_data.get("damage", 10.0)) * 1.14
+	if flags.has("void_rift_bigger") and skill_name == "Void Rift":
+		skill_data["radius"] = float(skill_data.get("radius", 80.0)) * 1.35
+		skill_data["mana_cost"] = float(skill_data.get("mana_cost", 10.0)) * 1.10
+	if flags.has("storm_lance_cold_conversion") and skill_name == "Storm Lance":
+		if not tags.has("Cold"):
+			tags.append("Cold")
+		skill_data["mana_cost"] = float(skill_data.get("mana_cost", 10.0)) * 0.92
+	if flags.has("all_skills_echo"):
+		skill_data["damage"] = float(skill_data.get("damage", 10.0)) * 1.06
+
+static func _unique_skill_damage_multiplier(item: Dictionary, skill_name: String) -> float:
+	var flags: Array = item.get("flags", [])
+	var result: float = 1.0
+	if flags.has("fireball_void_conversion") and skill_name == "Fireball":
+		result *= 1.12
+	if flags.has("cleave_scorches") and skill_name == "Cleave":
+		result *= 1.10
+	if flags.has("blade_trap_void") and skill_name == "Blade Trap":
+		result *= 1.10
+	if flags.has("all_skills_echo"):
+		result *= 1.04
+	return result
+
+static func toggle_skill_loadout(state: RVGameState, skill_name: String) -> void:
+	# Kept for numeric hotkeys and old panels. Prefer the skill gem panel.
+	for i: int in range(state.skill_gem_inventory.size()):
+		var gem: Dictionary = state.skill_gem_inventory[i]
+		if str(gem.get("skill_id", "")) == skill_name:
+			state.skill_gem_cursor = i
+			RVSkillGemSystem.toggle_selected_active_gem_equipped(state)
+			return
+	state.add_notice("No skill gem for " + skill_name)

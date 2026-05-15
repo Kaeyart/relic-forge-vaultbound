@@ -33,7 +33,6 @@ var backpack_layout: Dictionary = {}
 func _ready() -> void:
 	super._ready()
 	set_process(true)
-	set_process_input(true)
 	_prepare_labels()
 	_collect_buttons()
 	_connect_buttons()
@@ -43,35 +42,15 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if drag_preview == null:
 		return
+
 	var mouse_pos: Vector2 = get_viewport().get_mouse_position()
 	var offset: Vector2 = Vector2(18.0, 18.0)
+
 	if drag_preview.get_parent() is Control:
 		var parent_control: Control = drag_preview.get_parent() as Control
 		drag_preview.position = mouse_pos - parent_control.global_position + offset
 	else:
 		drag_preview.position = mouse_pos + offset
-
-func _input(event: InputEvent) -> void:
-	# Critical fix: Button.gui_input only receives the release if the mouse is
-	# still over that button. When the player drags away, the old code never got
-	# the release event, so the preview stayed stuck forever. This catches mouse
-	# release globally while a backpack item is being dragged.
-	if dragging_index >= 0 and event is InputEventMouseButton:
-		var mouse_event: InputEventMouseButton = event as InputEventMouseButton
-		if mouse_event.button_index == MOUSE_BUTTON_LEFT and not mouse_event.pressed:
-			_finish_drag_drop(dragging_index)
-			get_viewport().set_input_as_handled()
-			return
-		if mouse_event.button_index == MOUSE_BUTTON_RIGHT and mouse_event.pressed:
-			_cancel_drag()
-			get_viewport().set_input_as_handled()
-			return
-	if dragging_index >= 0 and event is InputEventKey:
-		var key_event: InputEventKey = event as InputEventKey
-		if key_event.pressed and key_event.keycode == KEY_ESCAPE:
-			_cancel_drag()
-			get_viewport().set_input_as_handled()
-			return
 
 func update_from_state(state: RVGameState) -> void:
 	current_state = state
@@ -234,31 +213,8 @@ func _auto_pack_backpack(state: RVGameState) -> Dictionary:
 		for x: int in range(GRID_COLUMNS):
 			row.append(false)
 		occupied.append(row)
-
 	var layout: Dictionary = {}
-
-	# First pass: respect persistent item positions already stored on items.
 	for i: int in range(state.backpack.size()):
-		var item: Dictionary = RVItemDB.normalize_item(state.backpack[i])
-		var size: Vector2i = RVInventorySystem.item_grid_size(item)
-		var has_pos: bool = item.has("inv_x") and item.has("inv_y")
-		if not has_pos:
-			continue
-		var px: int = int(item.get("inv_x", 0))
-		var py: int = int(item.get("inv_y", 0))
-		if _can_place(occupied, px, py, size.x, size.y):
-			_mark_place(occupied, px, py, size.x, size.y)
-			layout[i] = Rect2(Vector2(float(px), float(py)), Vector2(float(size.x), float(size.y)))
-		else:
-			# Position is invalid/stale after item-size or grid changes. It will be repacked.
-			item.erase("inv_x")
-			item.erase("inv_y")
-			state.backpack[i] = item
-
-	# Second pass: auto-place new or invalid-position items into free cells.
-	for i: int in range(state.backpack.size()):
-		if layout.has(i):
-			continue
 		var item: Dictionary = RVItemDB.normalize_item(state.backpack[i])
 		var size: Vector2i = RVInventorySystem.item_grid_size(item)
 		var placed: bool = false
@@ -267,18 +223,12 @@ func _auto_pack_backpack(state: RVGameState) -> Dictionary:
 				if _can_place(occupied, x, y, size.x, size.y):
 					_mark_place(occupied, x, y, size.x, size.y)
 					layout[i] = Rect2(Vector2(float(x), float(y)), Vector2(float(size.x), float(size.y)))
-					item["inv_x"] = x
-					item["inv_y"] = y
-					state.backpack[i] = item
 					placed = true
 					break
 			if placed:
 				break
 		if not placed:
-			# Overflow fallback: keep it visible at the bottom row, but mark it as unplaced.
-			var fallback_x: int = i % GRID_COLUMNS
-			var fallback_y: int = GRID_ROWS - 1
-			layout[i] = Rect2(Vector2(float(fallback_x), float(fallback_y)), Vector2.ONE)
+			layout[i] = Rect2(Vector2(float(i % GRID_COLUMNS), float(GRID_ROWS - 1)), Vector2.ONE)
 	return layout
 
 func _can_place(occupied: Array, x: int, y: int, w: int, h: int) -> bool:
@@ -463,116 +413,52 @@ func _on_tetris_button_gui_input(event: InputEvent, index: int, button: Button) 
 	if event is InputEventMouseButton:
 		var mouse_event: InputEventMouseButton = event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
-			detail_source = "backpack"
-			selected_equipment_slot = ""
-			RVInventorySystem.select_backpack_index(current_state, index)
+			dragging_index = index
 			_start_drag_preview(button.text)
-			get_viewport().set_input_as_handled()
-			update_from_state(current_state)
-		elif mouse_event.button_index == MOUSE_BUTTON_RIGHT and mouse_event.pressed and dragging_index >= 0:
-			_cancel_drag()
-			get_viewport().set_input_as_handled()
+		elif mouse_event.button_index == MOUSE_BUTTON_LEFT and not mouse_event.pressed:
+			_finish_drag_drop(index)
+	elif event is InputEventMouseMotion:
+		if dragging_index == index and drag_preview == null:
+			_start_drag_preview(button.text)
 
 func _start_drag_preview(text: String) -> void:
-	_clear_drag_preview()
-	dragging_index = int(current_state.inventory_cursor) if current_state != null else dragging_index
+	if drag_preview != null:
+		drag_preview.queue_free()
 	drag_preview = Label.new()
 	drag_preview.text = text
 	drag_preview.modulate = Color(1.0, 0.86, 0.45, 0.88)
 	drag_preview.z_index = 500
-	drag_preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(drag_preview)
-
-func _drop_cell_from_global(global_mouse: Vector2) -> Vector2i:
-	if tetris_layer == null:
-		return Vector2i(-1, -1)
-	var local: Vector2 = global_mouse - tetris_layer.global_position
-	var cell: Vector2 = _cell_size()
-	var step_x: float = cell.x + CELL_GAP
-	var step_y: float = cell.y + CELL_GAP
-	if step_x <= 1.0 or step_y <= 1.0:
-		return Vector2i(-1, -1)
-	var gx: int = int(floor(local.x / step_x))
-	var gy: int = int(floor(local.y / step_y))
-	if gx < 0 or gy < 0 or gx >= GRID_COLUMNS or gy >= GRID_ROWS:
-		return Vector2i(-1, -1)
-	return Vector2i(gx, gy)
-
-func _try_reposition_dragged_item(index: int, global_mouse: Vector2) -> bool:
-	if current_state == null or tetris_layer == null:
-		return false
-	if index < 0 or index >= current_state.backpack.size():
-		return false
-	var cell_pos: Vector2i = _drop_cell_from_global(global_mouse)
-	if cell_pos.x < 0:
-		return false
-	var moved: bool = RVInventorySystem.move_backpack_item_to_grid(current_state, index, cell_pos.x, cell_pos.y, GRID_COLUMNS, GRID_ROWS)
-	if moved:
-		detail_source = "backpack"
-		selected_equipment_slot = ""
-	return moved
 
 func _finish_drag_drop(index: int) -> void:
 	if current_state == null:
 		_clear_drag_preview()
 		return
-	if index < 0 or index >= current_state.backpack.size():
-		_clear_drag_preview()
-		update_from_state(current_state)
-		return
-	var global_mouse: Vector2 = get_viewport().get_mouse_position()
+	var global_mouse: Vector2 = get_global_mouse_position()
 	RVInventorySystem.select_backpack_index(current_state, index)
 	var item: Dictionary = RVInventorySystem.selected_backpack_item(current_state)
-
-	# Drop back onto the backpack grid = real tetris-style reposition.
-	# This is the missing piece from 035C/035D: items can now move to an empty
-	# valid grid location instead of only being dragged onto action targets.
-	if tetris_layer != null and tetris_layer.get_global_rect().has_point(global_mouse):
-		if _try_reposition_dragged_item(index, global_mouse):
-			_clear_drag_preview()
-			update_from_state(current_state)
-			return
-
-	# Drop onto equipment slots.
 	for slot_name: Variant in equipment_buttons.keys():
 		var slot_key: String = RVInventorySystem.normalize_slot(str(slot_name))
 		var button: Button = equipment_buttons[slot_name]
 		if button.get_global_rect().has_point(global_mouse):
 			if RVInventorySystem.item_can_equip_to_slot(current_state, item, slot_key):
 				RVInventorySystem.equip_backpack_item_to_slot(current_state, index, slot_key)
-				current_state.add_notice("Equipped " + str(item.get("name", "item")))
 			else:
 				current_state.add_notice("Wrong equipment slot")
 			_clear_drag_preview()
 			update_from_state(current_state)
 			return
-
-	# Drop onto action buttons.
 	if equip_button != null and equip_button.get_global_rect().has_point(global_mouse):
 		RVInventorySystem.equip_selected_backpack_item(current_state)
-		current_state.add_notice("Equipped selected item")
 	elif stash_button != null and stash_button.get_global_rect().has_point(global_mouse):
 		RVInventorySystem.stash_selected_backpack_item(current_state)
-		current_state.add_notice("Stashed selected item")
 	elif salvage_button != null and salvage_button.get_global_rect().has_point(global_mouse):
 		RVInventorySystem.salvage_selected_backpack_item(current_state)
-		current_state.add_notice("Salvaged selected item")
 	else:
-		# Drop anywhere else = cancel drag / put it back. This makes the item never
-		# get stuck in cursor state.
 		detail_source = "backpack"
 		selected_equipment_slot = ""
-		current_state.add_notice("Item returned to backpack")
-
 	_clear_drag_preview()
 	update_from_state(current_state)
-
-func _cancel_drag() -> void:
-	if current_state != null:
-		current_state.add_notice("Drag cancelled")
-	_clear_drag_preview()
-	if current_state != null:
-		update_from_state(current_state)
 
 func _clear_drag_preview() -> void:
 	dragging_index = -1

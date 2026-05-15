@@ -234,31 +234,8 @@ func _auto_pack_backpack(state: RVGameState) -> Dictionary:
 		for x: int in range(GRID_COLUMNS):
 			row.append(false)
 		occupied.append(row)
-
 	var layout: Dictionary = {}
-
-	# First pass: respect persistent item positions already stored on items.
 	for i: int in range(state.backpack.size()):
-		var item: Dictionary = RVItemDB.normalize_item(state.backpack[i])
-		var size: Vector2i = RVInventorySystem.item_grid_size(item)
-		var has_pos: bool = item.has("inv_x") and item.has("inv_y")
-		if not has_pos:
-			continue
-		var px: int = int(item.get("inv_x", 0))
-		var py: int = int(item.get("inv_y", 0))
-		if _can_place(occupied, px, py, size.x, size.y):
-			_mark_place(occupied, px, py, size.x, size.y)
-			layout[i] = Rect2(Vector2(float(px), float(py)), Vector2(float(size.x), float(size.y)))
-		else:
-			# Position is invalid/stale after item-size or grid changes. It will be repacked.
-			item.erase("inv_x")
-			item.erase("inv_y")
-			state.backpack[i] = item
-
-	# Second pass: auto-place new or invalid-position items into free cells.
-	for i: int in range(state.backpack.size()):
-		if layout.has(i):
-			continue
 		var item: Dictionary = RVItemDB.normalize_item(state.backpack[i])
 		var size: Vector2i = RVInventorySystem.item_grid_size(item)
 		var placed: bool = false
@@ -267,18 +244,12 @@ func _auto_pack_backpack(state: RVGameState) -> Dictionary:
 				if _can_place(occupied, x, y, size.x, size.y):
 					_mark_place(occupied, x, y, size.x, size.y)
 					layout[i] = Rect2(Vector2(float(x), float(y)), Vector2(float(size.x), float(size.y)))
-					item["inv_x"] = x
-					item["inv_y"] = y
-					state.backpack[i] = item
 					placed = true
 					break
 			if placed:
 				break
 		if not placed:
-			# Overflow fallback: keep it visible at the bottom row, but mark it as unplaced.
-			var fallback_x: int = i % GRID_COLUMNS
-			var fallback_y: int = GRID_ROWS - 1
-			layout[i] = Rect2(Vector2(float(fallback_x), float(fallback_y)), Vector2.ONE)
+			layout[i] = Rect2(Vector2(float(i % GRID_COLUMNS), float(GRID_ROWS - 1)), Vector2.ONE)
 	return layout
 
 func _can_place(occupied: Array, x: int, y: int, w: int, h: int) -> bool:
@@ -483,35 +454,6 @@ func _start_drag_preview(text: String) -> void:
 	drag_preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(drag_preview)
 
-func _drop_cell_from_global(global_mouse: Vector2) -> Vector2i:
-	if tetris_layer == null:
-		return Vector2i(-1, -1)
-	var local: Vector2 = global_mouse - tetris_layer.global_position
-	var cell: Vector2 = _cell_size()
-	var step_x: float = cell.x + CELL_GAP
-	var step_y: float = cell.y + CELL_GAP
-	if step_x <= 1.0 or step_y <= 1.0:
-		return Vector2i(-1, -1)
-	var gx: int = int(floor(local.x / step_x))
-	var gy: int = int(floor(local.y / step_y))
-	if gx < 0 or gy < 0 or gx >= GRID_COLUMNS or gy >= GRID_ROWS:
-		return Vector2i(-1, -1)
-	return Vector2i(gx, gy)
-
-func _try_reposition_dragged_item(index: int, global_mouse: Vector2) -> bool:
-	if current_state == null or tetris_layer == null:
-		return false
-	if index < 0 or index >= current_state.backpack.size():
-		return false
-	var cell_pos: Vector2i = _drop_cell_from_global(global_mouse)
-	if cell_pos.x < 0:
-		return false
-	var moved: bool = RVInventorySystem.move_backpack_item_to_grid(current_state, index, cell_pos.x, cell_pos.y, GRID_COLUMNS, GRID_ROWS)
-	if moved:
-		detail_source = "backpack"
-		selected_equipment_slot = ""
-	return moved
-
 func _finish_drag_drop(index: int) -> void:
 	if current_state == null:
 		_clear_drag_preview()
@@ -523,15 +465,6 @@ func _finish_drag_drop(index: int) -> void:
 	var global_mouse: Vector2 = get_viewport().get_mouse_position()
 	RVInventorySystem.select_backpack_index(current_state, index)
 	var item: Dictionary = RVInventorySystem.selected_backpack_item(current_state)
-
-	# Drop back onto the backpack grid = real tetris-style reposition.
-	# This is the missing piece from 035C/035D: items can now move to an empty
-	# valid grid location instead of only being dragged onto action targets.
-	if tetris_layer != null and tetris_layer.get_global_rect().has_point(global_mouse):
-		if _try_reposition_dragged_item(index, global_mouse):
-			_clear_drag_preview()
-			update_from_state(current_state)
-			return
 
 	# Drop onto equipment slots.
 	for slot_name: Variant in equipment_buttons.keys():

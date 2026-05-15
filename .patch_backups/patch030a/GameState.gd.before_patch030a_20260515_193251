@@ -267,8 +267,7 @@ func recompute_stats() -> void:
 		var item: Dictionary = item_value
 		var stats: Dictionary = item.get("stats", {})
 		max_hp += float(stats.get("Maximum Life", 0.0))
-		max_mana += float(stats.get("Maximum Mana", 0.0))
-		spirit_max += int(round(float(stats.get("Maximum Spirit", 0.0))))
+		max_mana += float(stats.get("Maximum Mana", 0.0)) spirit_max += int(round(float(stats.get("Maximum Spirit", 0.0))))
 
 	for spirit_gem: Dictionary in spirit_gem_inventory:
 		if not bool(spirit_gem.get("enabled", false)):
