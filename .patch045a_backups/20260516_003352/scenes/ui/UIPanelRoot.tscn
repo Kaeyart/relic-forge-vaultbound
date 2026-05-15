@@ -7,8 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/panels/SkillGemsPanel.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/ui/panels/CharacterPanel.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/ui/panels/StashPanel.tscn" id="7"]
-[ext_resource type="PackedScene" path="res://scenes/ui/panels/ActivityPanel.tscn" id="8"]
-[ext_resource type="PackedScene" path="res://scenes/ui/panels/MapDevicePanel.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/ui/panels/ActivityPanel.tscn" id="8"] [ext_resource type="PackedScene" path="res://scenes/ui/panels/MapDevicePanel.tscn" id="9"]
 
 [node name="UIPanelRoot" type="CanvasLayer"]
 script = ExtResource("1")
@@ -46,6 +45,4 @@ visible = false
 [node name="ActivityPanel" parent="Root" instance=ExtResource("8")]
 unique_name_in_owner = true
 visible = false
- [node name="MapDevicePanel" parent="Root" instance=ExtResource("9")]
-unique_name_in_owner = true
-visible = false
+ [node name="MapDevicePanel" parent="Root" instance=ExtResource("9")] unique_name_in_owner = true visible = false

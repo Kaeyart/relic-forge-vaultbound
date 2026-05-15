@@ -63,8 +63,6 @@ func _update_player(delta: float) -> void:
 	state.player_pos += move * state.player_speed * delta
 	state.player_pos.x = clamp(state.player_pos.x, 80.0, 1200.0)
 	state.player_pos.y = clamp(state.player_pos.y, 95.0, 620.0)
-	if state.mode == "combat" and combat != null and combat.has_method("constrain_player_position"):
-		state.player_pos = combat.constrain_player_position(state.player_pos)
 	state.invuln = max(0.0, state.invuln - delta)
 	state.player_mana = min(state.max_mana, state.player_mana + 14.0 * delta)
 	player.sync_from_state(state)

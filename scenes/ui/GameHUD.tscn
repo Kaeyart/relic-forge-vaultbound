@@ -1,153 +1,149 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://ccj80iwiepxy0"]
 
-[ext_resource type="Script" path="res://scripts/ui/GameHUD.gd" id="1"]
+[ext_resource type="Script" uid="uid://f0n2vofg0vu5" path="res://scripts/ui/GameHUD.gd" id="1"]
 
-[node name="GameHUD" type="CanvasLayer"]
+[node name="GameHUD" type="CanvasLayer" unique_id=111235464]
 script = ExtResource("1")
 
-[node name="Root" type="Control" parent="."]
+[node name="Root" type="Control" parent="." unique_id=229899016]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="TopStatus" type="PanelContainer" parent="Root"]
+[node name="TopStatus" type="PanelContainer" parent="Root" unique_id=142259253]
 layout_mode = 0
 offset_left = 14.0
 offset_top = 14.0
 offset_right = 1266.0
 offset_bottom = 46.0
 
-[node name="TopStatusLabel" type="Label" parent="Root/TopStatus"]
+[node name="TopStatusLabel" type="Label" parent="Root/TopStatus" unique_id=340778894]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Status"
 
-[node name="BottomHUD" type="Control" parent="Root"]
-layout_mode = 0
+[node name="BottomHUD" type="Control" parent="Root" unique_id=1129785737]
+anchors_preset = 0
 offset_left = 18.0
 offset_top = 610.0
 offset_right = 1260.0
 offset_bottom = 704.0
 
-[node name="HealthBar" type="ProgressBar" parent="Root/BottomHUD"]
+[node name="HealthBar" type="ProgressBar" parent="Root/BottomHUD" unique_id=203744444]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 0.0
-offset_top = 0.0
 offset_right = 260.0
 offset_bottom = 18.0
 max_value = 120.0
 value = 120.0
 show_percentage = false
 
-[node name="ManaBar" type="ProgressBar" parent="Root/BottomHUD"]
+[node name="ManaBar" type="ProgressBar" parent="Root/BottomHUD" unique_id=249930516]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 0.0
 offset_top = 26.0
 offset_right = 260.0
 offset_bottom = 44.0
-max_value = 100.0
 value = 100.0
 show_percentage = false
 
-[node name="SkillBar" type="HBoxContainer" parent="Root/BottomHUD"]
+[node name="SkillBar" type="HBoxContainer" parent="Root/BottomHUD" unique_id=288037336]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 420.0
-offset_top = 0.0
 offset_right = 890.0
 offset_bottom = 58.0
 theme_override_constants/separation = 8
 
-[node name="Slot0" type="PanelContainer" parent="Root/BottomHUD/SkillBar"]
+[node name="Slot0" type="PanelContainer" parent="Root/BottomHUD/SkillBar" unique_id=1388516290]
 custom_minimum_size = Vector2(72, 52)
 layout_mode = 2
 
-[node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot0"]
+[node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot0" unique_id=1290458316]
 layout_mode = 2
 color = Color(1, 0.75, 0.25, 0.35)
 
-[node name="Label" type="Label" parent="Root/BottomHUD/SkillBar/Slot0"]
+[node name="Label" type="Label" parent="Root/BottomHUD/SkillBar/Slot0" unique_id=1126990518]
 layout_mode = 2
 text = "1"
 
-[node name="Slot1" type="PanelContainer" parent="Root/BottomHUD/SkillBar"]
+[node name="Slot1" type="PanelContainer" parent="Root/BottomHUD/SkillBar" unique_id=1198561577]
 custom_minimum_size = Vector2(72, 52)
 layout_mode = 2
 
-[node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot1"]
-layout_mode = 2
+[node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot1" unique_id=305990830]
 visible = false
+layout_mode = 2
 color = Color(1, 0.75, 0.25, 0.35)
 
-[node name="Label" type="Label" parent="Root/BottomHUD/SkillBar/Slot1"]
+[node name="Label" type="Label" parent="Root/BottomHUD/SkillBar/Slot1" unique_id=501452535]
 layout_mode = 2
 text = "2"
 
-[node name="Slot2" type="PanelContainer" parent="Root/BottomHUD/SkillBar"]
+[node name="Slot2" type="PanelContainer" parent="Root/BottomHUD/SkillBar" unique_id=574223364]
 custom_minimum_size = Vector2(72, 52)
 layout_mode = 2
 
-[node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot2"]
-layout_mode = 2
+[node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot2" unique_id=1777653693]
 visible = false
+layout_mode = 2
 color = Color(1, 0.75, 0.25, 0.35)
 
-[node name="Label" type="Label" parent="Root/BottomHUD/SkillBar/Slot2"]
+[node name="Label" type="Label" parent="Root/BottomHUD/SkillBar/Slot2" unique_id=293207660]
 layout_mode = 2
 text = "3"
 
-[node name="Slot3" type="PanelContainer" parent="Root/BottomHUD/SkillBar"]
+[node name="Slot3" type="PanelContainer" parent="Root/BottomHUD/SkillBar" unique_id=898071218]
 custom_minimum_size = Vector2(72, 52)
 layout_mode = 2
 
-[node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot3"]
-layout_mode = 2
+[node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot3" unique_id=490740402]
 visible = false
+layout_mode = 2
 color = Color(1, 0.75, 0.25, 0.35)
 
-[node name="Label" type="Label" parent="Root/BottomHUD/SkillBar/Slot3"]
+[node name="Label" type="Label" parent="Root/BottomHUD/SkillBar/Slot3" unique_id=1839788585]
 layout_mode = 2
 text = "4"
 
-[node name="Slot4" type="PanelContainer" parent="Root/BottomHUD/SkillBar"]
+[node name="Slot4" type="PanelContainer" parent="Root/BottomHUD/SkillBar" unique_id=1290545740]
 custom_minimum_size = Vector2(72, 52)
 layout_mode = 2
 
-[node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot4"]
-layout_mode = 2
+[node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot4" unique_id=1550423675]
 visible = false
+layout_mode = 2
 color = Color(1, 0.75, 0.25, 0.35)
 
-[node name="Label" type="Label" parent="Root/BottomHUD/SkillBar/Slot4"]
+[node name="Label" type="Label" parent="Root/BottomHUD/SkillBar/Slot4" unique_id=2116645493]
 layout_mode = 2
 text = "5"
 
-[node name="Slot5" type="PanelContainer" parent="Root/BottomHUD/SkillBar"]
+[node name="Slot5" type="PanelContainer" parent="Root/BottomHUD/SkillBar" unique_id=1043787264]
 custom_minimum_size = Vector2(72, 52)
 layout_mode = 2
 
-[node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot5"]
-layout_mode = 2
+[node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot5" unique_id=9451966]
 visible = false
+layout_mode = 2
 color = Color(1, 0.75, 0.25, 0.35)
 
-[node name="Label" type="Label" parent="Root/BottomHUD/SkillBar/Slot5"]
+[node name="Label" type="Label" parent="Root/BottomHUD/SkillBar/Slot5" unique_id=128766832]
 layout_mode = 2
 text = "6"
 
-[node name="PromptLabel" type="Label" parent="Root"]
+[node name="PromptLabel" type="Label" parent="Root" unique_id=242526490]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 380.0
 offset_top = 678.0
 offset_right = 900.0
 offset_bottom = 704.0
-text = ""
 
-[node name="NoticePanel" type="PanelContainer" parent="Root"]
+[node name="NoticePanel" type="PanelContainer" parent="Root" unique_id=144020350]
 unique_name_in_owner = true
 visible = false
 layout_mode = 0
@@ -156,13 +152,12 @@ offset_top = 52.0
 offset_right = 920.0
 offset_bottom = 84.0
 
-[node name="NoticeLabel" type="Label" parent="Root/NoticePanel"]
+[node name="NoticeLabel" type="Label" parent="Root/NoticePanel" unique_id=2095346380]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Notice"
 
-
-[node name="ObjectivePanel" type="PanelContainer" parent="Root"]
+[node name="ObjectivePanel" type="PanelContainer" parent="Root" unique_id=1670545309]
 unique_name_in_owner = true
 visible = false
 layout_mode = 0
@@ -171,7 +166,7 @@ offset_top = 52.0
 offset_right = 888.0
 offset_bottom = 86.0
 
-[node name="ObjectiveLabel" type="Label" parent="Root/ObjectivePanel"]
+[node name="ObjectiveLabel" type="Label" parent="Root/ObjectivePanel" unique_id=2101113025]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Objective"
