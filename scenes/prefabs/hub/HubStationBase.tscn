@@ -1,0 +1,34 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/hub/HubStation.gd" id="1_script"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_station"]
+radius = 56.0
+
+[node name="HubStationBase" type="Node2D"]
+script = ExtResource("1_script")
+station_id = "station_base"
+station_type = "none"
+display_name = "Station"
+prompt_text = "E - Interact"
+interaction_radius = 56.0
+station_color = Color(0.9, 0.75, 0.45, 1)
+show_label_when_unfocused = true
+
+[node name="Visual" type="Sprite2D" parent="."]
+modulate = Color(0.82, 0.82, 0.82, 1)
+
+[node name="NameLabel" type="Label" parent="."]
+anchors_preset = 0
+offset_left = -70.0
+offset_top = 48.0
+offset_right = 70.0
+offset_bottom = 72.0
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "Station"
+
+[node name="InteractionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+shape = SubResource("CircleShape2D_station")

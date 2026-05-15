@@ -1,120 +1,382 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://c558r4o1w8001"]
 
-[ext_resource type="Script" path="res://scripts/hub/HubRoot.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/hub/HubStation.gd" id="2"]
+[ext_resource type="Script" uid="uid://b22jxacmdtd0q" path="res://scripts/hub/HubRoot.gd" id="1_hubroot"]
+[ext_resource type="Script" uid="uid://bdmayvrh4eq6c" path="res://scripts/hub/HubStation.gd" id="2_station"]
+[ext_resource type="Texture2D" uid="uid://be7ovtm6r88r4" path="res://assets/hub/stations/station_contract_gate.svg" id="3_gate"]
+[ext_resource type="Texture2D" uid="uid://gafhul5gc63g" path="res://assets/hub/stations/station_forge_anvil.svg" id="4_forge"]
+[ext_resource type="Texture2D" uid="uid://chmedbgphxxfe" path="res://assets/hub/stations/station_stash_chest.svg" id="5_stash"]
+[ext_resource type="Texture2D" uid="uid://bb35wlimomhn7" path="res://assets/hub/stations/station_armory_rack.svg" id="6_armory"]
+[ext_resource type="Texture2D" uid="uid://do0qtk71pf6yr" path="res://assets/hub/stations/station_passive_shrine.svg" id="7_passive"]
+[ext_resource type="Texture2D" uid="uid://csucn1ajuc80" path="res://assets/hub/stations/station_skill_altar.svg" id="8_skill"]
 
-[node name="ForgeholdHub" type="Node2D"]
-script = ExtResource("1")
+[sub_resource type="CircleShape2D" id="CircleShape2D_station"]
+radius = 58.0
 
-[node name="Floor" type="ColorRect" parent="."]
+[node name="ForgeholdHub" type="Node2D" unique_id=755738362]
+script = ExtResource("1_hubroot")
+
+[node name="Floor" type="ColorRect" parent="." unique_id=1410924527]
 offset_left = 60.0
 offset_top = 80.0
 offset_right = 1220.0
 offset_bottom = 660.0
 color = Color(0.015, 0.014, 0.018, 1)
 
-[node name="Stations" type="Node2D" parent="."]
+[node name="LayoutGuide" type="Node2D" parent="." unique_id=18506345]
 
-[node name="DungeonRun" type="Node2D" parent="Stations"]
-position = Vector2(520, 160)
-script = ExtResource("2")
+[node name="Stations" type="Node2D" parent="." unique_id=463279921]
+
+[node name="ActivityGates" type="Node2D" parent="Stations" unique_id=812992598]
+
+[node name="DungeonRun" type="Node2D" parent="Stations/ActivityGates" unique_id=1212782808]
+position = Vector2(500, 160)
+script = ExtResource("2_station")
 station_id = "dungeon_run"
-station_type = "activity"
 display_name = "Dungeon Run"
 activity_id = "dungeon_run"
 prompt_text = "E - Start Dungeon Run"
+interaction_radius = 64.0
 station_color = Color(1, 0.35, 0.12, 1)
+visual_texture = ExtResource("3_gate")
+visual_scale = Vector2(1.35, 1.35)
 
-[node name="MaterialHunt" type="Node2D" parent="Stations"]
-position = Vector2(640, 135)
-script = ExtResource("2")
+[node name="Visual" type="Sprite2D" parent="Stations/ActivityGates/DungeonRun" unique_id=44740437]
+scale = Vector2(1.35, 1.35)
+texture = ExtResource("3_gate")
+
+[node name="NameLabel" type="Label" parent="Stations/ActivityGates/DungeonRun" unique_id=1906674366]
+offset_left = -85.0
+offset_top = 58.0
+offset_right = 85.0
+offset_bottom = 82.0
+text = "Dungeon Run"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InteractionArea" type="Area2D" parent="Stations/ActivityGates/DungeonRun" unique_id=1710391128]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/ActivityGates/DungeonRun/InteractionArea" unique_id=768945313]
+shape = SubResource("CircleShape2D_station")
+
+[node name="MaterialHunt" type="Node2D" parent="Stations/ActivityGates" unique_id=1887502089]
+position = Vector2(640, 128)
+script = ExtResource("2_station")
 station_id = "material_hunt"
-station_type = "activity"
 display_name = "Material Hunt"
 activity_id = "material_hunt"
 prompt_text = "E - Start Material Hunt"
+interaction_radius = 64.0
 station_color = Color(0.72, 0.92, 1, 1)
+visual_texture = ExtResource("3_gate")
+visual_scale = Vector2(1.35, 1.35)
 
-[node name="EliteHunt" type="Node2D" parent="Stations"]
-position = Vector2(760, 160)
-script = ExtResource("2")
+[node name="Visual" type="Sprite2D" parent="Stations/ActivityGates/MaterialHunt" unique_id=1273730631]
+scale = Vector2(1.35, 1.35)
+texture = ExtResource("3_gate")
+
+[node name="NameLabel" type="Label" parent="Stations/ActivityGates/MaterialHunt" unique_id=25605271]
+offset_left = -85.0
+offset_top = 58.0
+offset_right = 85.0
+offset_bottom = 82.0
+text = "Material Hunt"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InteractionArea" type="Area2D" parent="Stations/ActivityGates/MaterialHunt" unique_id=2088019509]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/ActivityGates/MaterialHunt/InteractionArea" unique_id=2124942208]
+shape = SubResource("CircleShape2D_station")
+
+[node name="EliteHunt" type="Node2D" parent="Stations/ActivityGates" unique_id=1644435383]
+position = Vector2(780, 160)
+script = ExtResource("2_station")
 station_id = "elite_hunt"
-station_type = "activity"
 display_name = "Elite Hunt"
 activity_id = "elite_hunt"
 prompt_text = "E - Start Elite Hunt"
+interaction_radius = 64.0
 station_color = Color(1, 0.78, 0.32, 1)
+visual_texture = ExtResource("3_gate")
+visual_scale = Vector2(1.35, 1.35)
 
-[node name="BossTrial" type="Node2D" parent="Stations"]
-position = Vector2(580, 245)
-script = ExtResource("2")
+[node name="Visual" type="Sprite2D" parent="Stations/ActivityGates/EliteHunt" unique_id=331096448]
+scale = Vector2(1.35, 1.35)
+texture = ExtResource("3_gate")
+
+[node name="NameLabel" type="Label" parent="Stations/ActivityGates/EliteHunt" unique_id=1469354650]
+offset_left = -85.0
+offset_top = 58.0
+offset_right = 85.0
+offset_bottom = 82.0
+text = "Elite Hunt"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InteractionArea" type="Area2D" parent="Stations/ActivityGates/EliteHunt" unique_id=1022592984]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/ActivityGates/EliteHunt/InteractionArea" unique_id=308733684]
+shape = SubResource("CircleShape2D_station")
+
+[node name="BossTrial" type="Node2D" parent="Stations/ActivityGates" unique_id=2077247794]
+position = Vector2(575, 252)
+script = ExtResource("2_station")
 station_id = "boss_trial"
-station_type = "activity"
 display_name = "Boss Trial"
 activity_id = "boss_trial"
 prompt_text = "E - Start Boss Trial"
+interaction_radius = 64.0
 station_color = Color(0.95, 0.22, 0.16, 1)
+visual_texture = ExtResource("3_gate")
+visual_scale = Vector2(1.35, 1.35)
 
-[node name="EndlessRift" type="Node2D" parent="Stations"]
-position = Vector2(700, 245)
-script = ExtResource("2")
+[node name="Visual" type="Sprite2D" parent="Stations/ActivityGates/BossTrial" unique_id=580892048]
+scale = Vector2(1.35, 1.35)
+texture = ExtResource("3_gate")
+
+[node name="NameLabel" type="Label" parent="Stations/ActivityGates/BossTrial" unique_id=444431545]
+offset_left = -85.0
+offset_top = 58.0
+offset_right = 85.0
+offset_bottom = 82.0
+text = "Boss Trial"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InteractionArea" type="Area2D" parent="Stations/ActivityGates/BossTrial" unique_id=1560968523]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/ActivityGates/BossTrial/InteractionArea" unique_id=1337061969]
+shape = SubResource("CircleShape2D_station")
+
+[node name="EndlessRift" type="Node2D" parent="Stations/ActivityGates" unique_id=1438663705]
+position = Vector2(705, 252)
+script = ExtResource("2_station")
 station_id = "endless_rift"
-station_type = "activity"
 display_name = "Endless Rift"
 activity_id = "endless_rift"
 prompt_text = "E - Start Endless Rift"
-station_color = Color(0.70, 0.36, 1, 1)
+interaction_radius = 64.0
+station_color = Color(0.7, 0.36, 1, 1)
+visual_texture = ExtResource("3_gate")
+visual_scale = Vector2(1.35, 1.35)
 
-[node name="Inventory" type="Node2D" parent="Stations"]
-position = Vector2(480, 455)
-script = ExtResource("2")
+[node name="Visual" type="Sprite2D" parent="Stations/ActivityGates/EndlessRift" unique_id=835183648]
+scale = Vector2(1.35, 1.35)
+texture = ExtResource("3_gate")
+
+[node name="NameLabel" type="Label" parent="Stations/ActivityGates/EndlessRift" unique_id=1714767998]
+offset_left = -85.0
+offset_top = 58.0
+offset_right = 85.0
+offset_bottom = 82.0
+text = "Endless Rift"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InteractionArea" type="Area2D" parent="Stations/ActivityGates/EndlessRift" unique_id=148653855]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/ActivityGates/EndlessRift/InteractionArea" unique_id=605038120]
+shape = SubResource("CircleShape2D_station")
+
+[node name="HubServices" type="Node2D" parent="Stations" unique_id=373417675]
+
+[node name="Inventory" type="Node2D" parent="Stations/HubServices" unique_id=1078899774]
+position = Vector2(420, 455)
+script = ExtResource("2_station")
 station_id = "inventory"
 station_type = "inventory"
 display_name = "Inventory"
 prompt_text = "E - Open Inventory"
+interaction_radius = 58.0
 station_color = Color(0.86, 0.78, 0.62, 1)
+visual_texture = ExtResource("6_armory")
 
-[node name="Crafting" type="Node2D" parent="Stations"]
-position = Vector2(600, 485)
-script = ExtResource("2")
+[node name="Visual" type="Sprite2D" parent="Stations/HubServices/Inventory" unique_id=911269830]
+texture = ExtResource("6_armory")
+
+[node name="NameLabel" type="Label" parent="Stations/HubServices/Inventory" unique_id=357533824]
+offset_left = -75.0
+offset_top = 50.0
+offset_right = 75.0
+offset_bottom = 74.0
+text = "Inventory"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InteractionArea" type="Area2D" parent="Stations/HubServices/Inventory" unique_id=1638237844]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/HubServices/Inventory/InteractionArea" unique_id=1850195319]
+shape = SubResource("CircleShape2D_station")
+
+[node name="Crafting" type="Node2D" parent="Stations/HubServices" unique_id=466302372]
+position = Vector2(545, 495)
+script = ExtResource("2_station")
 station_id = "crafting"
 station_type = "crafting"
 display_name = "Crafting"
 prompt_text = "E - Open Crafting"
+interaction_radius = 58.0
 station_color = Color(1, 0.48, 0.18, 1)
+visual_texture = ExtResource("4_forge")
 
-[node name="PassiveAtlas" type="Node2D" parent="Stations"]
-position = Vector2(720, 485)
-script = ExtResource("2")
-station_id = "passive_atlas"
-station_type = "passive"
-display_name = "Passive Atlas"
-prompt_text = "E - Open Passive Atlas"
-station_color = Color(0.74, 0.62, 1, 1)
+[node name="Visual" type="Sprite2D" parent="Stations/HubServices/Crafting" unique_id=822380043]
+texture = ExtResource("4_forge")
 
-[node name="SkillGems" type="Node2D" parent="Stations"]
-position = Vector2(840, 455)
-script = ExtResource("2")
-station_id = "skill_gems"
-station_type = "skills"
-display_name = "Skill Gems"
-prompt_text = "E - Open Skill Gems"
-station_color = Color(0.55, 1, 0.76, 1)
+[node name="NameLabel" type="Label" parent="Stations/HubServices/Crafting" unique_id=700319775]
+offset_left = -75.0
+offset_top = 50.0
+offset_right = 75.0
+offset_bottom = 74.0
+text = "Crafting"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="Stash" type="Node2D" parent="Stations"]
-position = Vector2(640, 360)
-script = ExtResource("2")
+[node name="InteractionArea" type="Area2D" parent="Stations/HubServices/Crafting" unique_id=964369442]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/HubServices/Crafting/InteractionArea" unique_id=610033939]
+shape = SubResource("CircleShape2D_station")
+
+[node name="Stash" type="Node2D" parent="Stations/HubServices" unique_id=1599754842]
+position = Vector2(640, 370)
+script = ExtResource("2_station")
 station_id = "stash"
 station_type = "stash"
 display_name = "Stash"
 prompt_text = "E - Open Stash"
+interaction_radius = 58.0
 station_color = Color(0.95, 0.78, 0.34, 1)
+visual_texture = ExtResource("5_stash")
 
-[node name="Character" type="Node2D" parent="Stations"]
-position = Vector2(640, 570)
-script = ExtResource("2")
+[node name="Visual" type="Sprite2D" parent="Stations/HubServices/Stash" unique_id=1189351275]
+texture = ExtResource("5_stash")
+
+[node name="NameLabel" type="Label" parent="Stations/HubServices/Stash" unique_id=1573757482]
+offset_left = -75.0
+offset_top = 50.0
+offset_right = 75.0
+offset_bottom = 74.0
+text = "Stash"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InteractionArea" type="Area2D" parent="Stations/HubServices/Stash" unique_id=290851372]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/HubServices/Stash/InteractionArea" unique_id=431620460]
+position = Vector2(-6, 2)
+shape = SubResource("CircleShape2D_station")
+
+[node name="PassiveAtlas" type="Node2D" parent="Stations/HubServices" unique_id=1336614119]
+position = Vector2(735, 495)
+script = ExtResource("2_station")
+station_id = "passive_atlas"
+station_type = "passive"
+display_name = "Passive Atlas"
+prompt_text = "E - Open Passive Atlas"
+interaction_radius = 58.0
+station_color = Color(0.74, 0.62, 1, 1)
+visual_texture = ExtResource("7_passive")
+
+[node name="Visual" type="Sprite2D" parent="Stations/HubServices/PassiveAtlas" unique_id=501367846]
+texture = ExtResource("7_passive")
+
+[node name="NameLabel" type="Label" parent="Stations/HubServices/PassiveAtlas" unique_id=46094672]
+offset_left = -90.0
+offset_top = 50.0
+offset_right = 90.0
+offset_bottom = 74.0
+text = "Passive Atlas"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InteractionArea" type="Area2D" parent="Stations/HubServices/PassiveAtlas" unique_id=1028146927]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/HubServices/PassiveAtlas/InteractionArea" unique_id=2047128030]
+shape = SubResource("CircleShape2D_station")
+
+[node name="SkillGems" type="Node2D" parent="Stations/HubServices" unique_id=1926678524]
+position = Vector2(860, 455)
+script = ExtResource("2_station")
+station_id = "skill_gems"
+station_type = "skills"
+display_name = "Skill Gems"
+prompt_text = "E - Open Skill Gems"
+interaction_radius = 58.0
+station_color = Color(0.55, 1, 0.76, 1)
+visual_texture = ExtResource("8_skill")
+
+[node name="Visual" type="Sprite2D" parent="Stations/HubServices/SkillGems" unique_id=302723599]
+texture = ExtResource("8_skill")
+
+[node name="NameLabel" type="Label" parent="Stations/HubServices/SkillGems" unique_id=805013745]
+offset_left = -75.0
+offset_top = 50.0
+offset_right = 75.0
+offset_bottom = 74.0
+text = "Skill Gems"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InteractionArea" type="Area2D" parent="Stations/HubServices/SkillGems" unique_id=245063271]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/HubServices/SkillGems/InteractionArea" unique_id=297004]
+shape = SubResource("CircleShape2D_station")
+
+[node name="Character" type="Node2D" parent="Stations/HubServices" unique_id=2074204990]
+position = Vector2(640, 585)
+script = ExtResource("2_station")
 station_id = "character"
 station_type = "character"
 display_name = "Character"
 prompt_text = "E - Open Character"
-station_color = Color(0.9, 0.84, 0.70, 1)
+interaction_radius = 58.0
+station_color = Color(0.9, 0.84, 0.7, 1)
+visual_texture = ExtResource("6_armory")
+visual_scale = Vector2(0.9, 0.9)
+
+[node name="Visual" type="Sprite2D" parent="Stations/HubServices/Character" unique_id=1487187615]
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("6_armory")
+
+[node name="NameLabel" type="Label" parent="Stations/HubServices/Character" unique_id=330921349]
+offset_left = -75.0
+offset_top = 50.0
+offset_right = 75.0
+offset_bottom = 74.0
+text = "Character"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InteractionArea" type="Area2D" parent="Stations/HubServices/Character" unique_id=265124878]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/HubServices/Character/InteractionArea" unique_id=991339630]
+shape = SubResource("CircleShape2D_station")
+
+[node name="TrainingDummy" type="Node2D" parent="Stations/HubServices" unique_id=217695412]
+position = Vector2(1010, 585)
+script = ExtResource("2_station")
+station_id = "training_dummy"
+station_type = "training"
+display_name = "Training Dummy"
+prompt_text = "E - Test damage soon"
+interaction_radius = 58.0
+station_color = Color(0.95, 0.72, 0.28, 1)
+visual_texture = ExtResource("4_forge")
+visual_scale = Vector2(0.85, 0.85)
+
+[node name="Visual" type="Sprite2D" parent="Stations/HubServices/TrainingDummy" unique_id=1529111252]
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("4_forge")
+
+[node name="NameLabel" type="Label" parent="Stations/HubServices/TrainingDummy" unique_id=1497423182]
+offset_left = -90.0
+offset_top = 50.0
+offset_right = 90.0
+offset_bottom = 74.0
+text = "Training Dummy"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InteractionArea" type="Area2D" parent="Stations/HubServices/TrainingDummy" unique_id=1175658846]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/HubServices/TrainingDummy/InteractionArea" unique_id=514205410]
+shape = SubResource("CircleShape2D_station")
