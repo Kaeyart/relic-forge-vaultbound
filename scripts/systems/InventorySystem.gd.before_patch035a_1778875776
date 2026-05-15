@@ -150,24 +150,11 @@ static func equip_selected_backpack_item(state: RVGameState) -> void:
 	if target_slot == "":
 		state.add_notice("Cannot equip this item")
 		return
-	equip_backpack_item_to_slot(state, int(state.inventory_cursor), target_slot)
-
-static func equip_backpack_item_to_slot(state: RVGameState, index: int, slot_name: String) -> void:
-	if state.backpack.is_empty():
-		state.add_notice("Backpack is empty")
-		return
-	select_backpack_index(state, index)
-	var item: Dictionary = RVItemDB.normalize_item(state.backpack[int(state.inventory_cursor)])
-	var slot: String = normalize_slot(slot_name)
-	if not item_can_equip_to_slot(state, item, slot):
-		state.add_notice("Cannot equip " + _item_name(item) + " to " + _slot_label(slot))
-		return
 	state.backpack.remove_at(int(state.inventory_cursor))
-	var previous: Variant = state.equipped.get(slot, {})
-	if typeof(previous) == TYPE_DICTIONARY and not Dictionary(previous).is_empty():
-		state.backpack.append(RVItemDB.normalize_item(previous))
-	state.equipped[slot] = item
-	select_equipment_slot(state, slot)
+	var previous: Variant = state.equipped.get(target_slot, {})
+	if typeof(previous) == TYPE_DICTIONARY and not previous.is_empty():
+		state.backpack.append(previous)
+	state.equipped[target_slot] = item
 	state.inventory_cursor = clamp(int(state.inventory_cursor), 0, max(0, state.backpack.size() - 1))
 	state.recompute_stats()
 	state.add_notice("Equipped " + _item_name(item))
@@ -176,7 +163,7 @@ static func unequip_selected_item(state: RVGameState) -> void:
 	_clamp_equipment_cursor(state)
 	var slot: String = EQUIPMENT_ORDER[int(state.equipment_cursor)]
 	var item_value: Variant = state.equipped.get(slot, {})
-	if typeof(item_value) != TYPE_DICTIONARY or Dictionary(item_value).is_empty():
+	if typeof(item_value) != TYPE_DICTIONARY or item_value.is_empty():
 		state.add_notice(_slot_label(slot) + " is empty")
 		return
 	var item: Dictionary = RVItemDB.normalize_item(item_value)
@@ -212,9 +199,8 @@ static func deposit_all_backpack(state: RVGameState) -> void:
 		state.add_notice("Backpack is empty")
 		return
 	var count: int = state.backpack.size()
-	for item_value: Variant in state.backpack:
-		if typeof(item_value) == TYPE_DICTIONARY:
-			state.stash.append(RVItemDB.normalize_item(item_value))
+	for item_value: Dictionary in state.backpack:
+		state.stash.append(RVItemDB.normalize_item(item_value))
 	state.backpack.clear()
 	state.inventory_cursor = 0
 	state.add_notice("Deposited " + str(count) + " item(s)")
@@ -231,11 +217,11 @@ static func salvage_selected_backpack_item(state: RVGameState) -> void:
 	for key_value: Variant in rewards.keys():
 		var key: String = str(key_value)
 		state.materials[key] = int(state.materials.get(key, 0)) + int(rewards[key])
-	state.add_notice("Salvaged " + _item_name(item))
+	state.add_notice("Salvaged " + _item_name(item) + " for shards")
 
 static func salvage_rewards(item: Dictionary) -> Dictionary:
 	var normalized: Dictionary = RVItemDB.normalize_item(item)
-	var rewards: Dictionary = {"embers": 1, "shards": 1, "forge_dust": 0}
+	var rewards: Dictionary = {"embers": 1, "shards": 1}
 	var rarity: String = str(normalized.get("rarity", "Normal"))
 	match rarity:
 		"Normal":
@@ -251,15 +237,13 @@ static func salvage_rewards(item: Dictionary) -> Dictionary:
 			rewards["embers"] = 8
 			rewards["shards"] = 4
 			rewards["runes"] = 1
-			rewards["unique_fragments"] = int(rewards.get("unique_fragments", 0)) + 1
 		"Crafted":
 			rewards["embers"] = 3
 			rewards["shards"] = 2
-	for affix_value: Variant in _all_affixes(normalized):
+	for affix_value: Variant in normalized.get("prefixes", []) + normalized.get("suffixes", []):
 		if typeof(affix_value) != TYPE_DICTIONARY:
 			continue
-		var affix: Dictionary = Dictionary(affix_value)
-		for tag_value: Variant in affix.get("tags", []):
+		for tag_value: Variant in affix_value.get("tags", []):
 			var shard_key: String = _tag_to_shard(str(tag_value))
 			if shard_key != "":
 				rewards[shard_key] = int(rewards.get(shard_key, 0)) + 1
@@ -288,32 +272,20 @@ static func selected_stash_item(state: RVGameState) -> Dictionary:
 static func comparison_target_for_item(state: RVGameState, item: Dictionary) -> Dictionary:
 	if item.is_empty():
 		return {}
-	var item_slot: String = normalize_slot(str(item.get("slot", "")))
-	if str(item.get("slot", "")) == "ring" or item_slot == "ring1" or item_slot == "ring2":
+	var slot: String = str(item.get("slot", ""))
+	if slot == "ring":
 		var ring1: Variant = state.equipped.get("ring1", {})
-		if typeof(ring1) == TYPE_DICTIONARY and not Dictionary(ring1).is_empty():
+		if typeof(ring1) == TYPE_DICTIONARY and not ring1.is_empty():
 			return RVItemDB.normalize_item(ring1)
 		var ring2: Variant = state.equipped.get("ring2", {})
-		if typeof(ring2) == TYPE_DICTIONARY and not Dictionary(ring2).is_empty():
+		if typeof(ring2) == TYPE_DICTIONARY and not ring2.is_empty():
 			return RVItemDB.normalize_item(ring2)
 		return {}
-	var equipped_value: Variant = state.equipped.get(item_slot, {})
-	if typeof(equipped_value) == TYPE_DICTIONARY and not Dictionary(equipped_value).is_empty():
+	var normalized_slot: String = normalize_slot(slot)
+	var equipped_value: Variant = state.equipped.get(normalized_slot, {})
+	if typeof(equipped_value) == TYPE_DICTIONARY:
 		return RVItemDB.normalize_item(equipped_value)
 	return {}
-
-static func equipped_item_for_item(state: RVGameState, item: Dictionary) -> Dictionary:
-	return comparison_target_for_item(state, item)
-
-static func item_can_equip_to_slot(_state: RVGameState, item: Dictionary, slot_name: String) -> bool:
-	if item.is_empty():
-		return false
-	var slot: String = normalize_slot(slot_name)
-	var item_slot_raw: String = str(item.get("slot", ""))
-	var item_slot: String = normalize_slot(item_slot_raw)
-	if item_slot_raw == "ring" and (slot == "ring1" or slot == "ring2"):
-		return true
-	return slot == item_slot
 
 static func item_detail_text_with_compare(state: RVGameState, item: Dictionary) -> String:
 	var normalized: Dictionary = RVItemDB.normalize_item(item)
@@ -325,18 +297,6 @@ static func item_detail_text_with_compare(state: RVGameState, item: Dictionary) 
 	text += _comparison_lines(normalized, target)
 	return text
 
-static func item_compare_text(state: RVGameState, item: Dictionary) -> String:
-	if item.is_empty():
-		return "No comparison target."
-	var target: Dictionary = comparison_target_for_item(state, RVItemDB.normalize_item(item))
-	if target.is_empty():
-		return "No equipped item in this slot."
-	var lines: Array[String] = []
-	lines.append("COMPARED TO EQUIPPED")
-	lines.append(_item_name(target))
-	lines.append(_comparison_lines(RVItemDB.normalize_item(item), target).strip_edges())
-	return "\n".join(lines)
-
 static func item_detail_text(item: Dictionary) -> String:
 	if item.is_empty():
 		return "No item selected."
@@ -344,67 +304,50 @@ static func item_detail_text(item: Dictionary) -> String:
 	var lines: Array[String] = []
 	lines.append(_item_name(normalized))
 	lines.append(str(normalized.get("rarity", "Normal")) + " " + str(normalized.get("base_type", _slot_label(str(normalized.get("slot", "item"))))))
-	lines.append("Slot: " + _slot_label(str(normalized.get("slot", "item"))) + " · Item Level " + str(int(normalized.get("item_level", 1))))
-	var fp: int = int(normalized.get("forge_potential", 0))
-	var max_fp: int = int(normalized.get("max_forge_potential", fp))
-	lines.append("Forge Potential: " + str(fp) + " / " + str(max_fp))
+	lines.append("Item Level " + str(int(normalized.get("item_level", 1))))
 	var armor_class: String = str(normalized.get("armor_class", ""))
 	if armor_class != "":
 		lines.append("Armor Class: " + armor_class)
+	if normalized.has("description") and str(normalized["description"]) != "":
+		lines.append(str(normalized["description"]))
 	_add_stat_section(lines, "Implicit", normalized.get("implicit_stats", {}))
 	_add_affix_section(lines, "Prefixes", normalized.get("prefixes", []))
 	_add_affix_section(lines, "Suffixes", normalized.get("suffixes", []))
-	_add_stat_section(lines, "Total Stats", _total_stats(normalized))
-	var unique_effects: Array = _variant_array(normalized.get("unique_effects", []))
+	var unique_effects: Array = normalized.get("unique_effects", [])
 	if not unique_effects.is_empty():
 		lines.append("")
 		lines.append("Unique Effects")
 		for effect_value: Variant in unique_effects:
-			lines.append(" - " + str(effect_value))
-	var build_flags: Array = _variant_array(normalized.get("build_flags", normalized.get("flags", [])))
+			lines.append("  - " + str(effect_value))
+	var build_flags: Array = normalized.get("build_flags", normalized.get("flags", []))
 	if not build_flags.is_empty():
 		lines.append("")
 		lines.append("Build Tags: " + _join_strings(build_flags))
-	return "\n".join(lines)
-
-static func item_compact_detail_text(item: Dictionary) -> String:
-	if item.is_empty():
-		return "No item selected."
-	var normalized: Dictionary = RVItemDB.normalize_item(item)
-	var lines: Array[String] = []
-	lines.append(_item_name(normalized))
-	lines.append(str(normalized.get("rarity", "Normal")) + " " + str(normalized.get("base_type", _slot_label(str(normalized.get("slot", "item"))))))
-	lines.append("Slot: " + _slot_label(str(normalized.get("slot", "item"))) + " · Lv " + str(int(normalized.get("item_level", 1))))
+	lines.append("")
 	lines.append("Forge Potential: " + str(int(normalized.get("forge_potential", 0))) + " / " + str(int(normalized.get("max_forge_potential", normalized.get("forge_potential", 0)))))
-	_add_affix_section(lines, "Prefixes", normalized.get("prefixes", []), 4)
-	_add_affix_section(lines, "Suffixes", normalized.get("suffixes", []), 4)
-	_add_stat_section(lines, "Key Stats", _top_stats(_total_stats(normalized), 6))
-	var effects: Array = _variant_array(normalized.get("unique_effects", []))
-	if not effects.is_empty():
-		lines.append("")
-		lines.append("Unique")
-		for i: int in range(min(3, effects.size())):
-			lines.append(" - " + str(effects[i]))
 	return "\n".join(lines)
 
 static func inventory_panel_text(state: RVGameState) -> String:
 	_clamp_inventory_cursor(state)
-	return "Backpack: " + str(state.backpack.size()) + " item(s)\n\n" + item_detail_text_with_compare(state, selected_backpack_item(state))
+	var item: Dictionary = selected_backpack_item(state)
+	return "Backpack: " + str(state.backpack.size()) + " item(s)\n\n" + item_detail_text_with_compare(state, item)
 
 static func character_panel_text(state: RVGameState) -> String:
 	_clamp_equipment_cursor(state)
-	return "Level " + str(state.level) + " · Life " + str(int(state.player_hp)) + "/" + str(int(state.max_hp)) + " · Mana " + str(int(state.player_mana)) + "/" + str(int(state.max_mana)) + "\n\n" + equipped_summary_text(state) + "\n\n" + item_detail_text(selected_equipped_item(state))
+	var item: Dictionary = selected_equipped_item(state)
+	return "Level " + str(state.level) + " · Life " + str(int(state.player_hp)) + "/" + str(int(state.max_hp)) + " · Mana " + str(int(state.player_mana)) + "/" + str(int(state.max_mana)) + "\n\n" + equipped_summary_text(state) + "\n\n" + item_detail_text(item)
 
 static func stash_panel_text(state: RVGameState) -> String:
 	_clamp_stash_cursor(state)
-	return "Stored: " + str(state.stash.size()) + " item(s) · Backpack: " + str(state.backpack.size()) + "\n\n" + item_detail_text(selected_stash_item(state))
+	var item: Dictionary = selected_stash_item(state)
+	return "Stored: " + str(state.stash.size()) + " item(s) · Backpack: " + str(state.backpack.size()) + "\n\n" + item_detail_text(item)
 
 static func equipped_summary_text(state: RVGameState) -> String:
 	var lines: Array[String] = []
 	lines.append("Equipped")
 	for slot: String in EQUIPMENT_ORDER:
 		var item_value: Variant = state.equipped.get(slot, {})
-		if typeof(item_value) == TYPE_DICTIONARY and not Dictionary(item_value).is_empty():
+		if typeof(item_value) == TYPE_DICTIONARY and not item_value.is_empty():
 			var item: Dictionary = RVItemDB.normalize_item(item_value)
 			lines.append(_slot_label(slot) + ": " + str(item.get("name", "Item")))
 		else:
@@ -414,81 +357,16 @@ static func equipped_summary_text(state: RVGameState) -> String:
 static func equipped_short_label(state: RVGameState, slot_name: String) -> String:
 	var slot: String = normalize_slot(slot_name)
 	var item_value: Variant = state.equipped.get(slot, {})
-	if typeof(item_value) != TYPE_DICTIONARY or Dictionary(item_value).is_empty():
+	if typeof(item_value) != TYPE_DICTIONARY or item_value.is_empty():
 		return ""
 	var item: Dictionary = RVItemDB.normalize_item(item_value)
 	return str(item.get("rarity", "Normal")).substr(0, 1)
 
-static func item_grid_size(item: Dictionary) -> Vector2i:
-	var normalized: Dictionary = RVItemDB.normalize_item(item)
-	if normalized.has("grid_w") and normalized.has("grid_h"):
-		return Vector2i(max(1, int(normalized.get("grid_w", 1))), max(1, int(normalized.get("grid_h", 1))))
-	var slot: String = normalize_slot(str(normalized.get("slot", "")))
-	var base_type: String = str(normalized.get("base_type", "")).to_lower()
-	match slot:
-		"weapon":
-			if base_type.find("wand") >= 0:
-				return Vector2i(1, 3)
-			return Vector2i(2, 3)
-		"offhand":
-			return Vector2i(2, 2)
-		"head", "gloves", "boots":
-			return Vector2i(2, 2)
-		"chest":
-			return Vector2i(2, 3)
-		"amulet", "ring1", "ring2", "ring":
-			return Vector2i(1, 1)
-		"relic":
-			return Vector2i(1, 2)
-	return Vector2i(1, 1)
-
-static func move_backpack_item_to_grid(state: RVGameState, index: int, target_x: int, target_y: int, columns: int, rows: int) -> bool:
-	if index < 0 or index >= state.backpack.size():
-		state.add_notice("No item selected")
-		return false
-	var item: Dictionary = RVItemDB.normalize_item(state.backpack[index])
-	var size: Vector2i = item_grid_size(item)
-	if target_x < 0 or target_y < 0 or target_x + size.x > columns or target_y + size.y > rows:
-		state.add_notice("Item does not fit there")
-		return false
-	for other_index: int in range(state.backpack.size()):
-		if other_index == index:
-			continue
-		var other: Dictionary = RVItemDB.normalize_item(state.backpack[other_index])
-		if not other.has("inv_x") or not other.has("inv_y"):
-			continue
-		var other_size: Vector2i = item_grid_size(other)
-		var other_x: int = int(other.get("inv_x", 0))
-		var other_y: int = int(other.get("inv_y", 0))
-		if _grid_rects_overlap(target_x, target_y, size.x, size.y, other_x, other_y, other_size.x, other_size.y):
-			state.add_notice("No room there")
-			return false
-	item["inv_x"] = target_x
-	item["inv_y"] = target_y
-	item["grid_w"] = size.x
-	item["grid_h"] = size.y
-	state.backpack[index] = item
-	state.inventory_cursor = index
-	state.add_notice("Moved " + _item_name(item))
-	return true
-
-static func _grid_rects_overlap(ax: int, ay: int, aw: int, ah: int, bx: int, by: int, bw: int, bh: int) -> bool:
-	if ax + aw <= bx:
-		return false
-	if bx + bw <= ax:
-		return false
-	if ay + ah <= by:
-		return false
-	if by + bh <= ay:
-		return false
-	return true
-
 static func _target_slot_for_item(state: RVGameState, item: Dictionary) -> String:
-	var raw_slot: String = str(item.get("slot", ""))
-	var slot: String = normalize_slot(raw_slot)
-	if raw_slot == "ring" or slot == "ring1" or slot == "ring2":
+	var slot: String = normalize_slot(str(item.get("slot", "")))
+	if slot == "ring" or str(item.get("slot", "")) == "ring":
 		var ring1_value: Variant = state.equipped.get("ring1", {})
-		if typeof(ring1_value) != TYPE_DICTIONARY or Dictionary(ring1_value).is_empty():
+		if typeof(ring1_value) != TYPE_DICTIONARY or ring1_value.is_empty():
 			return "ring1"
 		return "ring2"
 	if state.equipped.has(slot):
@@ -497,8 +375,8 @@ static func _target_slot_for_item(state: RVGameState, item: Dictionary) -> Strin
 
 static func _comparison_lines(new_item: Dictionary, old_item: Dictionary) -> String:
 	var result: String = ""
-	var new_stats: Dictionary = _total_stats(new_item)
-	var old_stats: Dictionary = _total_stats(old_item)
+	var new_stats: Dictionary = new_item.get("stats", {})
+	var old_stats: Dictionary = old_item.get("stats", {})
 	var keys: Array[String] = []
 	for key_value: Variant in new_stats.keys():
 		var key: String = str(key_value)
@@ -509,105 +387,35 @@ static func _comparison_lines(new_item: Dictionary, old_item: Dictionary) -> Str
 		if not keys.has(old_key):
 			keys.append(old_key)
 	if keys.is_empty():
-		return "\n No comparable stats."
-	var meaningful: int = 0
+		return "\n  No comparable stats."
 	for stat_name: String in keys:
 		var delta: float = float(new_stats.get(stat_name, 0.0)) - float(old_stats.get(stat_name, 0.0))
 		if abs(delta) < 0.0001:
 			continue
-		result += "\n " + _format_delta(stat_name, delta)
-		meaningful += 1
-		if meaningful >= 10:
-			break
+		result += "\n  " + _format_delta(stat_name, delta)
 	if result == "":
-		return "\n Comparable stats are equal."
+		return "\n  Comparable stats are equal."
 	return result
 
-static func _total_stats(item: Dictionary) -> Dictionary:
-	var normalized: Dictionary = item
-	var total_variant: Variant = normalized.get("total_stats", {})
-	if typeof(total_variant) == TYPE_DICTIONARY and not Dictionary(total_variant).is_empty():
-		return Dictionary(total_variant).duplicate(true)
-	var total: Dictionary = {}
-	for source_variant: Variant in [normalized.get("base_stats", {}), normalized.get("implicit_stats", {}), normalized.get("stats", {})]:
-		if typeof(source_variant) != TYPE_DICTIONARY:
-			continue
-		var source: Dictionary = Dictionary(source_variant)
-		for key_value: Variant in source.keys():
-			var key: String = str(key_value)
-			total[key] = float(total.get(key, 0.0)) + float(source[key_value])
-	for affix_value: Variant in _all_affixes(normalized):
-		if typeof(affix_value) != TYPE_DICTIONARY:
-			continue
-		var affix: Dictionary = Dictionary(affix_value)
-		var stats_variant: Variant = affix.get("stats", {})
-		if typeof(stats_variant) == TYPE_DICTIONARY:
-			var stats: Dictionary = Dictionary(stats_variant)
-			for key_value: Variant in stats.keys():
-				var key: String = str(key_value)
-				total[key] = float(total.get(key, 0.0)) + float(stats[key_value])
-		elif affix.has("stat"):
-			var stat_name: String = str(affix.get("stat", "Stat"))
-			total[stat_name] = float(total.get(stat_name, 0.0)) + float(affix.get("value", 0.0))
-	return total
-
-static func _top_stats(stats: Dictionary, limit: int) -> Dictionary:
-	var out: Dictionary = {}
-	var count: int = 0
-	for key_value: Variant in stats.keys():
-		out[str(key_value)] = stats[key_value]
-		count += 1
-		if count >= limit:
-			break
-	return out
-
-static func _all_affixes(item: Dictionary) -> Array:
-	var out: Array = []
-	for group_name: String in ["prefixes", "suffixes", "affixes"]:
-		var group_variant: Variant = item.get(group_name, [])
-		if typeof(group_variant) != TYPE_ARRAY:
-			continue
-		for affix_value: Variant in Array(group_variant):
-			out.append(affix_value)
-	return out
-
-static func _variant_array(value: Variant) -> Array:
-	if typeof(value) == TYPE_ARRAY:
-		return Array(value)
-	return []
-
-static func _add_stat_section(lines: Array[String], title: String, stats_variant: Variant) -> void:
-	if typeof(stats_variant) != TYPE_DICTIONARY:
-		return
-	var stats: Dictionary = Dictionary(stats_variant)
+static func _add_stat_section(lines: Array[String], title: String, stats: Dictionary) -> void:
 	if stats.is_empty():
 		return
 	lines.append("")
 	lines.append(title)
 	for key_value: Variant in stats.keys():
-		lines.append(" " + _format_stat(str(key_value), stats[key_value]))
+		lines.append("  " + _format_stat(str(key_value), stats[key_value]))
 
-static func _add_affix_section(lines: Array[String], title: String, affixes_variant: Variant, limit: int = 99) -> void:
-	if typeof(affixes_variant) != TYPE_ARRAY:
-		return
-	var affixes: Array = Array(affixes_variant)
+static func _add_affix_section(lines: Array[String], title: String, affixes: Array) -> void:
 	if affixes.is_empty():
 		return
 	lines.append("")
 	lines.append(title)
-	var count: int = 0
 	for affix_value: Variant in affixes:
 		if typeof(affix_value) == TYPE_DICTIONARY:
-			var affix: Dictionary = Dictionary(affix_value)
-			var line: String = " T" + str(int(affix.get("tier", 1))) + " " + str(affix.get("name", "Affix"))
-			if bool(affix.get("sealed", false)):
-				line += " [sealed]"
-			if affix.has("stat"):
-				line += " · " + _format_stat(str(affix.get("stat", "Stat")), affix.get("value", 0.0))
-			lines.append(line)
-			count += 1
-			if count >= limit:
-				break
+			var affix: Dictionary = affix_value
+			var stat_name: String = str(affix.get("stat", "Stat"))
+			var value: Variant = affix.get("value", 0.0)
+			lines.append("  T" + str(int(affix.get("tier", 1))) + " " + str(affix.get("name", "Affix")) + " · " + _format_stat(stat_name, value))
 
 static func _tag_to_shard(tag: String) -> String:
 	match tag:
