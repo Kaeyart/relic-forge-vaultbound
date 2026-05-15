@@ -1,7 +1,7 @@
 class_name RVGameState
 extends RefCounted
 
-const SAVE_VERSION: int = 26
+const SAVE_VERSION: int = 28
 
 var mode: String = "hub"
 var panel_mode: String = ""
@@ -31,12 +31,12 @@ var xp: float = 0.0
 var mastery_points: int = 0
 var refund_points: int = 0
 var gold: int = 0
-
 var materials: Dictionary = {
 	"embers": 10,
 	"shards": 5,
 	"runes": 0,
-	"echo_glass": 0
+	"echo_glass": 0,
+	"socket_prisms": 1
 }
 
 var active_skills: Array[String] = ["Fireball", "Cleave"]
@@ -51,7 +51,6 @@ var skill_ranks: Dictionary = {
 	"Void Rift": 0,
 	"Blade Trap": 0
 }
-
 var passive_nodes: Dictionary = {
 	"life_1": false,
 	"mana_1": false,
@@ -63,6 +62,7 @@ var passive_nodes: Dictionary = {
 	"trap_1": false
 }
 
+# Legacy compatibility. New system uses gem dictionaries below.
 var skill_supports: Dictionary = {
 	"Fireball": [],
 	"Cleave": [],
@@ -71,6 +71,16 @@ var skill_supports: Dictionary = {
 	"Void Rift": [],
 	"Blade Trap": []
 }
+
+# Patch 028 gem model.
+var skill_gem_inventory: Array[Dictionary] = []
+var support_gem_inventory: Array[Dictionary] = []
+var spirit_gem_inventory: Array[Dictionary] = []
+var skill_gem_cursor: int = 0
+var support_gem_cursor: int = 0
+var spirit_gem_cursor: int = 0
+var socket_cursor: int = 0
+var gem_uid_counter: int = 1
 
 var equipped: Dictionary = {
 	"weapon": {},
@@ -84,7 +94,6 @@ var equipped: Dictionary = {
 	"ring2": {},
 	"relic": {}
 }
-
 var backpack: Array[Dictionary] = []
 var stash: Array[Dictionary] = []
 var inventory_cursor: int = 0
@@ -103,7 +112,6 @@ var prompt_text: String = ""
 var notice_text: String = ""
 var notice_time: float = 0.0
 
-
 func init_new() -> void:
 	rng.randomize()
 	ensure_defaults()
@@ -112,9 +120,6 @@ func init_new() -> void:
 
 
 func ensure_defaults() -> void:
-	if active_skills.is_empty():
-		active_skills = ["Fireball", "Cleave"]
-
 	for skill_name: String in unlocked_skills:
 		if not skill_cooldowns.has(skill_name):
 			skill_cooldowns[skill_name] = 0.0
@@ -126,10 +131,116 @@ func ensure_defaults() -> void:
 	if equipped["weapon"].is_empty():
 		equipped["weapon"] = RVItemDB.make_starter_weapon()
 
+	_ensure_default_gems()
+	_sync_active_skills_from_equipped_gems()
+
+	if active_skills.is_empty():
+		active_skills = ["Fireball"]
+
 	selected_skill_index = clamp(selected_skill_index, 0, max(0, active_skills.size() - 1))
 	inventory_cursor = clamp(inventory_cursor, 0, max(0, backpack.size() - 1))
 	stash_cursor = clamp(stash_cursor, 0, max(0, stash.size() - 1))
 	equipment_cursor = clamp(equipment_cursor, 0, 9)
+	skill_gem_cursor = clamp(skill_gem_cursor, 0, max(0, skill_gem_inventory.size() - 1))
+	support_gem_cursor = clamp(support_gem_cursor, 0, max(0, support_gem_inventory.size() - 1))
+	spirit_gem_cursor = clamp(spirit_gem_cursor, 0, max(0, spirit_gem_inventory.size() - 1))
+	_recompute_spirit_reserved()
+
+
+func _ensure_default_gems() -> void:
+	if skill_gem_inventory.is_empty():
+		skill_gem_inventory.append(_make_active_gem("fireball", 1, true))
+		skill_gem_inventory.append(_make_active_gem("cleave", 1, true))
+		skill_gem_inventory.append(_make_active_gem("frost_nova", 1, false))
+		skill_gem_inventory.append(_make_active_gem("storm_lance", 1, false))
+
+	if support_gem_inventory.is_empty():
+		support_gem_inventory.append(_make_support_gem("controlled_power", 1))
+		support_gem_inventory.append(_make_support_gem("efficient_casting", 1))
+		support_gem_inventory.append(_make_support_gem("area_expansion", 1))
+
+	if spirit_gem_inventory.is_empty():
+		spirit_gem_inventory.append(_make_spirit_gem("clarity", 1, false))
+		spirit_gem_inventory.append(_make_spirit_gem("vitality", 1, false))
+
+
+func _next_gem_uid(prefix: String) -> String:
+	var uid: String = prefix + "_" + str(gem_uid_counter)
+	gem_uid_counter += 1
+	return uid
+
+
+func _make_active_gem(gem_id: String, gem_level: int, equipped_now: bool) -> Dictionary:
+	var data: Dictionary = RVSkillGemDB.active_data(gem_id)
+	return {
+		"uid": _next_gem_uid("active"),
+		"type": "active",
+		"gem_id": gem_id,
+		"name": str(data.get("name", gem_id.capitalize())),
+		"skill_id": str(data.get("skill_id", data.get("name", gem_id))),
+		"level": gem_level,
+		"xp": 0.0,
+		"max_support_sockets": int(data.get("base_sockets", 2)),
+		"supports": [],
+		"equipped": equipped_now
+	}
+
+
+func _make_support_gem(gem_id: String, gem_level: int) -> Dictionary:
+	var data: Dictionary = RVSkillGemDB.support_data(gem_id)
+	return {
+		"uid": _next_gem_uid("support"),
+		"type": "support",
+		"gem_id": gem_id,
+		"name": str(data.get("name", gem_id.capitalize())),
+		"level": gem_level,
+		"xp": 0.0
+	}
+
+
+func _make_spirit_gem(gem_id: String, gem_level: int, enabled_now: bool) -> Dictionary:
+	var data: Dictionary = RVSkillGemDB.spirit_data(gem_id)
+	return {
+		"uid": _next_gem_uid("spirit"),
+		"type": "spirit",
+		"gem_id": gem_id,
+		"name": str(data.get("name", gem_id.capitalize())),
+		"level": gem_level,
+		"xp": 0.0,
+		"max_support_sockets": int(data.get("base_sockets", 2)),
+		"supports": [],
+		"enabled": enabled_now
+	}
+
+
+func _sync_active_skills_from_equipped_gems() -> void:
+	active_skills.clear()
+	unlocked_skills.clear()
+
+	for gem: Dictionary in skill_gem_inventory:
+		var skill_id: String = str(gem.get("skill_id", ""))
+		if skill_id != "" and not unlocked_skills.has(skill_id):
+			unlocked_skills.append(skill_id)
+		if bool(gem.get("equipped", false)) and skill_id != "" and not active_skills.has(skill_id):
+			active_skills.append(skill_id)
+
+	if active_skills.is_empty() and not skill_gem_inventory.is_empty():
+		skill_gem_inventory[0]["equipped"] = true
+		active_skills.append(str(skill_gem_inventory[0].get("skill_id", "Fireball")))
+
+
+func _recompute_spirit_reserved() -> void:
+	spirit_reserved = 0
+	for gem: Dictionary in spirit_gem_inventory:
+		if not bool(gem.get("enabled", false)):
+			continue
+		var data: Dictionary = RVSkillGemDB.spirit_data(str(gem.get("gem_id", "")))
+		var reservation: float = float(data.get("base_reservation", 0))
+		var supports: Array = gem.get("supports", [])
+		for support_id_value: Variant in supports:
+			var support_data: Dictionary = RVSkillGemDB.support_data(str(support_id_value))
+			reservation *= 1.0 + float(support_data.get("spirit_more", 0.0))
+		spirit_reserved += int(ceil(reservation))
 
 
 func full_restore() -> void:
@@ -158,6 +269,15 @@ func recompute_stats() -> void:
 		max_hp += float(stats.get("Maximum Life", 0.0))
 		max_mana += float(stats.get("Maximum Mana", 0.0))
 
+	for spirit_gem: Dictionary in spirit_gem_inventory:
+		if not bool(spirit_gem.get("enabled", false)):
+			continue
+		var spirit_data: Dictionary = RVSkillGemDB.spirit_data(str(spirit_gem.get("gem_id", "")))
+		var spirit_stats: Dictionary = spirit_data.get("stats", {})
+		max_hp += float(spirit_stats.get("Maximum Life", 0.0))
+		max_mana += float(spirit_stats.get("Maximum Mana", 0.0))
+
+	_recompute_spirit_reserved()
 	player_hp = min(player_hp, max_hp)
 	player_mana = min(player_mana, max_mana)
 
@@ -243,6 +363,14 @@ func to_save_dict() -> Dictionary:
 		"skill_ranks": skill_ranks,
 		"passive_nodes": passive_nodes,
 		"skill_supports": skill_supports,
+		"skill_gem_inventory": skill_gem_inventory,
+		"support_gem_inventory": support_gem_inventory,
+		"spirit_gem_inventory": spirit_gem_inventory,
+		"skill_gem_cursor": skill_gem_cursor,
+		"support_gem_cursor": support_gem_cursor,
+		"spirit_gem_cursor": spirit_gem_cursor,
+		"socket_cursor": socket_cursor,
+		"gem_uid_counter": gem_uid_counter,
 		"equipped": equipped,
 		"backpack": backpack,
 		"stash": stash,
@@ -279,22 +407,40 @@ func apply_save_dict(data: Dictionary) -> void:
 
 	if typeof(data.get("skill_ranks", {})) == TYPE_DICTIONARY:
 		skill_ranks.merge(data.get("skill_ranks", {}), true)
-
 	if typeof(data.get("passive_nodes", {})) == TYPE_DICTIONARY:
 		passive_nodes.merge(data.get("passive_nodes", {}), true)
-
 	if typeof(data.get("skill_supports", {})) == TYPE_DICTIONARY:
 		skill_supports.merge(data.get("skill_supports", {}), true)
 
+	if typeof(data.get("skill_gem_inventory", [])) == TYPE_ARRAY:
+		skill_gem_inventory.clear()
+		for gem_value: Variant in data.get("skill_gem_inventory", []):
+			if typeof(gem_value) == TYPE_DICTIONARY:
+				skill_gem_inventory.append(gem_value)
+	if typeof(data.get("support_gem_inventory", [])) == TYPE_ARRAY:
+		support_gem_inventory.clear()
+		for support_value: Variant in data.get("support_gem_inventory", []):
+			if typeof(support_value) == TYPE_DICTIONARY:
+				support_gem_inventory.append(support_value)
+	if typeof(data.get("spirit_gem_inventory", [])) == TYPE_ARRAY:
+		spirit_gem_inventory.clear()
+		for spirit_value: Variant in data.get("spirit_gem_inventory", []):
+			if typeof(spirit_value) == TYPE_DICTIONARY:
+				spirit_gem_inventory.append(spirit_value)
+
+	skill_gem_cursor = int(data.get("skill_gem_cursor", skill_gem_cursor))
+	support_gem_cursor = int(data.get("support_gem_cursor", support_gem_cursor))
+	spirit_gem_cursor = int(data.get("spirit_gem_cursor", spirit_gem_cursor))
+	socket_cursor = int(data.get("socket_cursor", socket_cursor))
+	gem_uid_counter = int(data.get("gem_uid_counter", gem_uid_counter))
+
 	if typeof(data.get("equipped", {})) == TYPE_DICTIONARY:
 		equipped.merge(data.get("equipped", {}), true)
-
 	if typeof(data.get("backpack", [])) == TYPE_ARRAY:
 		backpack.clear()
 		for item_value: Variant in data.get("backpack", []):
 			if typeof(item_value) == TYPE_DICTIONARY:
 				backpack.append(item_value)
-
 	if typeof(data.get("stash", [])) == TYPE_ARRAY:
 		stash.clear()
 		for stash_value: Variant in data.get("stash", []):

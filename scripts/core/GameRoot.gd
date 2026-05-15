@@ -15,12 +15,10 @@ func _ready() -> void:
 	RVSaveSystem.load_into(state)
 	state.ensure_defaults()
 	state.enter_hub()
-
 	combat.visible = false
 	hub.visible = true
 	combat.combat_finished.connect(_on_combat_finished)
 	combat.player_died.connect(_on_player_died)
-
 	player.sync_from_state(state)
 	set_process(true)
 	set_process_unhandled_input(true)
@@ -29,7 +27,6 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_update_player(delta)
 	RVSkillSystem.update(state, delta)
-
 	if state.mode == "hub":
 		hub.update_focus(state)
 	else:
@@ -90,11 +87,12 @@ func _handle_key(keycode: int) -> void:
 		if keycode == KEY_ESCAPE:
 			state.panel_mode = ""
 			return
-
+		if RVSkillGemSystem.handle_panel_key(state, keycode):
+			RVSaveSystem.save(state)
+			return
 		if RVInventorySystem.handle_panel_key(state, keycode):
 			RVSaveSystem.save(state)
 			return
-
 		if RVBuildcraftSystem.handle_key(state, keycode):
 			RVSaveSystem.save(state)
 			return
@@ -102,9 +100,9 @@ func _handle_key(keycode: int) -> void:
 	if keycode >= KEY_1 and keycode <= KEY_6:
 		var index: int = keycode - KEY_1
 		if state.mode == "hub":
-			var skill_names: Array = RVSkillDB.names()
-			if index < skill_names.size():
-				RVSkillSystem.toggle_skill_loadout(state, str(skill_names[index]))
+			if index < state.skill_gem_inventory.size():
+				state.skill_gem_cursor = index
+				RVSkillGemSystem.toggle_selected_active_gem_equipped(state)
 		else:
 			if index < state.active_skills.size():
 				state.selected_skill_index = index

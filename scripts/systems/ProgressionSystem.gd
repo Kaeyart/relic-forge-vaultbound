@@ -16,4 +16,14 @@ static func award_room(state: RVGameState) -> void:
 
 	var drop: Dictionary = RVItemDB.generate_drop(state, max(1, state.room_index))
 	state.backpack.append(drop)
-	state.add_notice("Room Complete - Item Added")
+	var notice: String = "Room Complete - Item Added"
+
+	if state.rng.randf() < 0.55:
+		var gem_notice: String = RVSkillGemSystem.award_random_gem_drop(state, max(1, state.room_index))
+		notice += " · " + gem_notice
+
+	if state.rng.randf() < 0.12:
+		state.materials["socket_prisms"] = int(state.materials.get("socket_prisms", 0)) + 1
+		notice += " · Socket Prism"
+
+	state.add_notice(notice)
