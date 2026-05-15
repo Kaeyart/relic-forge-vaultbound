@@ -1,36 +1,50 @@
-# Relic Forge: Vaultbound — Clean Reinstall Baseline
+# Relic Forge: Vaultbound
 
-This is the cleaned scene-authored baseline.
+Clean scene-authored Godot 4.6 baseline for a buildcraft dungeon-crawler ARPG.
 
-The project is intentionally small and modular. It preserves the usable art/assets already in the project during installation, but removes the old patch-script pile and replaces the runtime with a clean skeleton.
+## Current target loop
 
-## Current playable loop
+Hub → choose an activity gate → combat room → clear enemies → open reward chest → exit/return → manage inventory/crafting/passives/skills → repeat.
 
-Hub → activity gate → combat room → reward → inventory/crafting/passives/skills → hub.
+## Active boot scene
 
-## Controls
+`res://scenes/main/GameRoot.tscn`
 
-Hub:
-- WASD: move
-- E: interact with focused hub station
-- I: Inventory
-- C: Crafting
-- P: Passive Atlas
-- K: Skill Gems
-- B: Stash
-- M: Activities
-- Tab: Character
-- F5: save
-
-Combat:
-- WASD: move
-- Left click / Space: cast selected skill
-- 1–6: select skill
-- Q/E: cycle skills
-- Esc: return to hub
+This is the only intended runtime entry point.
 
 ## Scene-authored rule
 
-All screen UI layout belongs in `.tscn` scenes.
+UI and hub/combat layout belong in `.tscn` scenes. Scripts update state, text, visibility, and gameplay data. Scripts should not hardcode screen UI layout positions unless they are temporary debug helpers.
 
-Scripts may update labels, progress bars, icons, and visibility. Scripts should not hardcode screen layout positions.
+## Active scene spine
+
+- `scenes/main/GameRoot.tscn` — root scene that instances the game pieces.
+- `scenes/hub/ForgeholdHub.tscn` — manually authored hub stations.
+- `scenes/combat/CombatArena.tscn` — manually authored combat room layout.
+- `scenes/prefabs/player/Player.tscn` — player actor.
+- `scenes/prefabs/enemies/EnemyActor.tscn` — enemy actor prefab.
+- `scenes/prefabs/projectiles/ProjectileActor.tscn` — projectile actor prefab.
+- `scenes/ui/GameHUD.tscn` — scene-authored HUD.
+- `scenes/ui/UIPanelRoot.tscn` — system panel root.
+- `scenes/ui/panels/*.tscn` — inventory, crafting, passives, skill gems, character, stash, activities.
+
+## Active script spine
+
+- `scripts/core/GameRoot.gd` — coordinator.
+- `scripts/core/GameState.gd` — runtime and persistent state.
+- `scripts/core/SaveSystem.gd` — save/load.
+- `scripts/hub/` — hub station behavior.
+- `scripts/combat/` — combat actor/room behavior.
+- `scripts/player/` — player controller.
+- `scripts/ui/` — scene-authored UI scripts.
+- `scripts/data/` — databases.
+- `scripts/systems/` — gameplay systems.
+
+## Legacy
+
+Old one-file Patch 003 runtime files have been moved under:
+
+- `scenes/legacy/patch003/`
+- `scripts/legacy/patch003/`
+
+They are kept only as historical reference and should not be used as active runtime files.
