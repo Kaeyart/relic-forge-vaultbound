@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/ProjectileActor.gd" id="1_projectile"]
+
+[node name="ProjectileActor" type="Node2D"]
+script = ExtResource("1_projectile")
+
+[node name="Body" type="Polygon2D" parent="."]
+color = Color(1, 0.45, 0.12, 1)
+polygon = PackedVector2Array(12, 0, 0, 8, -12, 0, 0, -8)

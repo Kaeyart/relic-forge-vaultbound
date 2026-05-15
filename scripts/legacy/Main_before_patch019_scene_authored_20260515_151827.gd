@@ -1,0 +1,149 @@
+extends Node2D
+
+# Relic Forge: Vaultbound
+# Patch 017 clean coordinator with restored UI assets and standardized systems.
+
+var state: RVGameState = RVGameState.new()
+var textures: Dictionary = {}
+var scene_hud: Node = null
+var autosave_timer: float = 0.0
+
+func _ready() -> void:
+	_load_ui_textures()
+	state.init()
+	RVSaveSystem.load_into(state)
+	state.init()
+	RVHubSystem.rebuild_objects(state)
+	RVBuildcraftSystem.append_hub_objects(state)
+	state.enter_hub()
+	state.add_notice("Hub loaded")
+	_setup_scene_hud()
+	set_process(true)
+	set_process_unhandled_input(true)
+
+func _process(delta: float) -> void:
+	RVBuildcraftSystem.update(state, delta)
+	RVPlayerSystem.update(state, delta)
+	RVSkillSystem.update(state, delta)
+	if state.mode == "hub":
+		RVHubSystem.update_focus(state)
+	else:
+		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			RVSkillSystem.cast_selected(state, get_global_mouse_position())
+		RVCombatSystem.update(state, delta)
+	if state.notice_time > 0.0:
+		state.notice_time = max(0.0, state.notice_time - delta)
+	autosave_timer += delta
+	if autosave_timer >= 10.0:
+		autosave_timer = 0.0
+		RVSaveSystem.save(state)
+	_update_scene_hud()
+	queue_redraw()
+
+func _unhandled_input(event) -> void:
+	if event is InputEventKey:
+		var key: InputEventKey = event
+		if key.pressed and not key.echo:
+			_handle_key(key.keycode)
+	if event is InputEventMouseButton:
+		var mb: InputEventMouseButton = event
+		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT and state.mode == "combat":
+			RVSkillSystem.cast_selected(state, get_global_mouse_position())
+
+func _handle_key(keycode: int) -> void:
+	if RVBuildcraftSystem.handle_key(state, keycode):
+		RVSaveSystem.save(state)
+		return
+	if keycode >= KEY_1 and keycode <= KEY_6:
+		var index: int = keycode - KEY_1
+		if state.mode == "hub":
+			RVBuildcraftSystem.toggle_skill_loadout(state, index)
+			RVSaveSystem.save(state)
+		elif index < state.active_skills.size():
+			state.selected_skill = index
+		return
+	if keycode == KEY_Q and state.mode == "combat":
+		_cycle_active_skill(-1)
+		return
+	if keycode == KEY_E and state.mode == "combat":
+		_cycle_active_skill(1)
+		return
+	if keycode == KEY_SPACE and state.mode == "combat":
+		RVSkillSystem.cast_selected(state, get_global_mouse_position())
+		return
+	if keycode == KEY_E and state.mode == "hub":
+		RVHubSystem.interact_primary(state)
+		RVSaveSystem.save(state)
+		return
+	if keycode == KEY_X and state.mode == "hub":
+		RVHubSystem.interact_secondary(state)
+		RVSaveSystem.save(state)
+		return
+	if keycode == KEY_ESCAPE:
+		if state.panel_mode != "":
+			state.panel_mode = ""
+		elif state.mode == "combat":
+			state.enter_hub()
+			state.add_notice("Returned to hub")
+		RVSaveSystem.save(state)
+		return
+	if keycode == KEY_F5:
+		RVSaveSystem.save(state)
+		state.add_notice("Saved")
+		return
+
+func _cycle_active_skill(dir: int) -> void:
+	if state.active_skills.size() == 0:
+		return
+	state.selected_skill = posmod(state.selected_skill + dir, state.active_skills.size())
+
+func _draw() -> void:
+	RVRenderSystem.draw_world(self, state, textures)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		RVSaveSystem.save(state)
+
+func _load_ui_textures() -> void:
+	_load_texture("ui_skill_slot_empty", "res://assets/ui/patch015a/slices/normalized/ui_skill_slot_empty.png")
+	_load_texture("ui_skill_slot_selected", "res://assets/ui/patch015a/slices/normalized/ui_skill_slot_selected.png")
+	_load_texture("ui_inventory_slot", "res://assets/ui/patch015a/slices/normalized/ui_inventory_slot.png")
+	_load_texture("ui_equipped_item_slot", "res://assets/ui/patch015a/slices/normalized/ui_equipped_item_slot.png")
+	_load_texture("ui_material_chip", "res://assets/ui/patch015a/slices/normalized/ui_material_chip.png")
+	_load_texture("ui_passive_node_circle", "res://assets/ui/patch015a/slices/normalized/ui_passive_node_circle.png")
+	_load_texture("ui_health_bar_frame", "res://assets/ui/patch015a/slices/normalized/ui_health_bar_frame.png")
+	_load_texture("ui_mana_bar_frame", "res://assets/ui/patch015a/slices/normalized/ui_mana_bar_frame.png")
+	_load_texture("ui_tooltip_panel_large", "res://assets/ui/patch015a/slices/normalized/ui_tooltip_panel_large.png")
+	_load_texture("ui_notice_banner", "res://assets/ui/patch015a/slices/normalized/ui_notice_banner.png")
+	_load_texture("ui_vertical_card_panel", "res://assets/ui/patch015a/slices/normalized/ui_vertical_card_panel.png")
+	_load_texture("ui_main_window_panel", "res://assets/ui/patch015a/slices/normalized/ui_main_window_panel.png")
+
+func _load_texture(key: String, path: String) -> void:
+	var tex: Variant = load(path)
+	if tex != null:
+		textures[key] = tex
+
+
+# -------------------------------------------------------------------
+# Patch 018A: scene-driven HUD bridge
+# -------------------------------------------------------------------
+
+func _setup_scene_hud() -> void:
+	if scene_hud != null:
+		return
+
+	var hud_scene: PackedScene = load("res://scenes/ui/GameHUD.tscn")
+	if hud_scene == null:
+		push_warning("GameHUD.tscn missing; scene HUD not created.")
+		return
+
+	scene_hud = hud_scene.instantiate()
+	add_child(scene_hud)
+	_update_scene_hud()
+
+
+func _update_scene_hud() -> void:
+	if scene_hud == null:
+		return
+	if scene_hud.has_method("update_from_state"):
+		scene_hud.call("update_from_state", state)

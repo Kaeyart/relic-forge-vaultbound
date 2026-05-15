@@ -1,0 +1,563 @@
+[gd_scene format=3 uid="uid://bewp52hvsit2n"]
+
+[ext_resource type="Script" uid="uid://xhmr41lhhdkg" path="res://scripts/ui/GameHUD.gd" id="1_hud"]
+[ext_resource type="Texture2D" uid="uid://clwld6ogq7rag" path="res://assets/ui/patch015a/slices/tight/ui_health_bar_frame.png" id="2_ic2g1"]
+[ext_resource type="Texture2D" uid="uid://dm24mhv53v0v5" path="res://assets/ui/patch015a/slices/tight/ui_mana_bar_frame.png" id="3_hg5kr"]
+[ext_resource type="Texture2D" uid="uid://dv8x51757ec0f" path="res://assets/ui/patch015a/slices/tight/ui_skill_slot_selected.png" id="4_k6bcm"]
+[ext_resource type="Texture2D" uid="uid://buqlgwe0aylvd" path="res://assets/ui/patch015a/slices/tight/ui_skill_slot_empty.png" id="5_6yve6"]
+[ext_resource type="Texture2D" uid="uid://b7m8cfk00qjo6" path="res://assets/ui/patch015a/slices/tight/ui_notice_banner.png" id="6_hg5kr"]
+
+[node name="GameHUD" type="CanvasLayer" unique_id=1683288940]
+layer = 100
+script = ExtResource("1_hud")
+
+[node name="Root" type="Control" parent="." unique_id=1877705389]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopStatus" type="PanelContainer" parent="Root" unique_id=317149336]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 12.0
+offset_right = 1266.0
+offset_bottom = 44.0
+mouse_filter = 2
+
+[node name="StatusText" type="Label" parent="Root/TopStatus" unique_id=540553806]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Lv 1   XP 0/0   Points 0   Refunds 0   Spirit 0/0   Gold 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BottomHUD" type="Control" parent="Root" unique_id=1967496122]
+anchors_preset = 0
+offset_left = 18.0
+offset_top = 604.0
+offset_right = 330.0
+offset_bottom = 704.0
+mouse_filter = 2
+
+[node name="HealthBar" type="Control" parent="Root/BottomHUD" unique_id=1926015637]
+anchors_preset = 0
+offset_right = 311.0
+offset_bottom = 46.0
+mouse_filter = 2
+
+[node name="Frame" type="TextureRect" parent="Root/BottomHUD/HealthBar" unique_id=119815440]
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 40.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="FillClip" type="Control" parent="Root/BottomHUD/HealthBar" unique_id=1911375259]
+clip_contents = true
+anchors_preset = 0
+offset_left = 75.0
+offset_top = 12.0
+offset_right = 226.0
+offset_bottom = 42.0
+mouse_filter = 2
+
+[node name="Fill" type="ColorRect" parent="Root/BottomHUD/HealthBar/FillClip" unique_id=1929617517]
+layout_mode = 0
+offset_top = 8.0
+offset_right = 155.0
+offset_bottom = 26.0
+mouse_filter = 2
+color = Color(0.9, 0.12, 0.08, 0.86)
+
+[node name="HPLabel" type="Label" parent="Root/BottomHUD/HealthBar" unique_id=1229970067]
+layout_mode = 0
+offset_left = 76.0
+offset_top = 19.0
+offset_right = 224.0
+offset_bottom = 41.0
+theme_override_font_sizes/font_size = 12
+text = "120 / 120"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UiHealthBarFrame" type="Sprite2D" parent="Root/BottomHUD/HealthBar" unique_id=1283135266]
+position = Vector2(149.1875, 26.375)
+scale = Vector2(0.3417195, 0.31071424)
+texture = ExtResource("2_ic2g1")
+
+[node name="ManaBar" type="Control" parent="Root/BottomHUD" unique_id=379675286]
+anchors_preset = 0
+offset_left = -1.0
+offset_top = 39.0
+offset_right = 299.0
+offset_bottom = 79.0
+mouse_filter = 2
+
+[node name="Frame" type="TextureRect" parent="Root/BottomHUD/ManaBar" unique_id=243540838]
+layout_mode = 0
+offset_left = -11.0
+offset_top = 31.0
+offset_right = 297.0
+offset_bottom = 71.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="FillClip" type="Control" parent="Root/BottomHUD/ManaBar" unique_id=2103701989]
+clip_contents = true
+anchors_preset = 0
+offset_left = 32.0
+offset_top = 40.0
+offset_right = 222.0
+offset_bottom = 65.0
+mouse_filter = 2
+
+[node name="Fill" type="ColorRect" parent="Root/BottomHUD/ManaBar/FillClip" unique_id=152398269]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 2.0
+offset_right = 190.0
+offset_bottom = 20.0
+mouse_filter = 2
+color = Color(0.18, 0.58, 1, 0.86)
+
+[node name="ManaLabel" type="Label" parent="Root/BottomHUD/ManaBar" unique_id=2097612818]
+layout_mode = 0
+offset_left = 70.0
+offset_top = 41.0
+offset_right = 230.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 12
+text = "100 / 100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UiManaBarFrame" type="Sprite2D" parent="Root/BottomHUD/ManaBar" unique_id=783785637]
+position = Vector2(150, 49)
+scale = Vector2(0.33467093, 0.28857142)
+texture = ExtResource("3_hg5kr")
+
+[node name="SkillBar" type="Control" parent="Root" unique_id=1641026647]
+anchors_preset = 0
+offset_left = 442.0
+offset_top = 612.0
+offset_right = 838.0
+offset_bottom = 690.0
+mouse_filter = 2
+
+[node name="Slot0" type="Control" parent="Root/SkillBar" unique_id=1458265044]
+anchors_preset = 0
+offset_right = 58.0
+offset_bottom = 58.0
+mouse_filter = 2
+
+[node name="SelectedFrame" type="TextureRect" parent="Root/SkillBar/Slot0" unique_id=2078508704]
+visible = false
+layout_mode = 0
+offset_right = 58.0
+offset_bottom = 58.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="SkillColor" type="ColorRect" parent="Root/SkillBar/Slot0" unique_id=1735754519]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 14.0
+offset_right = 41.0
+offset_bottom = 38.0
+mouse_filter = 2
+color = Color(1, 0.34, 0.1, 0.85)
+
+[node name="KeyLabel" type="Label" parent="Root/SkillBar/Slot0" unique_id=1956148132]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 38.0
+offset_right = 22.0
+offset_bottom = 58.0
+theme_override_font_sizes/font_size = 10
+text = "1"
+
+[node name="SkillLabel" type="Label" parent="Root/SkillBar/Slot0" unique_id=1179039610]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 47.0
+offset_right = 49.0
+offset_bottom = 66.0
+theme_override_font_sizes/font_size = 8
+text = "FIRE"
+horizontal_alignment = 1
+
+[node name="UiSkillSlotSelected" type="Sprite2D" parent="Root/SkillBar/Slot0" unique_id=181512299]
+position = Vector2(29, 26)
+scale = Vector2(0.10204085, 0.1007194)
+texture = ExtResource("4_k6bcm")
+
+[node name="Slot1" type="Control" parent="Root/SkillBar" unique_id=921489634]
+anchors_preset = 0
+offset_left = 66.0
+offset_right = 124.0
+offset_bottom = 58.0
+mouse_filter = 2
+
+[node name="Frame" type="TextureRect" parent="Root/SkillBar/Slot1" unique_id=887691648]
+layout_mode = 0
+offset_right = 58.0
+offset_bottom = 58.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Root/SkillBar/Slot1" unique_id=939483667]
+visible = false
+layout_mode = 0
+offset_right = 58.0
+offset_bottom = 58.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="SkillColor" type="ColorRect" parent="Root/SkillBar/Slot1" unique_id=1488693540]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 14.0
+offset_right = 41.0
+offset_bottom = 38.0
+mouse_filter = 2
+color = Color(1, 0.78, 0.42, 0.85)
+
+[node name="KeyLabel" type="Label" parent="Root/SkillBar/Slot1" unique_id=129055397]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 38.0
+offset_right = 22.0
+offset_bottom = 58.0
+theme_override_font_sizes/font_size = 10
+text = "2"
+
+[node name="SkillLabel" type="Label" parent="Root/SkillBar/Slot1" unique_id=1063002065]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 47.0
+offset_right = 49.0
+offset_bottom = 66.0
+theme_override_font_sizes/font_size = 8
+text = "CUT"
+horizontal_alignment = 1
+
+[node name="UiSkillSlotEmpty" type="Sprite2D" parent="Root/SkillBar/Slot1" unique_id=518648172]
+position = Vector2(28.5, 26)
+scale = Vector2(0.09999999, 0.09876543)
+texture = ExtResource("5_6yve6")
+
+[node name="Slot2" type="Control" parent="Root/SkillBar" unique_id=1276083418]
+anchors_preset = 0
+offset_left = 132.0
+offset_right = 190.0
+offset_bottom = 58.0
+mouse_filter = 2
+
+[node name="Frame" type="TextureRect" parent="Root/SkillBar/Slot2" unique_id=2033340005]
+layout_mode = 0
+offset_right = 58.0
+offset_bottom = 58.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Root/SkillBar/Slot2" unique_id=1008273503]
+visible = false
+layout_mode = 0
+offset_right = 58.0
+offset_bottom = 58.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="SkillColor" type="ColorRect" parent="Root/SkillBar/Slot2" unique_id=383700794]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 14.0
+offset_right = 41.0
+offset_bottom = 38.0
+mouse_filter = 2
+color = Color(0.08, 0.08, 0.09, 0.55)
+
+[node name="KeyLabel" type="Label" parent="Root/SkillBar/Slot2" unique_id=993865995]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 38.0
+offset_right = 22.0
+offset_bottom = 58.0
+theme_override_font_sizes/font_size = 10
+text = "3"
+
+[node name="SkillLabel" type="Label" parent="Root/SkillBar/Slot2" unique_id=970445660]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 39.0
+offset_right = 56.0
+offset_bottom = 58.0
+theme_override_font_sizes/font_size = 8
+horizontal_alignment = 1
+
+[node name="UiSkillSlotEmpty2" type="Sprite2D" parent="Root/SkillBar/Slot2" unique_id=1864655989]
+position = Vector2(29, 26)
+scale = Vector2(0.09999999, 0.09876543)
+texture = ExtResource("5_6yve6")
+
+[node name="Slot3" type="Control" parent="Root/SkillBar" unique_id=1439741372]
+anchors_preset = 0
+offset_left = 198.0
+offset_right = 256.0
+offset_bottom = 58.0
+mouse_filter = 2
+
+[node name="Frame" type="TextureRect" parent="Root/SkillBar/Slot3" unique_id=186550443]
+layout_mode = 0
+offset_right = 58.0
+offset_bottom = 58.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Root/SkillBar/Slot3" unique_id=1136557368]
+visible = false
+layout_mode = 0
+offset_right = 58.0
+offset_bottom = 58.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="SkillColor" type="ColorRect" parent="Root/SkillBar/Slot3" unique_id=1066391037]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 14.0
+offset_right = 41.0
+offset_bottom = 38.0
+mouse_filter = 2
+color = Color(0.08, 0.08, 0.09, 0.55)
+
+[node name="KeyLabel" type="Label" parent="Root/SkillBar/Slot3" unique_id=1496555471]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 38.0
+offset_right = 22.0
+offset_bottom = 58.0
+theme_override_font_sizes/font_size = 10
+text = "4"
+
+[node name="SkillLabel" type="Label" parent="Root/SkillBar/Slot3" unique_id=323865082]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 39.0
+offset_right = 56.0
+offset_bottom = 58.0
+theme_override_font_sizes/font_size = 8
+horizontal_alignment = 1
+
+[node name="UiSkillSlotEmpty3" type="Sprite2D" parent="Root/SkillBar/Slot3" unique_id=251471067]
+position = Vector2(29, 26)
+scale = Vector2(0.09999999, 0.09876543)
+texture = ExtResource("5_6yve6")
+
+[node name="Slot4" type="Control" parent="Root/SkillBar" unique_id=1663721748]
+anchors_preset = 0
+offset_left = 264.0
+offset_right = 322.0
+offset_bottom = 58.0
+mouse_filter = 2
+
+[node name="Frame" type="TextureRect" parent="Root/SkillBar/Slot4" unique_id=332027690]
+layout_mode = 0
+offset_right = 58.0
+offset_bottom = 58.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Root/SkillBar/Slot4" unique_id=1425875628]
+visible = false
+layout_mode = 0
+offset_right = 58.0
+offset_bottom = 58.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="SkillColor" type="ColorRect" parent="Root/SkillBar/Slot4" unique_id=1398433455]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 14.0
+offset_right = 41.0
+offset_bottom = 38.0
+mouse_filter = 2
+color = Color(0.08, 0.08, 0.09, 0.55)
+
+[node name="KeyLabel" type="Label" parent="Root/SkillBar/Slot4" unique_id=634791015]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 38.0
+offset_right = 22.0
+offset_bottom = 58.0
+theme_override_font_sizes/font_size = 10
+text = "5"
+
+[node name="SkillLabel" type="Label" parent="Root/SkillBar/Slot4" unique_id=725717782]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 39.0
+offset_right = 56.0
+offset_bottom = 58.0
+theme_override_font_sizes/font_size = 8
+horizontal_alignment = 1
+
+[node name="UiSkillSlotEmpty4" type="Sprite2D" parent="Root/SkillBar/Slot4" unique_id=1273356307]
+position = Vector2(29.000061, 26)
+scale = Vector2(0.09999999, 0.09876543)
+texture = ExtResource("5_6yve6")
+
+[node name="Slot5" type="Control" parent="Root/SkillBar" unique_id=1771017186]
+anchors_preset = 0
+offset_left = 330.0
+offset_right = 388.0
+offset_bottom = 58.0
+mouse_filter = 2
+
+[node name="Frame" type="TextureRect" parent="Root/SkillBar/Slot5" unique_id=11262030]
+layout_mode = 0
+offset_right = 58.0
+offset_bottom = 58.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Root/SkillBar/Slot5" unique_id=1484624015]
+visible = false
+layout_mode = 0
+offset_right = 58.0
+offset_bottom = 58.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="SkillColor" type="ColorRect" parent="Root/SkillBar/Slot5" unique_id=1640787802]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 14.0
+offset_right = 41.0
+offset_bottom = 38.0
+mouse_filter = 2
+color = Color(0.08, 0.08, 0.09, 0.55)
+
+[node name="KeyLabel" type="Label" parent="Root/SkillBar/Slot5" unique_id=1695514261]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 38.0
+offset_right = 22.0
+offset_bottom = 58.0
+theme_override_font_sizes/font_size = 10
+text = "6"
+
+[node name="SkillLabel" type="Label" parent="Root/SkillBar/Slot5" unique_id=1772386725]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 39.0
+offset_right = 56.0
+offset_bottom = 58.0
+theme_override_font_sizes/font_size = 8
+horizontal_alignment = 1
+
+[node name="UiSkillSlotEmpty5" type="Sprite2D" parent="Root/SkillBar/Slot5" unique_id=337464457]
+position = Vector2(29.000061, 26)
+scale = Vector2(0.09999999, 0.09876543)
+texture = ExtResource("5_6yve6")
+
+[node name="PromptBanner" type="Control" parent="Root" unique_id=947440783]
+anchors_preset = 0
+offset_left = 370.0
+offset_top = 670.0
+offset_right = 910.0
+offset_bottom = 706.0
+mouse_filter = 2
+
+[node name="Frame" type="TextureRect" parent="Root/PromptBanner" unique_id=1948737045]
+layout_mode = 0
+offset_right = 540.0
+offset_bottom = 36.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="PromptText" type="Label" parent="Root/PromptBanner" unique_id=1921740578]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 6.0
+offset_right = 524.0
+offset_bottom = 31.0
+theme_override_font_sizes/font_size = 13
+text = "Prompt"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NoticeBanner" type="Control" parent="Root" unique_id=1438966995]
+anchors_preset = 0
+offset_left = 410.0
+offset_top = 54.0
+offset_right = 870.0
+offset_bottom = 96.0
+mouse_filter = 2
+
+[node name="Frame" type="TextureRect" parent="Root/NoticeBanner" unique_id=860078740]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 76.0
+offset_right = 467.0
+offset_bottom = 118.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="NoticeText" type="Label" parent="Root/NoticeBanner" unique_id=65698381]
+layout_mode = 0
+offset_left = 102.0
+offset_top = 48.0
+offset_right = 352.0
+offset_bottom = 145.0
+theme_override_font_sizes/font_size = 14
+text = "Notice"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UiNoticeBanner" type="Sprite2D" parent="Root/NoticeBanner" unique_id=2119606667]
+position = Vector2(228, 88)
+scale = Vector2(0.59983635, 0.6111111)
+texture = ExtResource("6_hg5kr")
+
+[node name="PanelRoot" type="Control" parent="Root" unique_id=1093375918]
+visible = false
+anchors_preset = 0
+offset_left = 360.0
+offset_top = 118.0
+offset_right = 920.0
+offset_bottom = 590.0
+mouse_filter = 2
+
+[node name="Frame" type="TextureRect" parent="Root/PanelRoot" unique_id=2656521]
+layout_mode = 0
+offset_right = 560.0
+offset_bottom = 472.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="PanelTitle" type="Label" parent="Root/PanelRoot" unique_id=1093123237]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 36.0
+offset_right = 512.0
+offset_bottom = 70.0
+theme_override_font_sizes/font_size = 18
+text = "PANEL"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PanelBody" type="Label" parent="Root/PanelRoot" unique_id=382702315]
+layout_mode = 0
+offset_left = 62.0
+offset_top = 92.0
+offset_right = 498.0
+offset_bottom = 414.0
+theme_override_font_sizes/font_size = 13
+text = "Panel body"
+autowrap_mode = 3

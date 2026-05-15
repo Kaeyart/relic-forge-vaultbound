@@ -1,169 +1,151 @@
 extends Node2D
 
-const PATCH015B_ALL_SKILLS = ["Fireball", "Cleave", "Frost Nova", "Storm Lance", "Void Rift", "Blade Trap"]
-
-# Relic Forge: Vaultbound
-# Patch 014 clean architecture coordinator.
-#
-# This file should stay small.
-# Game logic lives in scripts/core, scripts/data, scripts/systems, scripts/visuals.
-
 var state: RVGameState = RVGameState.new()
-var textures: Dictionary = {}
 var autosave_timer: float = 0.0
+
+@onready var hub_root: RVHubRoot = $WorldRoot/HubRoot
+@onready var combat_arena: RVCombatArena = $WorldRoot/CombatArena
+@onready var player: RVPlayerController = $Player
+@onready var hud: RVGameHUD = $GameHUD
 
 func _ready() -> void:
 	state.init()
 	RVSaveSystem.load_into(state)
 	state.init()
-	_load_patch015a_ui_textures()
-
-	RVHubSystem.rebuild_objects(state)
-	state.enter_hub()
-	state.add_notice("Forgehold loaded")
-	_save_now(false)
-
+	hub_root.setup(state, self)
+	combat_arena.setup(state, self)
+	player.setup(state)
+	enter_hub()
+	state.add_notice("Scene-authored game loaded")
 	set_process(true)
 	set_process_unhandled_input(true)
 
 func _process(delta: float) -> void:
-	RVPlayerSystem.update(state, delta)
-	RVSkillSystem.update(state, delta)
-
+	_update_cooldowns(delta)
+	state.invuln = max(0.0, state.invuln - delta)
+	state.player_mana = min(state.max_mana, state.player_mana + 12.0 * delta)
 	if state.mode == "hub":
-		RVHubSystem.update_focus(state)
+		hub_root.update_focus(player.global_position)
 	else:
+		combat_arena.update_arena(delta)
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-			RVSkillSystem.cast_selected(state, get_global_mouse_position())
-		RVCombatSystem.update(state, delta)
-
+			_cast_selected()
+		if state.player_hp <= 0.0:
+			state.deaths += 1
+			state.add_notice("You died. Returned to Hub.")
+			enter_hub()
 	if state.notice_time > 0.0:
 		state.notice_time = max(0.0, state.notice_time - delta)
-
 	autosave_timer += delta
 	if autosave_timer >= 10.0:
 		autosave_timer = 0.0
-		_save_now(false)
+		RVSaveSystem.save(state)
+	hud.update_from_state(state)
 
-	queue_redraw()
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		RVSaveSystem.save(state)
 
 func _unhandled_input(event) -> void:
 	if event is InputEventKey:
 		var key: InputEventKey = event
 		if key.pressed and not key.echo:
 			_handle_key(key.keycode)
-
 	if event is InputEventMouseButton:
 		var mb: InputEventMouseButton = event
 		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT and state.mode == "combat":
-			RVSkillSystem.cast_selected(state, get_global_mouse_position())
+			_cast_selected()
 
 func _handle_key(keycode: int) -> void:
 	if keycode >= KEY_1 and keycode <= KEY_6:
 		var index: int = keycode - KEY_1
 		if state.mode == "hub":
-			_toggle_skill_from_index(index)
-		else:
-			if index < state.active_skills.size():
-				state.selected_skill = index
+			_toggle_skill_by_index(index)
+		elif index < state.active_skills.size():
+			state.selected_skill = index
 		return
-
 	if keycode == KEY_Q and state.mode == "combat":
-		_cycle_selected_skill(-1)
+		_cycle_skill(-1)
 		return
-
-	if keycode == KEY_E and state.mode == "combat":
-		_cycle_selected_skill(1)
+	if keycode == KEY_E:
+		if state.mode == "hub":
+			hub_root.interact_primary()
+		else:
+			_cycle_skill(1)
 		return
-
-	if keycode == KEY_SPACE and state.mode == "combat":
-		RVSkillSystem.cast_selected(state, get_global_mouse_position())
-		return
-
-	if keycode == KEY_E and state.mode == "hub":
-		RVHubSystem.interact_primary(state)
-		_save_now(false)
-		return
-
 	if keycode == KEY_X and state.mode == "hub":
-		RVHubSystem.interact_secondary(state)
-		_save_now(false)
+		hub_root.interact_secondary()
 		return
-
+	if keycode == KEY_SPACE and state.mode == "combat":
+		_cast_selected()
+		return
 	if keycode == KEY_ESCAPE:
-		if state.mode == "combat":
-			state.enter_hub()
-			state.add_notice("Returned to Forgehold")
-			_save_now(false)
+		if state.panel_mode != "":
+			state.panel_mode = ""
+		elif state.mode == "combat":
+			enter_hub()
+			state.add_notice("Returned to Hub")
 		return
-
+	if keycode == KEY_P:
+		state.panel_mode = "" if state.panel_mode == "passive_tree" else "passive_tree"
+		return
+	if keycode == KEY_K:
+		state.panel_mode = "" if state.panel_mode == "skill_gems" else "skill_gems"
+		return
+	if keycode == KEY_C:
+		state.panel_mode = "" if state.panel_mode == "crafting" else "crafting"
+		return
 	if keycode == KEY_F5:
-		_save_now(true)
+		RVSaveSystem.save(state)
+		state.add_notice("Saved")
 		return
 
-func _draw() -> void:
-	RVRenderSystem.draw_world(self, state, textures)
+func start_activity(activity: Dictionary) -> void:
+	state.enter_combat(activity)
+	hub_root.visible = false
+	combat_arena.visible = true
+	player.global_position = combat_arena.get_spawn_position()
+	state.player_pos = player.global_position
+	combat_arena.start_activity(activity)
 
-func _load_patch015a_ui_textures() -> void:
-	var paths: Dictionary = {
-		"ui_skill_slot_empty": "res://assets/ui/patch015a/slices/normalized/ui_skill_slot_empty.png",
-		"ui_skill_slot_selected": "res://assets/ui/patch015a/slices/normalized/ui_skill_slot_selected.png",
-		"ui_inventory_slot": "res://assets/ui/patch015a/slices/normalized/ui_inventory_slot.png",
-		"ui_equipped_item_slot": "res://assets/ui/patch015a/slices/normalized/ui_equipped_item_slot.png",
-		"ui_material_chip": "res://assets/ui/patch015a/slices/normalized/ui_material_chip.png",
-		"ui_passive_node_circle": "res://assets/ui/patch015a/slices/normalized/ui_passive_node_circle.png",
-		"ui_health_bar_frame": "res://assets/ui/patch015a/slices/normalized/ui_health_bar_frame.png",
-		"ui_mana_bar_frame": "res://assets/ui/patch015a/slices/normalized/ui_mana_bar_frame.png",
-		"ui_tooltip_panel_large": "res://assets/ui/patch015a/slices/normalized/ui_tooltip_panel_large.png",
-		"ui_notice_banner": "res://assets/ui/patch015a/slices/normalized/ui_notice_banner.png",
-		"ui_vertical_card_panel": "res://assets/ui/patch015a/slices/normalized/ui_vertical_card_panel.png",
-		"ui_main_window_panel": "res://assets/ui/patch015a/slices/normalized/ui_main_window_panel.png"
-	}
+func enter_hub() -> void:
+	state.enter_hub()
+	combat_arena.clear_room()
+	hub_root.visible = true
+	combat_arena.visible = false
+	player.global_position = hub_root.get_spawn_position()
+	state.player_pos = player.global_position
+	RVSaveSystem.save(state)
 
-	for key in paths.keys():
-		if ResourceLoader.exists(paths[key]):
-			var tex: Texture2D = load(paths[key])
-			if tex != null:
-				textures[key] = tex
-
-func _toggle_skill_from_index(index: int) -> void:
-	if index < 0 or index >= PATCH015B_ALL_SKILLS.size():
+func _cast_selected() -> void:
+	if state.active_skills.size() == 0:
 		return
+	state.selected_skill = clamp(state.selected_skill, 0, state.active_skills.size() - 1)
+	combat_arena.cast_skill(str(state.active_skills[state.selected_skill]), get_global_mouse_position())
 
-	var skill: String = str(PATCH015B_ALL_SKILLS[index])
+func _cycle_skill(direction: int) -> void:
+	if state.active_skills.size() == 0:
+		return
+	state.selected_skill = wrapi(state.selected_skill + direction, 0, state.active_skills.size())
+	state.add_notice("Selected: " + str(state.active_skills[state.selected_skill]))
 
+func _toggle_skill_by_index(index: int) -> void:
+	if index < 0 or index >= state.available_skills.size():
+		return
+	var skill: String = str(state.available_skills[index])
 	if state.active_skills.has(skill):
-		if state.active_skills.size() <= 1:
-			state.add_notice("Keep at least one skill equipped")
-			return
 		state.active_skills.erase(skill)
-		state.add_notice(skill + " removed from loadout")
+		state.add_notice(skill + " removed")
 	else:
 		if state.active_skills.size() >= 4:
-			state.add_notice("Loadout limit: 4 skills")
+			state.add_notice("Loadout limit: 4")
 			return
 		state.active_skills.append(skill)
-		state.add_notice(skill + " added to loadout")
+		state.add_notice(skill + " added")
+	if state.active_skills.size() == 0:
+		state.active_skills.append("Fireball")
+	state.selected_skill = clamp(state.selected_skill, 0, max(0, state.active_skills.size() - 1))
 
-	state.selected_skill = clamp(state.selected_skill, 0, state.active_skills.size() - 1)
-	_save_now(false)
-
-
-func _cycle_selected_skill(direction: int) -> void:
-	if state.active_skills.size() <= 0:
-		return
-
-	state.selected_skill = (state.selected_skill + direction) % state.active_skills.size()
-	if state.selected_skill < 0:
-		state.selected_skill = state.active_skills.size() - 1
-
-
-func _save_now(show_notice: bool) -> void:
-	RVSaveSystem.save(state)
-	if show_notice:
-		state.add_notice("Saved")
-
-
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_WM_CLOSE_REQUEST or what == NOTIFICATION_PREDELETE:
-		RVSaveSystem.save(state)
+func _update_cooldowns(delta: float) -> void:
+	for skill in state.skill_cooldowns.keys():
+		state.skill_cooldowns[skill] = max(0.0, float(state.skill_cooldowns[skill]) - delta)

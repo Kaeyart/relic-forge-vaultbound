@@ -1,3 +1,35 @@
-[gd_scene format=3]
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/CombatArena.gd" id="1_arena"]
 
 [node name="CombatArena" type="Node2D"]
+visible = false
+script = ExtResource("1_arena")
+
+[node name="Floor" type="Polygon2D" parent="."]
+color = Color(0.035, 0.025, 0.020, 1)
+polygon = PackedVector2Array(60, 84, 1220, 84, 1220, 650, 60, 650)
+
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(640, 370)
+
+[node name="SpawnPoints" type="Node2D" parent="."]
+[node name="S0" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(420, 220)
+[node name="S1" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(640, 190)
+[node name="S2" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(860, 220)
+[node name="S3" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(430, 520)
+[node name="S4" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(640, 550)
+[node name="S5" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(850, 520)
+[node name="S6" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(300, 370)
+[node name="S7" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(980, 370)
+
+[node name="Enemies" type="Node2D" parent="."]
+[node name="Projectiles" type="Node2D" parent="."]

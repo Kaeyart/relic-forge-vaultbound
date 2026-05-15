@@ -1,0 +1,274 @@
+{
+  "patch": "015A",
+  "description": "Sliced transparent UI assets from user-cleaned Photoroom sheets.",
+  "source_files": {
+    "small": "assets/ui/patch015a/source/ui_modular_small_sheet_source.png",
+    "large": "assets/ui/patch015a/source/ui_modular_large_sheet_source.png"
+  },
+  "assets": [
+    {
+      "name": "ui_skill_slot_empty",
+      "description": "Skill slot frame, normal/unselected state",
+      "source_sheet": "small",
+      "source_bbox_xyxy": [
+        26,
+        154,
+        416,
+        559
+      ],
+      "tight_png": "assets/ui/patch015a/slices/tight/ui_skill_slot_empty.png",
+      "tight_size": [
+        390,
+        405
+      ],
+      "normalized_png": "assets/ui/patch015a/slices/normalized/ui_skill_slot_empty.png",
+      "normalized_size": [
+        512,
+        512
+      ],
+      "godot_resource_key": "ui_skill_slot_empty"
+    },
+    {
+      "name": "ui_skill_slot_selected",
+      "description": "Skill slot frame, selected/active state",
+      "source_sheet": "small",
+      "source_bbox_xyxy": [
+        434,
+        149,
+        826,
+        566
+      ],
+      "tight_png": "assets/ui/patch015a/slices/tight/ui_skill_slot_selected.png",
+      "tight_size": [
+        392,
+        417
+      ],
+      "normalized_png": "assets/ui/patch015a/slices/normalized/ui_skill_slot_selected.png",
+      "normalized_size": [
+        512,
+        512
+      ],
+      "godot_resource_key": "ui_skill_slot_selected"
+    },
+    {
+      "name": "ui_inventory_slot",
+      "description": "Generic inventory/backpack/stash square slot frame",
+      "source_sheet": "small",
+      "source_bbox_xyxy": [
+        839,
+        173,
+        1206,
+        548
+      ],
+      "tight_png": "assets/ui/patch015a/slices/tight/ui_inventory_slot.png",
+      "tight_size": [
+        367,
+        375
+      ],
+      "normalized_png": "assets/ui/patch015a/slices/normalized/ui_inventory_slot.png",
+      "normalized_size": [
+        512,
+        512
+      ],
+      "godot_resource_key": "ui_inventory_slot"
+    },
+    {
+      "name": "ui_equipped_item_slot",
+      "description": "Tall equipped item / character gear slot frame",
+      "source_sheet": "small",
+      "source_bbox_xyxy": [
+        68,
+        603,
+        381,
+        1091
+      ],
+      "tight_png": "assets/ui/patch015a/slices/tight/ui_equipped_item_slot.png",
+      "tight_size": [
+        313,
+        488
+      ],
+      "normalized_png": "assets/ui/patch015a/slices/normalized/ui_equipped_item_slot.png",
+      "normalized_size": [
+        512,
+        768
+      ],
+      "godot_resource_key": "ui_equipped_item_slot"
+    },
+    {
+      "name": "ui_material_chip",
+      "description": "Small horizontal material/resource chip frame",
+      "source_sheet": "small",
+      "source_bbox_xyxy": [
+        436,
+        780,
+        798,
+        1012
+      ],
+      "tight_png": "assets/ui/patch015a/slices/tight/ui_material_chip.png",
+      "tight_size": [
+        362,
+        232
+      ],
+      "normalized_png": "assets/ui/patch015a/slices/normalized/ui_material_chip.png",
+      "normalized_size": [
+        768,
+        384
+      ],
+      "godot_resource_key": "ui_material_chip"
+    },
+    {
+      "name": "ui_passive_node_circle",
+      "description": "Circular passive node / socket / skill-node frame",
+      "source_sheet": "small",
+      "source_bbox_xyxy": [
+        818,
+        663,
+        1211,
+        1076
+      ],
+      "tight_png": "assets/ui/patch015a/slices/tight/ui_passive_node_circle.png",
+      "tight_size": [
+        393,
+        413
+      ],
+      "normalized_png": "assets/ui/patch015a/slices/normalized/ui_passive_node_circle.png",
+      "normalized_size": [
+        512,
+        512
+      ],
+      "godot_resource_key": "ui_passive_node_circle"
+    },
+    {
+      "name": "ui_health_bar_frame",
+      "description": "Warm/health-style resource bar frame; fill should be drawn underneath",
+      "source_sheet": "large",
+      "source_bbox_xyxy": [
+        4,
+        65,
+        635,
+        275
+      ],
+      "tight_png": "assets/ui/patch015a/slices/tight/ui_health_bar_frame.png",
+      "tight_size": [
+        631,
+        210
+      ],
+      "normalized_png": "assets/ui/patch015a/slices/normalized/ui_health_bar_frame.png",
+      "normalized_size": [
+        1024,
+        256
+      ],
+      "godot_resource_key": "ui_health_bar_frame"
+    },
+    {
+      "name": "ui_mana_bar_frame",
+      "description": "Cold/mana-style resource bar frame; fill should be drawn underneath",
+      "source_sheet": "large",
+      "source_bbox_xyxy": [
+        629,
+        65,
+        1252,
+        275
+      ],
+      "tight_png": "assets/ui/patch015a/slices/tight/ui_mana_bar_frame.png",
+      "tight_size": [
+        623,
+        210
+      ],
+      "normalized_png": "assets/ui/patch015a/slices/normalized/ui_mana_bar_frame.png",
+      "normalized_size": [
+        1024,
+        256
+      ],
+      "godot_resource_key": "ui_mana_bar_frame"
+    },
+    {
+      "name": "ui_tooltip_panel_large",
+      "description": "Large tooltip/info panel frame",
+      "source_sheet": "large",
+      "source_bbox_xyxy": [
+        29,
+        302,
+        608,
+        780
+      ],
+      "tight_png": "assets/ui/patch015a/slices/tight/ui_tooltip_panel_large.png",
+      "tight_size": [
+        579,
+        478
+      ],
+      "normalized_png": "assets/ui/patch015a/slices/normalized/ui_tooltip_panel_large.png",
+      "normalized_size": [
+        1024,
+        768
+      ],
+      "godot_resource_key": "ui_tooltip_panel_large"
+    },
+    {
+      "name": "ui_notice_banner",
+      "description": "Notice/reward/event banner frame",
+      "source_sheet": "large",
+      "source_bbox_xyxy": [
+        626,
+        399,
+        1237,
+        705
+      ],
+      "tight_png": "assets/ui/patch015a/slices/tight/ui_notice_banner.png",
+      "tight_size": [
+        611,
+        306
+      ],
+      "normalized_png": "assets/ui/patch015a/slices/normalized/ui_notice_banner.png",
+      "normalized_size": [
+        1024,
+        512
+      ],
+      "godot_resource_key": "ui_notice_banner"
+    },
+    {
+      "name": "ui_vertical_card_panel",
+      "description": "Tall vertical card / character/item detail panel",
+      "source_sheet": "large",
+      "source_bbox_xyxy": [
+        154,
+        772,
+        481,
+        1228
+      ],
+      "tight_png": "assets/ui/patch015a/slices/tight/ui_vertical_card_panel.png",
+      "tight_size": [
+        327,
+        456
+      ],
+      "normalized_png": "assets/ui/patch015a/slices/normalized/ui_vertical_card_panel.png",
+      "normalized_size": [
+        768,
+        1024
+      ],
+      "godot_resource_key": "ui_vertical_card_panel"
+    },
+    {
+      "name": "ui_main_window_panel",
+      "description": "Large main window/menu/status panel frame",
+      "source_sheet": "large",
+      "source_bbox_xyxy": [
+        593,
+        805,
+        1202,
+        1197
+      ],
+      "tight_png": "assets/ui/patch015a/slices/tight/ui_main_window_panel.png",
+      "tight_size": [
+        609,
+        392
+      ],
+      "normalized_png": "assets/ui/patch015a/slices/normalized/ui_main_window_panel.png",
+      "normalized_size": [
+        1024,
+        768
+      ],
+      "godot_resource_key": "ui_main_window_panel"
+    }
+  ]
+}
