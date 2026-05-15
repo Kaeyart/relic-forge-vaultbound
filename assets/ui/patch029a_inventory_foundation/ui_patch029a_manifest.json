@@ -1,0 +1,1240 @@
+{
+  "patch": "029A",
+  "name": "Inventory Foundation Art Assets",
+  "style_reference": "Variation 5 dark forged ARPG inventory",
+  "asset_count": 77,
+  "assets": [
+    {
+      "name": "ui_inventory_screen_backdrop",
+      "category": "panels",
+      "source_sheet": "sheet_a_foundation",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/panels/ui_inventory_screen_backdrop.png",
+      "source_bbox": [
+        52,
+        6,
+        1202,
+        533
+      ],
+      "size": [
+        1150,
+        527
+      ]
+    },
+    {
+      "name": "ui_top_navigation_bar",
+      "category": "panels",
+      "source_sheet": "sheet_a_foundation",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/panels/ui_top_navigation_bar.png",
+      "source_bbox": [
+        200,
+        522,
+        1053,
+        632
+      ],
+      "size": [
+        853,
+        110
+      ]
+    },
+    {
+      "name": "ui_character_panel_frame",
+      "category": "panels",
+      "source_sheet": "sheet_a_foundation",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/panels/ui_character_panel_frame.png",
+      "source_bbox": [
+        20,
+        615,
+        413,
+        1068
+      ],
+      "size": [
+        393,
+        453
+      ]
+    },
+    {
+      "name": "ui_item_detail_panel_frame",
+      "category": "panels",
+      "source_sheet": "sheet_a_foundation",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/panels/ui_item_detail_panel_frame.png",
+      "source_bbox": [
+        435,
+        624,
+        797,
+        1081
+      ],
+      "size": [
+        362,
+        457
+      ]
+    },
+    {
+      "name": "ui_backpack_panel_frame",
+      "category": "panels",
+      "source_sheet": "sheet_a_foundation",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/panels/ui_backpack_panel_frame.png",
+      "source_bbox": [
+        812,
+        624,
+        1232,
+        1099
+      ],
+      "size": [
+        420,
+        475
+      ]
+    },
+    {
+      "name": "ui_stats_panel_frame",
+      "category": "panels",
+      "source_sheet": "sheet_a_foundation",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/panels/ui_stats_panel_frame.png",
+      "source_bbox": [
+        64,
+        1059,
+        460,
+        1243
+      ],
+      "size": [
+        396,
+        184
+      ]
+    },
+    {
+      "name": "ui_resource_strip_frame",
+      "category": "panels",
+      "source_sheet": "sheet_a_foundation",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/panels/ui_resource_strip_frame.png",
+      "source_bbox": [
+        546,
+        1128,
+        1176,
+        1225
+      ],
+      "size": [
+        630,
+        97
+      ]
+    },
+    {
+      "name": "ui_inventory_slot_empty",
+      "category": "slots",
+      "source_sheet": "sheet_b_slots",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/slots/ui_inventory_slot_empty.png",
+      "source_bbox": [
+        19,
+        58,
+        251,
+        305
+      ],
+      "size": [
+        232,
+        247
+      ]
+    },
+    {
+      "name": "ui_inventory_slot_hovered",
+      "category": "slots",
+      "source_sheet": "sheet_b_slots",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/slots/ui_inventory_slot_hovered.png",
+      "source_bbox": [
+        266,
+        58,
+        497,
+        305
+      ],
+      "size": [
+        231,
+        247
+      ]
+    },
+    {
+      "name": "ui_inventory_slot_selected",
+      "category": "slots",
+      "source_sheet": "sheet_b_slots",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/slots/ui_inventory_slot_selected.png",
+      "source_bbox": [
+        504,
+        58,
+        737,
+        305
+      ],
+      "size": [
+        233,
+        247
+      ]
+    },
+    {
+      "name": "ui_inventory_slot_filled",
+      "category": "slots",
+      "source_sheet": "sheet_b_slots",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/slots/ui_inventory_slot_filled.png",
+      "source_bbox": [
+        748,
+        58,
+        984,
+        305
+      ],
+      "size": [
+        236,
+        247
+      ]
+    },
+    {
+      "name": "ui_inventory_slot_disabled",
+      "category": "slots",
+      "source_sheet": "sheet_b_slots",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/slots/ui_inventory_slot_disabled.png",
+      "source_bbox": [
+        996,
+        59,
+        1232,
+        305
+      ],
+      "size": [
+        236,
+        246
+      ]
+    },
+    {
+      "name": "ui_inventory_slot_locked",
+      "category": "slots",
+      "source_sheet": "sheet_b_slots",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/slots/ui_inventory_slot_locked.png",
+      "source_bbox": [
+        19,
+        349,
+        251,
+        594
+      ],
+      "size": [
+        232,
+        245
+      ]
+    },
+    {
+      "name": "ui_inventory_slot_drop_valid",
+      "category": "slots",
+      "source_sheet": "sheet_b_slots",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/slots/ui_inventory_slot_drop_valid.png",
+      "source_bbox": [
+        299,
+        351,
+        534,
+        598
+      ],
+      "size": [
+        235,
+        247
+      ]
+    },
+    {
+      "name": "ui_inventory_slot_drop_invalid",
+      "category": "slots",
+      "source_sheet": "sheet_b_slots",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/slots/ui_inventory_slot_drop_invalid.png",
+      "source_bbox": [
+        597,
+        350,
+        832,
+        598
+      ],
+      "size": [
+        235,
+        248
+      ]
+    },
+    {
+      "name": "ui_slot_divider_ornament",
+      "category": "slots",
+      "source_sheet": "sheet_b_slots",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/slots/ui_slot_divider_ornament.png",
+      "source_bbox": [
+        573,
+        617,
+        687,
+        689
+      ],
+      "size": [
+        114,
+        72
+      ]
+    },
+    {
+      "name": "ui_equipment_slot_empty",
+      "category": "slots",
+      "source_sheet": "sheet_b_slots",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/slots/ui_equipment_slot_empty.png",
+      "source_bbox": [
+        22,
+        679,
+        243,
+        990
+      ],
+      "size": [
+        221,
+        311
+      ]
+    },
+    {
+      "name": "ui_equipment_slot_hovered",
+      "category": "slots",
+      "source_sheet": "sheet_b_slots",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/slots/ui_equipment_slot_hovered.png",
+      "source_bbox": [
+        269,
+        679,
+        490,
+        988
+      ],
+      "size": [
+        221,
+        309
+      ]
+    },
+    {
+      "name": "ui_equipment_slot_selected",
+      "category": "slots",
+      "source_sheet": "sheet_b_slots",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/slots/ui_equipment_slot_selected.png",
+      "source_bbox": [
+        518,
+        681,
+        735,
+        985
+      ],
+      "size": [
+        217,
+        304
+      ]
+    },
+    {
+      "name": "ui_equipment_slot_filled",
+      "category": "slots",
+      "source_sheet": "sheet_b_slots",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/slots/ui_equipment_slot_filled.png",
+      "source_bbox": [
+        753,
+        681,
+        973,
+        990
+      ],
+      "size": [
+        220,
+        309
+      ]
+    },
+    {
+      "name": "ui_equipment_slot_locked",
+      "category": "slots",
+      "source_sheet": "sheet_b_slots",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/slots/ui_equipment_slot_locked.png",
+      "source_bbox": [
+        1009,
+        681,
+        1227,
+        990
+      ],
+      "size": [
+        218,
+        309
+      ]
+    },
+    {
+      "name": "ui_cooldown_overlay_slot",
+      "category": "slots",
+      "source_sheet": "sheet_b_slots",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/slots/ui_cooldown_overlay_slot.png",
+      "source_bbox": [
+        513,
+        989,
+        742,
+        1228
+      ],
+      "size": [
+        229,
+        239
+      ]
+    },
+    {
+      "name": "ui_button_primary_normal",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_primary_normal.png",
+      "source_bbox": [
+        43,
+        57,
+        349,
+        205
+      ],
+      "size": [
+        306,
+        148
+      ]
+    },
+    {
+      "name": "ui_button_primary_hovered",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_primary_hovered.png",
+      "source_bbox": [
+        348,
+        58,
+        652,
+        205
+      ],
+      "size": [
+        304,
+        147
+      ]
+    },
+    {
+      "name": "ui_button_primary_pressed",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_primary_pressed.png",
+      "source_bbox": [
+        651,
+        74,
+        931,
+        196
+      ],
+      "size": [
+        280,
+        122
+      ]
+    },
+    {
+      "name": "ui_button_primary_disabled",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_primary_disabled.png",
+      "source_bbox": [
+        929,
+        73,
+        1209,
+        195
+      ],
+      "size": [
+        280,
+        122
+      ]
+    },
+    {
+      "name": "ui_button_primary_alt_normal",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_primary_alt_normal.png",
+      "source_bbox": [
+        42,
+        210,
+        349,
+        345
+      ],
+      "size": [
+        307,
+        135
+      ]
+    },
+    {
+      "name": "ui_button_primary_alt_hovered",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_primary_alt_hovered.png",
+      "source_bbox": [
+        348,
+        211,
+        652,
+        344
+      ],
+      "size": [
+        304,
+        133
+      ]
+    },
+    {
+      "name": "ui_button_primary_alt_pressed",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_primary_alt_pressed.png",
+      "source_bbox": [
+        651,
+        226,
+        930,
+        344
+      ],
+      "size": [
+        279,
+        118
+      ]
+    },
+    {
+      "name": "ui_button_primary_alt_disabled",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_primary_alt_disabled.png",
+      "source_bbox": [
+        929,
+        224,
+        1209,
+        344
+      ],
+      "size": [
+        280,
+        120
+      ]
+    },
+    {
+      "name": "ui_button_secondary_normal",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_secondary_normal.png",
+      "source_bbox": [
+        40,
+        398,
+        339,
+        515
+      ],
+      "size": [
+        299,
+        117
+      ]
+    },
+    {
+      "name": "ui_button_secondary_hovered",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_secondary_hovered.png",
+      "source_bbox": [
+        342,
+        398,
+        640,
+        514
+      ],
+      "size": [
+        298,
+        116
+      ]
+    },
+    {
+      "name": "ui_button_secondary_pressed",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_secondary_pressed.png",
+      "source_bbox": [
+        646,
+        407,
+        924,
+        513
+      ],
+      "size": [
+        278,
+        106
+      ]
+    },
+    {
+      "name": "ui_button_secondary_disabled",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_secondary_disabled.png",
+      "source_bbox": [
+        927,
+        400,
+        1209,
+        514
+      ],
+      "size": [
+        282,
+        114
+      ]
+    },
+    {
+      "name": "ui_button_secondary_alt_normal",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_secondary_alt_normal.png",
+      "source_bbox": [
+        39,
+        524,
+        339,
+        641
+      ],
+      "size": [
+        300,
+        117
+      ]
+    },
+    {
+      "name": "ui_button_secondary_alt_hovered",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_secondary_alt_hovered.png",
+      "source_bbox": [
+        342,
+        525,
+        640,
+        641
+      ],
+      "size": [
+        298,
+        116
+      ]
+    },
+    {
+      "name": "ui_button_secondary_alt_pressed",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_secondary_alt_pressed.png",
+      "source_bbox": [
+        646,
+        533,
+        924,
+        640
+      ],
+      "size": [
+        278,
+        107
+      ]
+    },
+    {
+      "name": "ui_button_secondary_alt_disabled",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_secondary_alt_disabled.png",
+      "source_bbox": [
+        927,
+        526,
+        1209,
+        641
+      ],
+      "size": [
+        282,
+        115
+      ]
+    },
+    {
+      "name": "ui_button_danger_normal",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_danger_normal.png",
+      "source_bbox": [
+        40,
+        677,
+        341,
+        799
+      ],
+      "size": [
+        301,
+        122
+      ]
+    },
+    {
+      "name": "ui_button_danger_hovered",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_danger_hovered.png",
+      "source_bbox": [
+        345,
+        677,
+        647,
+        799
+      ],
+      "size": [
+        302,
+        122
+      ]
+    },
+    {
+      "name": "ui_button_danger_pressed",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_danger_pressed.png",
+      "source_bbox": [
+        649,
+        690,
+        930,
+        798
+      ],
+      "size": [
+        281,
+        108
+      ]
+    },
+    {
+      "name": "ui_button_danger_disabled",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_danger_disabled.png",
+      "source_bbox": [
+        931,
+        682,
+        1214,
+        799
+      ],
+      "size": [
+        283,
+        117
+      ]
+    },
+    {
+      "name": "ui_button_danger_alt_normal",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_danger_alt_normal.png",
+      "source_bbox": [
+        40,
+        800,
+        341,
+        923
+      ],
+      "size": [
+        301,
+        123
+      ]
+    },
+    {
+      "name": "ui_button_danger_alt_hovered",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_danger_alt_hovered.png",
+      "source_bbox": [
+        345,
+        801,
+        647,
+        923
+      ],
+      "size": [
+        302,
+        122
+      ]
+    },
+    {
+      "name": "ui_button_danger_alt_pressed",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_danger_alt_pressed.png",
+      "source_bbox": [
+        649,
+        813,
+        929,
+        921
+      ],
+      "size": [
+        280,
+        108
+      ]
+    },
+    {
+      "name": "ui_button_danger_alt_disabled",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_button_danger_alt_disabled.png",
+      "source_bbox": [
+        931,
+        806,
+        1215,
+        922
+      ],
+      "size": [
+        284,
+        116
+      ]
+    },
+    {
+      "name": "ui_tab_inactive",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_tab_inactive.png",
+      "source_bbox": [
+        43,
+        955,
+        334,
+        1076
+      ],
+      "size": [
+        291,
+        121
+      ]
+    },
+    {
+      "name": "ui_tab_hovered",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_tab_hovered.png",
+      "source_bbox": [
+        337,
+        954,
+        630,
+        1076
+      ],
+      "size": [
+        293,
+        122
+      ]
+    },
+    {
+      "name": "ui_tab_active",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_tab_active.png",
+      "source_bbox": [
+        634,
+        949,
+        926,
+        1076
+      ],
+      "size": [
+        292,
+        127
+      ]
+    },
+    {
+      "name": "ui_tab_disabled",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_tab_disabled.png",
+      "source_bbox": [
+        930,
+        955,
+        1209,
+        1076
+      ],
+      "size": [
+        279,
+        121
+      ]
+    },
+    {
+      "name": "ui_search_field_frame",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_search_field_frame.png",
+      "source_bbox": [
+        65,
+        1096,
+        786,
+        1224
+      ],
+      "size": [
+        721,
+        128
+      ]
+    },
+    {
+      "name": "ui_filter_button_frame",
+      "category": "controls",
+      "source_sheet": "sheet_c_controls",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/controls/ui_filter_button_frame.png",
+      "source_bbox": [
+        818,
+        1097,
+        965,
+        1233
+      ],
+      "size": [
+        147,
+        136
+      ]
+    },
+    {
+      "name": "cursor_normal",
+      "category": "cursors",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/cursors/cursor_normal.png",
+      "source_bbox": [
+        37,
+        125,
+        171,
+        332
+      ],
+      "size": [
+        134,
+        207
+      ]
+    },
+    {
+      "name": "cursor_hover",
+      "category": "cursors",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/cursors/cursor_hover.png",
+      "source_bbox": [
+        229,
+        124,
+        365,
+        333
+      ],
+      "size": [
+        136,
+        209
+      ]
+    },
+    {
+      "name": "cursor_click",
+      "category": "cursors",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/cursors/cursor_click.png",
+      "source_bbox": [
+        424,
+        124,
+        562,
+        333
+      ],
+      "size": [
+        138,
+        209
+      ]
+    },
+    {
+      "name": "cursor_drag_item",
+      "category": "cursors",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/cursors/cursor_drag_item.png",
+      "source_bbox": [
+        629,
+        117,
+        804,
+        366
+      ],
+      "size": [
+        175,
+        249
+      ]
+    },
+    {
+      "name": "cursor_invalid",
+      "category": "cursors",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/cursors/cursor_invalid.png",
+      "source_bbox": [
+        852,
+        127,
+        997,
+        337
+      ],
+      "size": [
+        145,
+        210
+      ]
+    },
+    {
+      "name": "cursor_inspect",
+      "category": "cursors",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/cursors/cursor_inspect.png",
+      "source_bbox": [
+        1053,
+        134,
+        1226,
+        359
+      ],
+      "size": [
+        173,
+        225
+      ]
+    },
+    {
+      "name": "ui_rarity_common_border",
+      "category": "rarity",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/rarity/ui_rarity_common_border.png",
+      "source_bbox": [
+        15,
+        437,
+        208,
+        693
+      ],
+      "size": [
+        193,
+        256
+      ]
+    },
+    {
+      "name": "ui_rarity_magic_border",
+      "category": "rarity",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/rarity/ui_rarity_magic_border.png",
+      "source_bbox": [
+        214,
+        429,
+        408,
+        695
+      ],
+      "size": [
+        194,
+        266
+      ]
+    },
+    {
+      "name": "ui_rarity_rare_border",
+      "category": "rarity",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/rarity/ui_rarity_rare_border.png",
+      "source_bbox": [
+        415,
+        429,
+        608,
+        695
+      ],
+      "size": [
+        193,
+        266
+      ]
+    },
+    {
+      "name": "ui_rarity_legendary_border",
+      "category": "rarity",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/rarity/ui_rarity_legendary_border.png",
+      "source_bbox": [
+        616,
+        424,
+        809,
+        695
+      ],
+      "size": [
+        193,
+        271
+      ]
+    },
+    {
+      "name": "ui_rarity_unique_border",
+      "category": "rarity",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/rarity/ui_rarity_unique_border.png",
+      "source_bbox": [
+        817,
+        422,
+        1028,
+        702
+      ],
+      "size": [
+        211,
+        280
+      ]
+    },
+    {
+      "name": "ui_rarity_crafted_border",
+      "category": "rarity",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/rarity/ui_rarity_crafted_border.png",
+      "source_bbox": [
+        1035,
+        445,
+        1234,
+        696
+      ],
+      "size": [
+        199,
+        251
+      ]
+    },
+    {
+      "name": "ui_badge_round",
+      "category": "micro",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/micro/ui_badge_round.png",
+      "source_bbox": [
+        11,
+        766,
+        128,
+        889
+      ],
+      "size": [
+        117,
+        123
+      ]
+    },
+    {
+      "name": "ui_badge_square",
+      "category": "micro",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/micro/ui_badge_square.png",
+      "source_bbox": [
+        123,
+        769,
+        238,
+        883
+      ],
+      "size": [
+        115,
+        114
+      ]
+    },
+    {
+      "name": "ui_badge_diamond",
+      "category": "micro",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/micro/ui_badge_diamond.png",
+      "source_bbox": [
+        231,
+        767,
+        345,
+        885
+      ],
+      "size": [
+        114,
+        118
+      ]
+    },
+    {
+      "name": "ui_badge_round_spiked",
+      "category": "micro",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/micro/ui_badge_round_spiked.png",
+      "source_bbox": [
+        337,
+        760,
+        447,
+        890
+      ],
+      "size": [
+        110,
+        130
+      ]
+    },
+    {
+      "name": "ui_badge_shield",
+      "category": "micro",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/micro/ui_badge_shield.png",
+      "source_bbox": [
+        445,
+        762,
+        536,
+        886
+      ],
+      "size": [
+        91,
+        124
+      ]
+    },
+    {
+      "name": "ui_badge_hex",
+      "category": "micro",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/micro/ui_badge_hex.png",
+      "source_bbox": [
+        541,
+        764,
+        639,
+        884
+      ],
+      "size": [
+        98,
+        120
+      ]
+    },
+    {
+      "name": "ui_currency_chip_gold",
+      "category": "micro",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/micro/ui_currency_chip_gold.png",
+      "source_bbox": [
+        660,
+        770,
+        776,
+        888
+      ],
+      "size": [
+        116,
+        118
+      ]
+    },
+    {
+      "name": "ui_currency_chip_metal",
+      "category": "micro",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/micro/ui_currency_chip_metal.png",
+      "source_bbox": [
+        770,
+        773,
+        872,
+        885
+      ],
+      "size": [
+        102,
+        112
+      ]
+    },
+    {
+      "name": "ui_currency_chip_blue",
+      "category": "micro",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/micro/ui_currency_chip_blue.png",
+      "source_bbox": [
+        866,
+        773,
+        968,
+        886
+      ],
+      "size": [
+        102,
+        113
+      ]
+    },
+    {
+      "name": "ui_currency_chip_green",
+      "category": "micro",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/micro/ui_currency_chip_green.png",
+      "source_bbox": [
+        960,
+        776,
+        1062,
+        878
+      ],
+      "size": [
+        102,
+        102
+      ]
+    },
+    {
+      "name": "ui_currency_chip_red",
+      "category": "micro",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/micro/ui_currency_chip_red.png",
+      "source_bbox": [
+        1057,
+        781,
+        1153,
+        878
+      ],
+      "size": [
+        96,
+        97
+      ]
+    },
+    {
+      "name": "ui_currency_chip_purple",
+      "category": "micro",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/micro/ui_currency_chip_purple.png",
+      "source_bbox": [
+        1155,
+        769,
+        1242,
+        891
+      ],
+      "size": [
+        87,
+        122
+      ]
+    },
+    {
+      "name": "ui_item_title_plate_large",
+      "category": "micro",
+      "source_sheet": "sheet_d_cursor_rarity",
+      "path": "assets/ui/patch029a_inventory_foundation/slices/micro/ui_item_title_plate_large.png",
+      "source_bbox": [
+        131,
+        919,
+        1123,
+        1167
+      ],
+      "size": [
+        992,
+        248
+      ]
+    }
+  ]
+}

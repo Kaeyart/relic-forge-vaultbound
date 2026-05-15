@@ -1,468 +1,621 @@
-[gd_scene format=3 uid="uid://lgou88wxchfx"]
+[gd_scene format=3 uid="uid://do3dw57mede1m"]
 
-[ext_resource type="Script" uid="uid://chy13huexdv41" path="res://scripts/ui/panels/InventoryPanel.gd" id="1"]
+[ext_resource type="Script" uid="uid://chy13huexdv41" path="res://scripts/ui/panels/InventoryPanel.gd" id="1_inv_script"]
+[ext_resource type="Script" uid="uid://c3iqwtarivg3j" path="res://scripts/ui/RVCursorSystem.gd" id="2_cursor_script"]
+[ext_resource type="Texture2D" uid="uid://burs8trn2pphs" path="res://assets/ui/patch029a_inventory_foundation/slices/panels/ui_inventory_screen_backdrop.png" id="3_screen"]
+[ext_resource type="Texture2D" uid="uid://c2w3pp5yqoysr" path="res://assets/ui/patch029a_inventory_foundation/slices/panels/ui_top_navigation_bar.png" id="4_topbar"]
+[ext_resource type="Texture2D" uid="uid://lpp742p1owf1" path="res://assets/ui/patch029a_inventory_foundation/slices/panels/ui_character_panel_frame.png" id="5_charframe"]
+[ext_resource type="Texture2D" uid="uid://b8da1uxi67qok" path="res://assets/ui/patch029a_inventory_foundation/slices/panels/ui_item_detail_panel_frame.png" id="6_detailframe"]
+[ext_resource type="Texture2D" uid="uid://bxhrr52us8nhf" path="res://assets/ui/patch029a_inventory_foundation/slices/panels/ui_backpack_panel_frame.png" id="7_backpackframe"]
+[ext_resource type="Texture2D" uid="uid://c7owsji4r37sw" path="res://assets/ui/patch029a_inventory_foundation/slices/panels/ui_stats_panel_frame.png" id="8_statsframe"]
+[ext_resource type="Texture2D" uid="uid://cninjbrvlcmvl" path="res://assets/ui/patch029a_inventory_foundation/slices/panels/ui_resource_strip_frame.png" id="9_resource"]
+[ext_resource type="Texture2D" uid="uid://63brbi2t3m4j" path="res://assets/ui/patch029a_inventory_foundation/slices/slots/ui_equipment_slot_empty.png" id="13_equip_slot_empty"]
 
-[node name="InventoryPanel" type="PanelContainer" unique_id=664487556]
-offset_left = 90.0
-offset_top = 58.0
-offset_right = 1190.0
-offset_bottom = 676.0
-script = ExtResource("1")
+[node name="InventoryPanel" type="PanelContainer" unique_id=2108113689]
+offset_left = 28.0
+offset_top = 26.0
+offset_right = 1252.0
+offset_bottom = 704.0
+script = ExtResource("1_inv_script")
 title = "Inventory"
 
-[node name="Root" type="Control" parent="." unique_id=326963443]
-custom_minimum_size = Vector2(1100, 618)
+[node name="CursorSystem" type="Node" parent="." unique_id=135219452]
+script = ExtResource("2_cursor_script")
+
+[node name="Root" type="Control" parent="." unique_id=628564028]
+custom_minimum_size = Vector2(1224, 678)
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="Root" unique_id=295212627]
+[node name="ScreenBackdrop" type="TextureRect" parent="Root" unique_id=828070373]
+layout_mode = 0
+offset_right = 1224.0
+offset_bottom = 678.0
+mouse_filter = 2
+texture = ExtResource("3_screen")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TopNavigationArt" type="TextureRect" parent="Root" unique_id=1386695005]
+layout_mode = 0
+offset_left = 200.0
+offset_top = 20.0
+offset_right = 1020.0
+offset_bottom = 88.0
+mouse_filter = 2
+texture = ExtResource("4_topbar")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CharacterPanelArt" type="TextureRect" parent="Root" unique_id=294561151]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 100.0
+offset_right = 378.0
+offset_bottom = 540.0
+mouse_filter = 2
+texture = ExtResource("5_charframe")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemDetailPanelArt" type="TextureRect" parent="Root" unique_id=1596399005]
+layout_mode = 0
+offset_left = 430.0
+offset_top = 100.0
+offset_right = 790.0
+offset_bottom = 540.0
+mouse_filter = 2
+texture = ExtResource("6_detailframe")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BackpackPanelArt" type="TextureRect" parent="Root" unique_id=1345885134]
+layout_mode = 0
+offset_left = 820.0
+offset_top = 100.0
+offset_right = 1190.0
+offset_bottom = 540.0
+mouse_filter = 2
+texture = ExtResource("7_backpackframe")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StatsPanelArt" type="TextureRect" parent="Root" unique_id=1008613305]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 548.0
+offset_right = 426.0
+offset_bottom = 658.0
+mouse_filter = 2
+texture = ExtResource("8_statsframe")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ResourceStripArt" type="TextureRect" parent="Root" unique_id=1743222043]
+layout_mode = 0
+offset_left = 488.0
+offset_top = 594.0
+offset_right = 1098.0
+offset_bottom = 666.0
+mouse_filter = 2
+texture = ExtResource("9_resource")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TitleLabel" type="Label" parent="Root" unique_id=812787544]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 372.0
-offset_top = 4.0
-offset_right = 772.0
-offset_bottom = 36.0
+offset_left = 394.0
+offset_top = 36.0
+offset_right = 754.0
+offset_bottom = 70.0
+theme_override_font_sizes/font_size = 20
 text = "Inventory"
 vertical_alignment = 1
 
-[node name="MaterialsLabel" type="Label" parent="Root" unique_id=1149673689]
+[node name="MaterialsLabel" type="Label" parent="Root" unique_id=1268115756]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 455.0
-offset_top = 18.0
-offset_right = 1065.0
-offset_bottom = 46.0
+offset_left = 540.0
+offset_top = 610.0
+offset_right = 1040.0
+offset_bottom = 644.0
+theme_override_font_sizes/font_size = 14
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="EquipmentTitle" type="Label" parent="Root" unique_id=1064381964]
+[node name="EquipmentTitle" type="Label" parent="Root" unique_id=1675079397]
 layout_mode = 0
-offset_left = 28.0
-offset_top = 33.0
-offset_right = 248.0
-offset_bottom = 57.0
+offset_left = 110.0
+offset_top = 120.0
+offset_right = 290.0
+offset_bottom = 148.0
+theme_override_font_sizes/font_size = 16
 text = "Equipment"
 vertical_alignment = 1
 
-[node name="EquipmentGrid" type="GridContainer" parent="Root" unique_id=551283515]
+[node name="CharacterTitle" type="Label" parent="Root" unique_id=1569812696]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 548.0
+offset_right = 310.0
+offset_bottom = 576.0
+theme_override_font_sizes/font_size = 16
+text = "Character"
+vertical_alignment = 1
+
+[node name="CharacterSummary" type="Label" parent="Root" unique_id=1660862639]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 25.0
-offset_top = 64.0
-offset_right = 353.0
-offset_bottom = 336.0
+offset_left = 100.0
+offset_top = 574.0
+offset_right = 380.0
+offset_bottom = 644.0
+theme_override_font_sizes/font_size = 13
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="DetailsTitle" type="Label" parent="Root" unique_id=42692283]
+layout_mode = 0
+offset_left = 543.0
+offset_top = 173.0
+offset_right = 743.0
+offset_bottom = 201.0
+theme_override_font_sizes/font_size = 16
+text = "Selected Item"
+vertical_alignment = 1
+
+[node name="BackpackTitle" type="Label" parent="Root" unique_id=993113150]
+layout_mode = 0
+offset_left = 946.0
+offset_top = 120.0
+offset_right = 1136.0
+offset_bottom = 148.0
+theme_override_font_sizes/font_size = 16
+text = "Backpack"
+vertical_alignment = 1
+
+[node name="EquipmentGrid" type="GridContainer" parent="Root" unique_id=164083503]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 58.0
+offset_top = 190.0
+offset_right = 334.0
+offset_bottom = 458.0
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
 columns = 2
 
-[node name="GearWeapon" type="Button" parent="Root/EquipmentGrid" unique_id=193945685]
-custom_minimum_size = Vector2(154, 48)
+[node name="GearWeapon" type="Button" parent="Root/EquipmentGrid" unique_id=191738907]
+custom_minimum_size = Vector2(132, 46)
 layout_mode = 2
 focus_mode = 0
 text = "Weapon"
+flat = true
 metadata/slot = "weapon"
 
-[node name="GearOffhand" type="Button" parent="Root/EquipmentGrid" unique_id=680802029]
-custom_minimum_size = Vector2(154, 48)
-layout_mode = 2
-focus_mode = 0
-text = "Offhand"
-metadata/slot = "offhand"
-
-[node name="GearHelmet" type="Button" parent="Root/EquipmentGrid" unique_id=837820496]
-custom_minimum_size = Vector2(154, 48)
+[node name="GearHelmet" type="Button" parent="Root/EquipmentGrid" unique_id=1693383986]
+custom_minimum_size = Vector2(132, 46)
 layout_mode = 2
 focus_mode = 0
 text = "Helmet"
+flat = true
 metadata/slot = "head"
 
-[node name="GearChest" type="Button" parent="Root/EquipmentGrid" unique_id=1204455533]
-custom_minimum_size = Vector2(154, 48)
+[node name="GearChest" type="Button" parent="Root/EquipmentGrid" unique_id=287190043]
+custom_minimum_size = Vector2(132, 46)
 layout_mode = 2
 focus_mode = 0
 text = "Chest"
+flat = true
 metadata/slot = "chest"
 
-[node name="GearGloves" type="Button" parent="Root/EquipmentGrid" unique_id=738574394]
-custom_minimum_size = Vector2(154, 48)
+[node name="GearGloves" type="Button" parent="Root/EquipmentGrid" unique_id=31442227]
+custom_minimum_size = Vector2(132, 46)
 layout_mode = 2
 focus_mode = 0
 text = "Gloves"
+flat = true
 metadata/slot = "gloves"
 
-[node name="GearBoots" type="Button" parent="Root/EquipmentGrid" unique_id=1686703030]
-custom_minimum_size = Vector2(154, 48)
+[node name="GearBoots" type="Button" parent="Root/EquipmentGrid" unique_id=1300587790]
+custom_minimum_size = Vector2(132, 46)
 layout_mode = 2
 focus_mode = 0
 text = "Boots"
+flat = true
 metadata/slot = "boots"
 
-[node name="GearAmulet" type="Button" parent="Root/EquipmentGrid" unique_id=1261074709]
-custom_minimum_size = Vector2(154, 48)
+[node name="GearAmulet" type="Button" parent="Root/EquipmentGrid" unique_id=499167417]
+custom_minimum_size = Vector2(132, 46)
 layout_mode = 2
 focus_mode = 0
 text = "Amulet"
+flat = true
 metadata/slot = "amulet"
 
-[node name="GearRing1" type="Button" parent="Root/EquipmentGrid" unique_id=2097457361]
-custom_minimum_size = Vector2(154, 48)
+[node name="GearRing1" type="Button" parent="Root/EquipmentGrid" unique_id=1009231451]
+custom_minimum_size = Vector2(132, 46)
 layout_mode = 2
 focus_mode = 0
-text = "Ring1"
+text = "Ring 1"
+flat = true
 metadata/slot = "ring1"
 
-[node name="GearRing2" type="Button" parent="Root/EquipmentGrid" unique_id=641960957]
-custom_minimum_size = Vector2(154, 48)
+[node name="GearRing2" type="Button" parent="Root/EquipmentGrid" unique_id=391090795]
+custom_minimum_size = Vector2(132, 46)
 layout_mode = 2
 focus_mode = 0
-text = "Ring2"
+text = "Ring 2"
+flat = true
 metadata/slot = "ring2"
 
-[node name="GearRelic" type="Button" parent="Root/EquipmentGrid" unique_id=231347540]
-custom_minimum_size = Vector2(154, 48)
+[node name="GearRelic" type="Button" parent="Root/EquipmentGrid" unique_id=253894253]
+custom_minimum_size = Vector2(132, 46)
 layout_mode = 2
 focus_mode = 0
 text = "Relic"
+flat = true
 metadata/slot = "relic"
 
-[node name="CharacterTitle" type="Label" parent="Root" unique_id=2026241362]
-layout_mode = 0
-offset_left = 388.0
-offset_top = 62.0
-offset_right = 568.0
-offset_bottom = 86.0
-text = "Character"
-vertical_alignment = 1
-
-[node name="CharacterPlate" type="ColorRect" parent="Root" unique_id=2112601422]
-layout_mode = 0
-offset_left = 380.0
-offset_top = 92.0
-offset_right = 576.0
-offset_bottom = 302.0
-color = Color(0.05, 0.045, 0.052, 0.65)
-
-[node name="CharacterSummary" type="Label" parent="Root" unique_id=312022959]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 398.0
-offset_top = 112.0
-offset_right = 558.0
-offset_bottom = 272.0
-vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="DetailsTitle" type="Label" parent="Root" unique_id=567389715]
-layout_mode = 0
-offset_left = 618.0
-offset_top = 62.0
-offset_right = 838.0
-offset_bottom = 86.0
-text = "Selected Item"
-vertical_alignment = 1
-
-[node name="DetailPanel" type="PanelContainer" parent="Root" unique_id=1363897757]
-layout_mode = 0
-offset_left = 592.0
-offset_top = 50.0
-offset_right = 1050.0
-offset_bottom = 350.0
-
-[node name="DetailLabel" type="Label" parent="Root/DetailPanel" unique_id=1401657561]
-unique_name_in_owner = true
+[node name="GearOffhand" type="Button" parent="Root/EquipmentGrid" unique_id=1924787337]
+custom_minimum_size = Vector2(132, 46)
 layout_mode = 2
+focus_mode = 0
+text = "Offhand"
+flat = true
+metadata/slot = "offhand"
+
+[node name="CharacterPlate" type="TextureRect" parent="Root" unique_id=1299330010]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 152.0
+offset_top = 220.0
+offset_right = 252.0
+offset_bottom = 340.0
+mouse_filter = 2
+texture = ExtResource("13_equip_slot_empty")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DetailPanel" type="Control" parent="Root" unique_id=1523048728]
+anchors_preset = 0
+offset_left = 460.0
+offset_top = 150.0
+offset_right = 762.0
+offset_bottom = 512.0
+
+[node name="DetailLabel" type="Label" parent="Root/DetailPanel" unique_id=1330390717]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 302.0
+offset_bottom = 362.0
+theme_override_font_sizes/font_size = 14
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="BackpackTitle" type="Label" parent="Root" unique_id=1117113559]
-layout_mode = 0
-offset_left = 29.0
-offset_top = 335.0
-offset_right = 269.0
-offset_bottom = 359.0
-text = "Backpack"
-vertical_alignment = 1
-
-[node name="BackpackGrid" type="GridContainer" parent="Root" unique_id=1954422973]
+[node name="BackpackGrid" type="GridContainer" parent="Root" unique_id=1600123761]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 24.0
-offset_top = 360.0
-offset_right = 818.0
-offset_bottom = 584.0
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
-columns = 8
+offset_left = 848.0
+offset_top = 160.0
+offset_right = 1168.0
+offset_bottom = 486.0
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 4
 
-[node name="BackpackSlot00" type="Button" parent="Root/BackpackGrid" unique_id=1200601816]
+[node name="BackpackSlot00" type="Button" parent="Root/BackpackGrid" unique_id=1989472571]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot01" type="Button" parent="Root/BackpackGrid" unique_id=1350036750]
+[node name="BackpackSlot01" type="Button" parent="Root/BackpackGrid" unique_id=901160396]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot02" type="Button" parent="Root/BackpackGrid" unique_id=421482372]
+[node name="BackpackSlot02" type="Button" parent="Root/BackpackGrid" unique_id=289189934]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot03" type="Button" parent="Root/BackpackGrid" unique_id=67251106]
+[node name="BackpackSlot03" type="Button" parent="Root/BackpackGrid" unique_id=359533643]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot04" type="Button" parent="Root/BackpackGrid" unique_id=1619032276]
+[node name="BackpackSlot04" type="Button" parent="Root/BackpackGrid" unique_id=28560215]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot05" type="Button" parent="Root/BackpackGrid" unique_id=1729553440]
+[node name="BackpackSlot05" type="Button" parent="Root/BackpackGrid" unique_id=2083514296]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot06" type="Button" parent="Root/BackpackGrid" unique_id=1279172809]
+[node name="BackpackSlot06" type="Button" parent="Root/BackpackGrid" unique_id=1776319688]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot07" type="Button" parent="Root/BackpackGrid" unique_id=42946203]
+[node name="BackpackSlot07" type="Button" parent="Root/BackpackGrid" unique_id=172299425]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot08" type="Button" parent="Root/BackpackGrid" unique_id=329672432]
+[node name="BackpackSlot08" type="Button" parent="Root/BackpackGrid" unique_id=1355315072]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot09" type="Button" parent="Root/BackpackGrid" unique_id=4394856]
+[node name="BackpackSlot09" type="Button" parent="Root/BackpackGrid" unique_id=1449785858]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot10" type="Button" parent="Root/BackpackGrid" unique_id=446114689]
+[node name="BackpackSlot10" type="Button" parent="Root/BackpackGrid" unique_id=953989785]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot11" type="Button" parent="Root/BackpackGrid" unique_id=572903221]
+[node name="BackpackSlot11" type="Button" parent="Root/BackpackGrid" unique_id=541459833]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot12" type="Button" parent="Root/BackpackGrid" unique_id=7237286]
+[node name="BackpackSlot12" type="Button" parent="Root/BackpackGrid" unique_id=961815438]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot13" type="Button" parent="Root/BackpackGrid" unique_id=382822246]
+[node name="BackpackSlot13" type="Button" parent="Root/BackpackGrid" unique_id=1464621692]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot14" type="Button" parent="Root/BackpackGrid" unique_id=1621888673]
+[node name="BackpackSlot14" type="Button" parent="Root/BackpackGrid" unique_id=2018516225]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot15" type="Button" parent="Root/BackpackGrid" unique_id=865693826]
+[node name="BackpackSlot15" type="Button" parent="Root/BackpackGrid" unique_id=1714386008]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot16" type="Button" parent="Root/BackpackGrid" unique_id=1478921793]
+[node name="BackpackSlot16" type="Button" parent="Root/BackpackGrid" unique_id=310436653]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot17" type="Button" parent="Root/BackpackGrid" unique_id=458610430]
+[node name="BackpackSlot17" type="Button" parent="Root/BackpackGrid" unique_id=356045626]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot18" type="Button" parent="Root/BackpackGrid" unique_id=553463205]
+[node name="BackpackSlot18" type="Button" parent="Root/BackpackGrid" unique_id=2024844182]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot19" type="Button" parent="Root/BackpackGrid" unique_id=530924339]
+[node name="BackpackSlot19" type="Button" parent="Root/BackpackGrid" unique_id=495941837]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot20" type="Button" parent="Root/BackpackGrid" unique_id=1824972774]
+[node name="BackpackSlot20" type="Button" parent="Root/BackpackGrid" unique_id=400660904]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot21" type="Button" parent="Root/BackpackGrid" unique_id=314326156]
+[node name="BackpackSlot21" type="Button" parent="Root/BackpackGrid" unique_id=661208015]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot22" type="Button" parent="Root/BackpackGrid" unique_id=654722009]
+[node name="BackpackSlot22" type="Button" parent="Root/BackpackGrid" unique_id=798766643]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot23" type="Button" parent="Root/BackpackGrid" unique_id=739829196]
+[node name="BackpackSlot23" type="Button" parent="Root/BackpackGrid" unique_id=5103878]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot24" type="Button" parent="Root/BackpackGrid" unique_id=1039122546]
+[node name="BackpackSlot24" type="Button" parent="Root/BackpackGrid" unique_id=1402362184]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot25" type="Button" parent="Root/BackpackGrid" unique_id=1831129562]
+[node name="BackpackSlot25" type="Button" parent="Root/BackpackGrid" unique_id=304776981]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot26" type="Button" parent="Root/BackpackGrid" unique_id=1002343828]
+[node name="BackpackSlot26" type="Button" parent="Root/BackpackGrid" unique_id=90469832]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot27" type="Button" parent="Root/BackpackGrid" unique_id=467434670]
+[node name="BackpackSlot27" type="Button" parent="Root/BackpackGrid" unique_id=54689344]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot28" type="Button" parent="Root/BackpackGrid" unique_id=666045742]
+[node name="BackpackSlot28" type="Button" parent="Root/BackpackGrid" unique_id=281562077]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot29" type="Button" parent="Root/BackpackGrid" unique_id=662589248]
+[node name="BackpackSlot29" type="Button" parent="Root/BackpackGrid" unique_id=1316075669]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot30" type="Button" parent="Root/BackpackGrid" unique_id=1124138649]
+[node name="BackpackSlot30" type="Button" parent="Root/BackpackGrid" unique_id=332861875]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="BackpackSlot31" type="Button" parent="Root/BackpackGrid" unique_id=1401540476]
+[node name="BackpackSlot31" type="Button" parent="Root/BackpackGrid" unique_id=1757282383]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 48)
+custom_minimum_size = Vector2(74, 36)
 layout_mode = 2
 focus_mode = 0
 text = "Empty"
+flat = true
 
-[node name="EquipButton" type="Button" parent="Root" unique_id=1498528405]
+[node name="EquipButton" type="Button" parent="Root" unique_id=1853598580]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 850.0
-offset_top = 420.0
-offset_right = 1060.0
-offset_bottom = 456.0
+offset_left = 538.0
+offset_top = 612.0
+offset_right = 698.0
+offset_bottom = 646.0
 focus_mode = 0
-text = "Equip Selected"
+text = "Equip"
 
-[node name="StashButton" type="Button" parent="Root" unique_id=1258245746]
+[node name="StashButton" type="Button" parent="Root" unique_id=515080514]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 850.0
-offset_top = 464.0
-offset_right = 1060.0
-offset_bottom = 500.0
+offset_left = 755.0
+offset_top = 608.0
+offset_right = 915.0
+offset_bottom = 642.0
 focus_mode = 0
-text = "Stash Selected"
+text = "Stash"
 
-[node name="SalvageButton" type="Button" parent="Root" unique_id=1919643845]
+[node name="SalvageButton" type="Button" parent="Root" unique_id=1385448297]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 850.0
-offset_top = 508.0
-offset_right = 1060.0
-offset_bottom = 544.0
+offset_left = 852.0
+offset_top = 610.0
+offset_right = 1012.0
+offset_bottom = 644.0
 focus_mode = 0
-text = "Salvage Selected"
+text = "Salvage"
 
-[node name="UnequipButton" type="Button" parent="Root" unique_id=408007322]
+[node name="UnequipButton" type="Button" parent="Root" unique_id=146613997]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 850.0
-offset_top = 552.0
-offset_right = 1060.0
-offset_bottom = 588.0
+offset_left = 651.0
+offset_top = 608.0
+offset_right = 811.0
+offset_bottom = 642.0
 focus_mode = 0
-text = "Unequip Gear"
+text = "Unequip"
 
-[node name="CloseButton" type="Button" parent="Root" unique_id=1861697273]
+[node name="CloseButton" type="Button" parent="Root" unique_id=974499203]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 893.0
-offset_top = 13.0
-offset_right = 1023.0
-offset_bottom = 45.0
+offset_left = 1058.0
+offset_top = 38.0
+offset_right = 1176.0
+offset_bottom = 70.0
 focus_mode = 0
 text = "Close"
+
+[node name="SceneAuthoringNote" type="Label" parent="Root" unique_id=1945842809]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 646.0
+offset_right = 484.0
+offset_bottom = 668.0
+theme_override_font_sizes/font_size = 11
+text = "Scene-authored layout: drag art nodes and button grids in Godot."
+vertical_alignment = 1
