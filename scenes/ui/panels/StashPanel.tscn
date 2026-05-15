@@ -4,28 +4,334 @@
 
 [node name="StashPanel" type="PanelContainer"]
 layout_mode = 0
-offset_left = 260.0
-offset_top = 110.0
-offset_right = 1020.0
-offset_bottom = 610.0
+offset_left = 130.0
+offset_top = 78.0
+offset_right = 1150.0
+offset_bottom = 658.0
 script = ExtResource("1")
 title = "Stash"
 
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="Root" type="Control" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 24
+custom_minimum_size = Vector2(1020, 580)
 
-[node name="VBox" type="VBoxContainer" parent="Margin"]
-layout_mode = 2
-
-[node name="TitleLabel" type="Label" parent="Margin/VBox"]
-layout_mode = 2
+[node name="TitleLabel" type="Label" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 24
+offset_top = 14
+offset_right = 424
+offset_bottom = 46
 text = "Stash"
+vertical_alignment = 1
 
-[node name="ContentLabel" type="Label" parent="Margin/VBox"]
+[node name="StashGrid" type="GridContainer" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 24.0
+offset_top = 72.0
+offset_right = 642.0
+offset_bottom = 530.0
+columns = 6
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+
+[node name="StashSlot00" type="Button" parent="Root/StashGrid"]
 unique_name_in_owner = true
 layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot01" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot02" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot03" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot04" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot05" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot06" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot07" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot08" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot09" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot10" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot11" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot12" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot13" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot14" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot15" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot16" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot17" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot18" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot19" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot20" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot21" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot22" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot23" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot24" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot25" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot26" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot27" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot28" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot29" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot30" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot31" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot32" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot33" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot34" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="StashSlot35" type="Button" parent="Root/StashGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 56)
+focus_mode = 0
+text = "Empty"
+
+[node name="DetailPanel" type="PanelContainer" parent="Root"]
+layout_mode = 0
+offset_left = 682.0
+offset_top = 72.0
+offset_right = 984.0
+offset_bottom = 380.0
+
+[node name="DetailLabel" type="Label" parent="Root/DetailPanel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14
+offset_top = 12
+offset_right = 288
+offset_bottom = 294
 text = ""
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="WithdrawButton" type="Button" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 704
+offset_top = 410
+offset_right = 954
+offset_bottom = 450
+focus_mode = 0
+text = "Withdraw Selected"
+
+[node name="DepositAllButton" type="Button" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 704
+offset_top = 460
+offset_right = 954
+offset_bottom = 500
+focus_mode = 0
+text = "Deposit All Backpack"
+
+[node name="CloseButton" type="Button" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 844
+offset_top = 20
+offset_right = 974
+offset_bottom = 52
+focus_mode = 0
+text = "Close"
