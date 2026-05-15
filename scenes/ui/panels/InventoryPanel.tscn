@@ -166,12 +166,13 @@ vertical_alignment = 1
 
 [node name="BackpackTitle" type="Label" parent="Root" unique_id=993113150]
 layout_mode = 0
-offset_left = 946.0
-offset_top = 120.0
-offset_right = 1136.0
-offset_bottom = 148.0
+offset_left = 930.0
+offset_top = 118.0
+offset_right = 1160.0
+offset_bottom = 146.0
 theme_override_font_sizes/font_size = 16
 text = "Backpack"
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="EquipmentGrid" type="GridContainer" parent="Root" unique_id=164083503]
@@ -293,271 +294,419 @@ theme_override_font_sizes/font_size = 14
 vertical_alignment = 1
 autowrap_mode = 3
 
+[node name="BackpackGridAlignmentNote" type="Label" parent="Root" unique_id=1500650659]
+layout_mode = 0
+offset_left = 842.0
+offset_top = 510.0
+offset_right = 1188.0
+offset_bottom = 532.0
+theme_override_font_sizes/font_size = 9
+text = "Clickable grid: 7 columns, 40x42 slots, 4px gap. Move BackpackGrid if you move the art."
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/authoring_note = "This label can be hidden/deleted after layout is final."
+
 [node name="BackpackGrid" type="GridContainer" parent="Root" unique_id=1600123761]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 848.0
-offset_top = 160.0
-offset_right = 1168.0
-offset_bottom = 486.0
-theme_override_constants/h_separation = 6
-theme_override_constants/v_separation = 6
-columns = 4
+offset_top = 182.0
+offset_right = 1164.0
+offset_bottom = 506.0
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+columns = 7
 
-[node name="BackpackSlot00" type="Button" parent="Root/BackpackGrid" unique_id=1989472571]
+[node name="BackpackSlot00" type="Button" parent="Root/BackpackGrid" unique_id=109340622]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot01" type="Button" parent="Root/BackpackGrid" unique_id=901160396]
+[node name="BackpackSlot01" type="Button" parent="Root/BackpackGrid" unique_id=1664808597]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot02" type="Button" parent="Root/BackpackGrid" unique_id=289189934]
+[node name="BackpackSlot02" type="Button" parent="Root/BackpackGrid" unique_id=1589237158]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot03" type="Button" parent="Root/BackpackGrid" unique_id=359533643]
+[node name="BackpackSlot03" type="Button" parent="Root/BackpackGrid" unique_id=287423204]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot04" type="Button" parent="Root/BackpackGrid" unique_id=28560215]
+[node name="BackpackSlot04" type="Button" parent="Root/BackpackGrid" unique_id=103809277]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot05" type="Button" parent="Root/BackpackGrid" unique_id=2083514296]
+[node name="BackpackSlot05" type="Button" parent="Root/BackpackGrid" unique_id=1815604565]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot06" type="Button" parent="Root/BackpackGrid" unique_id=1776319688]
+[node name="BackpackSlot06" type="Button" parent="Root/BackpackGrid" unique_id=700761846]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot07" type="Button" parent="Root/BackpackGrid" unique_id=172299425]
+[node name="BackpackSlot07" type="Button" parent="Root/BackpackGrid" unique_id=1205290397]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot08" type="Button" parent="Root/BackpackGrid" unique_id=1355315072]
+[node name="BackpackSlot08" type="Button" parent="Root/BackpackGrid" unique_id=1781940773]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot09" type="Button" parent="Root/BackpackGrid" unique_id=1449785858]
+[node name="BackpackSlot09" type="Button" parent="Root/BackpackGrid" unique_id=1663818058]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot10" type="Button" parent="Root/BackpackGrid" unique_id=953989785]
+[node name="BackpackSlot10" type="Button" parent="Root/BackpackGrid" unique_id=825626317]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot11" type="Button" parent="Root/BackpackGrid" unique_id=541459833]
+[node name="BackpackSlot11" type="Button" parent="Root/BackpackGrid" unique_id=1941174584]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot12" type="Button" parent="Root/BackpackGrid" unique_id=961815438]
+[node name="BackpackSlot12" type="Button" parent="Root/BackpackGrid" unique_id=1587276901]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot13" type="Button" parent="Root/BackpackGrid" unique_id=1464621692]
+[node name="BackpackSlot13" type="Button" parent="Root/BackpackGrid" unique_id=1340168413]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot14" type="Button" parent="Root/BackpackGrid" unique_id=2018516225]
+[node name="BackpackSlot14" type="Button" parent="Root/BackpackGrid" unique_id=2003082328]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot15" type="Button" parent="Root/BackpackGrid" unique_id=1714386008]
+[node name="BackpackSlot15" type="Button" parent="Root/BackpackGrid" unique_id=10575371]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot16" type="Button" parent="Root/BackpackGrid" unique_id=310436653]
+[node name="BackpackSlot16" type="Button" parent="Root/BackpackGrid" unique_id=628575261]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot17" type="Button" parent="Root/BackpackGrid" unique_id=356045626]
+[node name="BackpackSlot17" type="Button" parent="Root/BackpackGrid" unique_id=1038189956]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot18" type="Button" parent="Root/BackpackGrid" unique_id=2024844182]
+[node name="BackpackSlot18" type="Button" parent="Root/BackpackGrid" unique_id=1348586564]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot19" type="Button" parent="Root/BackpackGrid" unique_id=495941837]
+[node name="BackpackSlot19" type="Button" parent="Root/BackpackGrid" unique_id=1459780872]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot20" type="Button" parent="Root/BackpackGrid" unique_id=400660904]
+[node name="BackpackSlot20" type="Button" parent="Root/BackpackGrid" unique_id=817077299]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot21" type="Button" parent="Root/BackpackGrid" unique_id=661208015]
+[node name="BackpackSlot21" type="Button" parent="Root/BackpackGrid" unique_id=1284375292]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot22" type="Button" parent="Root/BackpackGrid" unique_id=798766643]
+[node name="BackpackSlot22" type="Button" parent="Root/BackpackGrid" unique_id=185223982]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot23" type="Button" parent="Root/BackpackGrid" unique_id=5103878]
+[node name="BackpackSlot23" type="Button" parent="Root/BackpackGrid" unique_id=803469583]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot24" type="Button" parent="Root/BackpackGrid" unique_id=1402362184]
+[node name="BackpackSlot24" type="Button" parent="Root/BackpackGrid" unique_id=771550836]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot25" type="Button" parent="Root/BackpackGrid" unique_id=304776981]
+[node name="BackpackSlot25" type="Button" parent="Root/BackpackGrid" unique_id=512801989]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot26" type="Button" parent="Root/BackpackGrid" unique_id=90469832]
+[node name="BackpackSlot26" type="Button" parent="Root/BackpackGrid" unique_id=1197280508]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot27" type="Button" parent="Root/BackpackGrid" unique_id=54689344]
+[node name="BackpackSlot27" type="Button" parent="Root/BackpackGrid" unique_id=1243108969]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot28" type="Button" parent="Root/BackpackGrid" unique_id=281562077]
+[node name="BackpackSlot28" type="Button" parent="Root/BackpackGrid" unique_id=565078776]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot29" type="Button" parent="Root/BackpackGrid" unique_id=1316075669]
+[node name="BackpackSlot29" type="Button" parent="Root/BackpackGrid" unique_id=1231122366]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot30" type="Button" parent="Root/BackpackGrid" unique_id=332861875]
+[node name="BackpackSlot30" type="Button" parent="Root/BackpackGrid" unique_id=136775132]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
 flat = true
 
-[node name="BackpackSlot31" type="Button" parent="Root/BackpackGrid" unique_id=1757282383]
+[node name="BackpackSlot31" type="Button" parent="Root/BackpackGrid" unique_id=454488175]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 36)
+custom_minimum_size = Vector2(40, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Empty"
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot32" type="Button" parent="Root/BackpackGrid" unique_id=1517136861]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot33" type="Button" parent="Root/BackpackGrid" unique_id=1760584500]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot34" type="Button" parent="Root/BackpackGrid" unique_id=847848677]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot35" type="Button" parent="Root/BackpackGrid" unique_id=1018903618]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot36" type="Button" parent="Root/BackpackGrid" unique_id=1995932707]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot37" type="Button" parent="Root/BackpackGrid" unique_id=2075765545]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot38" type="Button" parent="Root/BackpackGrid" unique_id=1590069310]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot39" type="Button" parent="Root/BackpackGrid" unique_id=1412035739]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot40" type="Button" parent="Root/BackpackGrid" unique_id=2116608929]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot41" type="Button" parent="Root/BackpackGrid" unique_id=781302445]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot42" type="Button" parent="Root/BackpackGrid" unique_id=1486652031]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot43" type="Button" parent="Root/BackpackGrid" unique_id=322411926]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot44" type="Button" parent="Root/BackpackGrid" unique_id=27510103]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot45" type="Button" parent="Root/BackpackGrid" unique_id=828779593]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot46" type="Button" parent="Root/BackpackGrid" unique_id=340724219]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot47" type="Button" parent="Root/BackpackGrid" unique_id=754053178]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="BackpackSlot48" type="Button" parent="Root/BackpackGrid" unique_id=1751390382]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 42)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
 flat = true
 
 [node name="EquipButton" type="Button" parent="Root" unique_id=1853598580]
