@@ -1,218 +1,31 @@
-[gd_scene format=3 uid="uid://b3neg4snit1lt"]
+[gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" uid="uid://bjungrr7a4hvd" path="res://scripts/ui/panels/CraftingPanel.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/panels/CraftingPanel.gd" id="1"]
 
-[node name="CraftingPanel" type="Control" unique_id=940223056]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="CraftingPanel" type="PanelContainer"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 110.0
+offset_right = 1020.0
+offset_bottom = 610.0
 script = ExtResource("1")
+title = "Crafting"
 
-[node name="Backdrop" type="ColorRect" parent="." unique_id=1555416743]
-layout_mode = 0
-offset_left = 210.0
-offset_top = 80.0
-offset_right = 1070.0
-offset_bottom = 640.0
-color = Color(0.02, 0.018, 0.022, 0.92)
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
 
-[node name="Title" type="Label" parent="." unique_id=2132135860]
-layout_mode = 0
-offset_left = 240.0
-offset_top = 104.0
-offset_right = 1040.0
-offset_bottom = 132.0
-text = "CraftingPanel"
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
 
-[node name="CloseHint" type="Label" parent="." unique_id=1420720288]
-layout_mode = 0
-offset_left = 873.0
-offset_top = 104.0
-offset_right = 1039.0
-offset_bottom = 132.0
-text = "Esc close"
-horizontal_alignment = 2
+[node name="TitleLabel" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "Crafting"
 
-[node name="Body" type="RichTextLabel" parent="." unique_id=816535187]
-layout_mode = 0
-offset_left = 240.0
-offset_top = 150.0
-offset_right = 630.0
-offset_bottom = 595.0
-
-[node name="Detail" type="RichTextLabel" parent="." unique_id=912149544]
-layout_mode = 0
-offset_left = 660.0
-offset_top = 150.0
-offset_right = 1040.0
-offset_bottom = 595.0
-
-[node name="ArtRoot" type="Control" parent="." unique_id=1193497875]
-anchors_preset = 0
-offset_left = 210.0
-offset_top = 80.0
-offset_right = 1070.0
-offset_bottom = 640.0
-
-[node name="CraftingSlot_00" type="ColorRect" parent="ArtRoot" unique_id=477948483]
-layout_mode = 0
-offset_left = 36.0
-offset_top = 96.0
-offset_right = 94.0
-offset_bottom = 154.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="CraftingSlot_01" type="ColorRect" parent="ArtRoot" unique_id=295161338]
-layout_mode = 0
-offset_left = 106.0
-offset_top = 96.0
-offset_right = 164.0
-offset_bottom = 154.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="CraftingSlot_02" type="ColorRect" parent="ArtRoot" unique_id=209180556]
-layout_mode = 0
-offset_left = 176.0
-offset_top = 96.0
-offset_right = 234.0
-offset_bottom = 154.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="CraftingSlot_03" type="ColorRect" parent="ArtRoot" unique_id=1752566213]
-layout_mode = 0
-offset_left = 246.0
-offset_top = 96.0
-offset_right = 304.0
-offset_bottom = 154.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="CraftingSlot_04" type="ColorRect" parent="ArtRoot" unique_id=1956234793]
-layout_mode = 0
-offset_left = 36.0
-offset_top = 166.0
-offset_right = 94.0
-offset_bottom = 224.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="CraftingSlot_05" type="ColorRect" parent="ArtRoot" unique_id=302847677]
-layout_mode = 0
-offset_left = 106.0
-offset_top = 166.0
-offset_right = 164.0
-offset_bottom = 224.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="CraftingSlot_06" type="ColorRect" parent="ArtRoot" unique_id=185691974]
-layout_mode = 0
-offset_left = 176.0
-offset_top = 166.0
-offset_right = 234.0
-offset_bottom = 224.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="CraftingSlot_07" type="ColorRect" parent="ArtRoot" unique_id=1928919292]
-layout_mode = 0
-offset_left = 246.0
-offset_top = 166.0
-offset_right = 304.0
-offset_bottom = 224.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="CraftingSlot_08" type="ColorRect" parent="ArtRoot" unique_id=1678587948]
-layout_mode = 0
-offset_left = 36.0
-offset_top = 236.0
-offset_right = 94.0
-offset_bottom = 294.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="CraftingSlot_09" type="ColorRect" parent="ArtRoot" unique_id=359145443]
-layout_mode = 0
-offset_left = 106.0
-offset_top = 236.0
-offset_right = 164.0
-offset_bottom = 294.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="CraftingSlot_10" type="ColorRect" parent="ArtRoot" unique_id=920337415]
-layout_mode = 0
-offset_left = 176.0
-offset_top = 236.0
-offset_right = 234.0
-offset_bottom = 294.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="CraftingSlot_11" type="ColorRect" parent="ArtRoot" unique_id=1277653216]
-layout_mode = 0
-offset_left = 246.0
-offset_top = 236.0
-offset_right = 304.0
-offset_bottom = 294.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="AffixSlot_00" type="ColorRect" parent="ArtRoot" unique_id=732065789]
-layout_mode = 0
-offset_left = 620.0
-offset_top = 96.0
-offset_right = 682.0
-offset_bottom = 158.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="AffixSlot_01" type="ColorRect" parent="ArtRoot" unique_id=47980934]
-layout_mode = 0
-offset_left = 694.0
-offset_top = 96.0
-offset_right = 756.0
-offset_bottom = 158.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="AffixSlot_02" type="ColorRect" parent="ArtRoot" unique_id=1528339772]
-layout_mode = 0
-offset_left = 620.0
-offset_top = 170.0
-offset_right = 682.0
-offset_bottom = 232.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="AffixSlot_03" type="ColorRect" parent="ArtRoot" unique_id=780759934]
-layout_mode = 0
-offset_left = 694.0
-offset_top = 170.0
-offset_right = 756.0
-offset_bottom = 232.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="AffixSlot_04" type="ColorRect" parent="ArtRoot" unique_id=1264500829]
-layout_mode = 0
-offset_left = 620.0
-offset_top = 244.0
-offset_right = 682.0
-offset_bottom = 306.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="AffixSlot_05" type="ColorRect" parent="ArtRoot" unique_id=1726221720]
-layout_mode = 0
-offset_left = 694.0
-offset_top = 244.0
-offset_right = 756.0
-offset_bottom = 306.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="AffixSlot_06" type="ColorRect" parent="ArtRoot" unique_id=285999628]
-layout_mode = 0
-offset_left = 620.0
-offset_top = 318.0
-offset_right = 682.0
-offset_bottom = 380.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="AffixSlot_07" type="ColorRect" parent="ArtRoot" unique_id=986006651]
-layout_mode = 0
-offset_left = 694.0
-offset_top = 318.0
-offset_right = 756.0
-offset_bottom = 380.0
-color = Color(0.12, 0.11, 0.13, 0.45)
+[node name="ContentLabel" type="Label" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""

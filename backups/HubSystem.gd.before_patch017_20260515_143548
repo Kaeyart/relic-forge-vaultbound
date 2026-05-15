@@ -1,0 +1,108 @@
+class_name RVHubSystem
+extends RefCounted
+
+static func rebuild_objects(state: RVGameState) -> void:
+	state.hub_objects.clear()
+	for contract in RVContractDB.all():
+		state.hub_objects.append({"type": "contract", "name": str(contract["name"]), "pos": contract["pos"], "color": contract["color"], "data": contract, "prompt": "E enter " + str(contract["name"])})
+	for recipe in RVItemDB.recipes():
+		state.hub_objects.append({"type": "forge", "name": str(recipe["name"]), "pos": recipe["pos"], "color": recipe["color"], "data": recipe, "prompt": "E craft recipe · C forgecraft"})
+	state.hub_objects.append({"type": "passive_atlas", "name": "Passive Atlas", "pos": Vector2(330.0, 360.0), "color": Color(0.78, 0.62, 1.0), "data": {}, "prompt": "E open passive atlas · P anywhere"})
+	state.hub_objects.append({"type": "skill_codex", "name": "Gem Codex", "pos": Vector2(650.0, 560.0), "color": Color(0.42, 0.82, 1.0), "data": {}, "prompt": "E open skill gems · K anywhere"})
+	state.hub_objects.append({"type": "forgecraft", "name": "Forgecraft Anvil", "pos": Vector2(995.0, 365.0), "color": Color(1.0, 0.46, 0.16), "data": {}, "prompt": "E open forgecraft · C anywhere"})
+	state.hub_objects.append({"type": "stash", "name": "Stash Chest", "pos": Vector2(640.0, 355.0), "color": Color(0.95, 0.78, 0.34), "data": {}, "prompt": "E deposit backpack · X withdraw first stash item"})
+	state.hub_objects.append({"type": "armory", "name": "Armory Rack", "pos": Vector2(700.0, 355.0), "color": Color(0.86, 0.78, 0.62), "data": {}, "prompt": "E equip first backpack item · X salvage first backpack item"})
+
+static func update_focus(state: RVGameState) -> void:
+	state.focus_clear()
+	var best_distance: float = 999999.0
+	var best: Dictionary = {}
+	for obj in state.hub_objects:
+		var pos: Vector2 = obj["pos"]
+		var dist: float = state.player_pos.distance_to(pos)
+		if dist < best_distance:
+			best_distance = dist
+			best = obj
+	if best_distance <= 62.0:
+		state.focused_object = best
+		state.prompt = str(best.get("prompt", ""))
+	if state.panel_mode == "":
+		state.prompt += "   P Atlas · K Gems · C Forge"
+
+static func interact_primary(state: RVGameState) -> void:
+	if state.focused_object.is_empty():
+		return
+	var obj: Dictionary = state.focused_object
+	var kind: String = str(obj["type"])
+	match kind:
+		"contract": RVCombatSystem.start_contract(state, obj["data"])
+		"forge": craft_recipe(state, obj["data"])
+		"passive_atlas": state.panel_mode = "passive_tree"
+		"skill_codex": state.panel_mode = "skill_gems"
+		"forgecraft": state.panel_mode = "crafting"
+		"stash": deposit_backpack(state)
+		"armory": equip_first_backpack_item(state)
+
+static func interact_secondary(state: RVGameState) -> void:
+	if state.focused_object.is_empty():
+		return
+	var obj: Dictionary = state.focused_object
+	var kind: String = str(obj["type"])
+	match kind:
+		"stash": withdraw_first_stash_item(state)
+		"armory": salvage_first_backpack_item(state)
+		"skill_codex": state.panel_mode = "skill_gems"
+		"passive_atlas": state.panel_mode = "passive_tree"
+		"forgecraft": state.panel_mode = "crafting"
+
+static func craft_recipe(state: RVGameState, recipe: Dictionary) -> void:
+	var cost: Dictionary = recipe.get("cost", {})
+	if not RVItemDB.can_pay(state, cost):
+		state.add_notice("Not enough materials")
+		return
+	RVItemDB.pay(state, cost)
+	var item: Dictionary = RVItemDB.craft(state, recipe)
+	state.backpack.append(item)
+	state.add_notice("Crafted " + str(item["name"]))
+
+static func deposit_backpack(state: RVGameState) -> void:
+	for item in state.backpack:
+		state.stash.append(item)
+	state.backpack.clear()
+	state.add_notice("Backpack deposited")
+
+static func withdraw_first_stash_item(state: RVGameState) -> void:
+	if state.stash.size() == 0:
+		state.add_notice("Stash empty")
+		return
+	var item: Dictionary = state.stash[0]
+	state.stash.remove_at(0)
+	state.backpack.append(item)
+	state.add_notice("Withdrew " + str(item.get("name", "item")))
+
+static func equip_first_backpack_item(state: RVGameState) -> void:
+	if state.backpack.size() == 0:
+		state.add_notice("Backpack empty")
+		return
+	var item: Dictionary = RVItemDB.normalize_item(state.backpack[0])
+	state.backpack.remove_at(0)
+	var slot: String = str(item.get("slot", "relic"))
+	if slot == "ring":
+		if state.equipped["ring1"].is_empty(): slot = "ring1"
+		else: slot = "ring2"
+	if not state.equipped.has(slot): slot = "relic"
+	var old: Variant = state.equipped[slot]
+	state.equipped[slot] = item
+	if typeof(old) == TYPE_DICTIONARY and not old.is_empty(): state.backpack.append(old)
+	state.recompute_stats()
+	state.add_notice("Equipped " + str(item.get("name", "item")))
+
+static func salvage_first_backpack_item(state: RVGameState) -> void:
+	if state.backpack.size() == 0:
+		state.add_notice("Backpack empty")
+		return
+	var item: Dictionary = state.backpack[0]
+	state.backpack.remove_at(0)
+	state.materials["embers"] = int(state.materials.get("embers", 0)) + 3
+	state.materials["shards"] = int(state.materials.get("shards", 0)) + 1
+	state.add_notice("Salvaged " + str(item.get("name", "item")))

@@ -1,0 +1,93 @@
+class_name RVSkillSystem
+extends RefCounted
+
+static func update(state: RVGameState, delta: float) -> void:
+	for skill in state.skill_cooldowns.keys():
+		state.skill_cooldowns[skill] = max(0.0, float(state.skill_cooldowns[skill]) - delta)
+
+static func cast_selected(state: RVGameState, aim: Vector2) -> void:
+	if state.active_skills.size() == 0:
+		return
+	state.selected_skill = clamp(state.selected_skill, 0, state.active_skills.size() - 1)
+	var skill: String = str(state.active_skills[state.selected_skill])
+	cast(state, skill, aim)
+
+static func cast(state: RVGameState, skill: String, aim: Vector2) -> void:
+	var data: Dictionary = RVSkillGemDB.active_data(skill)
+	if data.is_empty():
+		return
+	var mods: Dictionary = RVSkillGemSystem.support_mods(state, skill)
+	var cost: float = float(data.get("base_cost", 10.0)) * float(mods.get("cost_mult", 1.0))
+	var cooldown: float = float(data.get("base_cd", 0.5)) * float(mods.get("cooldown_mult", 1.0))
+	cooldown *= max(0.35, 1.0 - state.build_stat_bonus("cooldown_reduction"))
+	var cd: float = float(state.skill_cooldowns.get(skill, 0.0))
+	if cd > 0.0:
+		return
+	if state.player_mana < cost:
+		state.add_notice("Not enough mana")
+		return
+	state.player_mana -= cost
+	state.skill_cooldowns[skill] = cooldown
+	_cast_payload(state, skill, aim, 1.0)
+	if int(mods.get("echo", 0)) > 0:
+		_cast_payload(state, skill, aim + Vector2(state.rng.randf_range(-18.0, 18.0), state.rng.randf_range(-18.0, 18.0)), 0.62)
+
+static func _cast_payload(state: RVGameState, skill: String, aim: Vector2, echo_power: float) -> void:
+	var data: Dictionary = RVSkillGemDB.active_data(skill)
+	var tags: Array = data.get("tags", [])
+	var mods: Dictionary = RVSkillGemSystem.support_mods(state, skill)
+	var damage: float = scale_damage(state, skill, float(data.get("base_damage", 10.0))) * float(mods.get("damage_mult", 1.0)) * echo_power
+	var dir: Vector2 = aim - state.player_pos
+	if dir.length() < 0.01:
+		dir = Vector2.RIGHT
+	else:
+		dir = dir.normalized()
+	match skill:
+		"Fireball":
+			_spawn_projectile_fan(state, skill, tags, damage, dir, 520.0, 8.0, 0.95, int(mods.get("extra_projectiles", 0)))
+		"Storm Lance":
+			_spawn_projectile_fan(state, skill, tags, damage, dir, 720.0, 6.0, 0.72, int(mods.get("extra_projectiles", 0)) + int(mods.get("chain_bonus", 0)))
+		"Cleave":
+			state.zones.append({"pos": state.player_pos + dir * 58.0, "radius": 76.0, "time": 0.05, "duration": 0.16, "damage": damage, "tags": tags, "visual": "Cleave", "triggered": false})
+		"Frost Nova":
+			state.zones.append({"pos": state.player_pos, "radius": 145.0, "time": 0.18, "duration": 0.34, "damage": damage, "tags": tags, "visual": "Frost Nova", "triggered": false})
+		"Void Rift":
+			state.zones.append({"pos": aim, "radius": 92.0, "time": 0.38, "duration": 0.75, "damage": damage, "tags": tags, "visual": "Void Rift", "triggered": false, "pull": true})
+		"Blade Trap":
+			state.zones.append({"pos": aim, "radius": 64.0, "time": 0.45, "duration": 0.52, "damage": damage, "tags": tags, "visual": "Blade Trap", "triggered": false})
+	if int(mods.get("trigger_rift", 0)) > 0 and skill != "Void Rift":
+		state.zones.append({"pos": aim, "radius": 54.0, "time": 0.24, "duration": 0.38, "damage": damage * 0.35, "tags": ["Void", "Area"], "visual": "Support Rift", "triggered": false})
+	if int(mods.get("trigger_trap", 0)) > 0 and skill != "Blade Trap":
+		state.zones.append({"pos": aim, "radius": 48.0, "time": 0.35, "duration": 0.42, "damage": damage * 0.35, "tags": ["Trap", "Physical", "Area"], "visual": "Support Trap", "triggered": false})
+
+static func _spawn_projectile_fan(state: RVGameState, skill: String, tags: Array, damage: float, dir: Vector2, speed: float, radius: float, life: float, extra: int) -> void:
+	var count: int = 1 + extra
+	var spread: float = 0.18 * float(max(0, count - 1))
+	for i in range(count):
+		var offset_index: float = float(i) - float(count - 1) * 0.5
+		var shot_dir: Vector2 = dir.rotated(offset_index * spread)
+		state.projectiles.append(make_projectile(state.player_pos + shot_dir * 24.0, shot_dir * speed, damage / max(1.0, 1.0 + float(extra) * 0.22), radius, tags, skill, life, 0))
+
+static func make_projectile(pos: Vector2, vel: Vector2, damage: float, radius: float, tags: Array, skill: String, life: float, pierce: int) -> Dictionary:
+	return {"pos": pos, "vel": vel, "damage": damage, "radius": radius, "tags": tags.duplicate(true), "skill": skill, "life": life, "pierce": pierce, "hit_ids": {}}
+
+static func scale_damage(state: RVGameState, skill: String, base: float) -> float:
+	var value: float = base
+	var rank: int = int(state.skill_ranks.get(skill, 0))
+	var gem: Dictionary = state.skill_gems.get(skill, {})
+	var gem_level: int = int(gem.get("level", 1))
+	value *= 1.0 + float(rank) * 0.08 + float(gem_level - 1) * 0.06
+	var tags: Array = RVSkillGemDB.active_data(skill).get("tags", [])
+	var stat_keys: Array = []
+	if tags.has("Fire"): stat_keys.append("fire_damage")
+	if tags.has("Cold"): stat_keys.append("cold_damage")
+	if tags.has("Lightning"): stat_keys.append("lightning_damage")
+	if tags.has("Void"): stat_keys.append("void_damage")
+	if tags.has("Physical") or tags.has("Melee"): stat_keys.append("melee_damage")
+	if tags.has("Trap"): stat_keys.append("trap_damage")
+	if tags.has("Spell"): stat_keys.append("spell_damage")
+	if tags.has("Area"): stat_keys.append("area_damage")
+	stat_keys.append("global_damage")
+	for key in stat_keys:
+		value *= 1.0 + state.build_stat_bonus(key)
+	return value

@@ -1,0 +1,177 @@
+class_name RVPassiveAtlasDB
+extends RefCounted
+
+const BRANCHES = ["ash", "frost", "storm", "void", "steel", "trap", "blood", "relic"]
+
+const BRANCH_DATA = {
+	"ash": {"name":"Ash", "color":Color(1.0,0.34,0.12), "stat":"fire_damage"},
+	"frost": {"name":"Frost", "color":Color(0.42,0.82,1.0), "stat":"cold_damage"},
+	"storm": {"name":"Storm", "color":Color(0.72,0.92,1.0), "stat":"lightning_damage"},
+	"void": {"name":"Void", "color":Color(0.70,0.36,1.0), "stat":"void_damage"},
+	"steel": {"name":"Steel", "color":Color(0.88,0.80,0.62), "stat":"melee_damage"},
+	"trap": {"name":"Trap", "color":Color(0.95,0.72,0.30), "stat":"trap_damage"},
+	"blood": {"name":"Blood", "color":Color(1.0,0.22,0.18), "stat":"max_hp"},
+	"relic": {"name":"Relic", "color":Color(0.90,0.70,0.36), "stat":"global_damage"}
+}
+
+static func nodes() -> Dictionary:
+	var out: Dictionary = {}
+
+	out["center"] = {
+		"id":"center",
+		"name":"Vaultbound Core",
+		"branch":"core",
+		"kind":"start",
+		"pos":Vector2(0.0,0.0),
+		"cost":0,
+		"stats":{"max_hp":10.0,"max_mana":10.0,"global_damage":0.02},
+		"flags":[],
+		"links":[]
+	}
+
+	var branch_count: int = BRANCHES.size()
+	for b_index in range(branch_count):
+		var branch: String = BRANCHES[b_index]
+		var angle: float = -PI * 0.5 + TAU * float(b_index) / float(branch_count)
+		var dir: Vector2 = Vector2(cos(angle), sin(angle))
+		var side: Vector2 = Vector2(-dir.y, dir.x)
+		var branch_data: Dictionary = BRANCH_DATA[branch]
+		var stat_key: String = str(branch_data["stat"])
+
+		var previous_id: String = "center"
+		for depth in range(1, 8):
+			var id: String = branch + "_" + str(depth)
+			var pos: Vector2 = dir * (82.0 * float(depth))
+			var kind: String = "small"
+			var name: String = str(branch_data["name"]) + " Path " + str(depth)
+			var cost: int = 1
+			var stats: Dictionary = {}
+			var flags: Array = []
+
+			if stat_key == "max_hp":
+				stats[stat_key] = 8.0 + float(depth) * 2.0
+			elif stat_key == "max_mana":
+				stats[stat_key] = 8.0 + float(depth) * 2.0
+			else:
+				stats[stat_key] = 0.025 + float(depth) * 0.004
+
+			if depth == 3:
+				kind = "notable"
+				name = notable_name(branch, 1)
+				cost = 1
+				stats[stat_key] = float(stats.get(stat_key, 0.0)) * 2.0
+				flags.append(branch + "_notable_1")
+			elif depth == 5:
+				kind = "notable"
+				name = notable_name(branch, 2)
+				cost = 1
+				stats[stat_key] = float(stats.get(stat_key, 0.0)) * 2.5
+				flags.append(branch + "_notable_2")
+			elif depth == 7:
+				kind = "keystone"
+				name = keystone_name(branch)
+				cost = 2
+				stats[stat_key] = float(stats.get(stat_key, 0.0)) * 3.0
+				flags.append(branch + "_keystone")
+
+			out[id] = {"id":id,"name":name,"branch":branch,"kind":kind,"pos":pos,"cost":cost,"stats":stats,"flags":flags,"links":[previous_id]}
+			out[previous_id]["links"].append(id)
+			previous_id = id
+
+			if depth == 2 or depth == 4 or depth == 6:
+				for side_index in [-1, 1]:
+					var side_id: String = branch + "_side_" + str(depth) + "_" + str(side_index)
+					var side_pos: Vector2 = pos + side * float(side_index) * 58.0
+					var side_stats: Dictionary = {}
+					if stat_key == "max_hp" or stat_key == "max_mana":
+						side_stats[stat_key] = 12.0 + float(depth)
+					else:
+						side_stats[stat_key] = 0.035 + float(depth) * 0.003
+					out[side_id] = {
+						"id":side_id,
+						"name":side_name(branch, depth, side_index),
+						"branch":branch,
+						"kind":"small",
+						"pos":side_pos,
+						"cost":1,
+						"stats":side_stats,
+						"flags":[branch + "_side_" + str(depth)],
+						"links":[id]
+					}
+					out[id]["links"].append(side_id)
+
+	# cross-branch bridges
+	for b_index_2 in range(branch_count):
+		var a_branch: String = BRANCHES[b_index_2]
+		var b_branch: String = BRANCHES[(b_index_2 + 1) % branch_count]
+		var a_id: String = a_branch + "_4"
+		var b_id: String = b_branch + "_4"
+		if out.has(a_id) and out.has(b_id):
+			out[a_id]["links"].append(b_id)
+			out[b_id]["links"].append(a_id)
+
+	return out
+
+static func notable_name(branch: String, index: int) -> String:
+	var names: Dictionary = {
+		"ash":["Combustion Study", "Burning Engine"],
+		"frost":["Glacial Discipline", "Shatter Theory"],
+		"storm":["Conductive Nerves", "Chain Doctrine"],
+		"void":["Rift Literacy", "Abyssal Geometry"],
+		"steel":["Weapon Oath", "Execution Form"],
+		"trap":["Mechanist Hands", "Pressure Doctrine"],
+		"blood":["Red Contract", "Pain Dividend"],
+		"relic":["Vault Memory", "Ancestral Circuit"]
+	}
+	return names.get(branch, [branch.capitalize() + " Notable A", branch.capitalize() + " Notable B"])[index - 1]
+
+static func keystone_name(branch: String) -> String:
+	var names: Dictionary = {
+		"ash":"World-Ash Covenant",
+		"frost":"Absolute Zero Thesis",
+		"storm":"Unbroken Circuit",
+		"void":"Event Horizon Heart",
+		"steel":"Butcher Moon Oath",
+		"trap":"Clockwork Heresy",
+		"blood":"Life Paid Twice",
+		"relic":"Vaultbound Apotheosis"
+	}
+	return names.get(branch, branch.capitalize() + " Keystone")
+
+static func side_name(branch: String, depth: int, side_index: int) -> String:
+	var lane: String = "Left"
+	if side_index > 0:
+		lane = "Right"
+	return BRANCH_DATA[branch]["name"] + " " + lane + " Study " + str(depth)
+
+static func can_allocate(allocated: Array, node_id: String) -> bool:
+	var all_nodes: Dictionary = nodes()
+	if not all_nodes.has(node_id):
+		return false
+	if allocated.has(node_id):
+		return false
+	if node_id == "center":
+		return true
+	var links: Array = all_nodes[node_id].get("links", [])
+	for link in links:
+		if allocated.has(str(link)):
+			return true
+	return false
+
+static func aggregate_stats(allocated: Array) -> Dictionary:
+	var all_nodes: Dictionary = nodes()
+	var stats: Dictionary = {}
+	var flags: Array = []
+	for id_value in allocated:
+		var id: String = str(id_value)
+		if not all_nodes.has(id):
+			continue
+		var node: Dictionary = all_nodes[id]
+		var ns: Dictionary = node.get("stats", {})
+		for k in ns.keys():
+			stats[k] = float(stats.get(k, 0.0)) + float(ns[k])
+		for f in node.get("flags", []):
+			if not flags.has(str(f)):
+				flags.append(str(f))
+	stats["_flags"] = flags
+	return stats

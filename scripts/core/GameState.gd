@@ -1,17 +1,21 @@
 class_name RVGameState
 extends RefCounted
 
-const SAVE_VERSION: int = 19
+const SAVE_VERSION: int = 21
 
 var mode: String = "hub"
+var panel_mode: String = ""
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
-var player_pos: Vector2 = Vector2.ZERO
+var player_pos: Vector2 = Vector2(640.0, 360.0)
+var player_radius: float = 15.0
+var player_speed: float = 245.0
 var player_hp: float = 120.0
 var player_mana: float = 100.0
 var max_hp: float = 120.0
 var max_mana: float = 100.0
-var player_radius: float = 15.0
+var spirit_max: int = 30
+var spirit_reserved: int = 0
 var invuln: float = 0.0
 
 var level: int = 1
@@ -20,11 +24,16 @@ var mastery_points: int = 0
 var refund_points: int = 0
 var gold: int = 0
 
-var materials: Dictionary = {"embers": 12, "shards": 6, "runes": 0, "echo_glass": 0}
+var materials: Dictionary = {
+	"embers": 10,
+	"shards": 5,
+	"runes": 0,
+	"echo_glass": 0
+}
 
-var available_skills: Array = ["Fireball", "Cleave", "Frost Nova", "Storm Lance", "Void Rift", "Blade Trap"]
-var active_skills: Array = ["Fireball", "Cleave"]
-var selected_skill: int = 0
+var active_skills: Array[String] = ["Fireball", "Cleave"]
+var unlocked_skills: Array[String] = ["Fireball", "Cleave", "Frost Nova", "Storm Lance", "Void Rift", "Blade Trap"]
+var selected_skill_index: int = 0
 var skill_cooldowns: Dictionary = {}
 var skill_ranks: Dictionary = {
 	"Fireball": 0,
@@ -35,75 +44,78 @@ var skill_ranks: Dictionary = {
 	"Blade Trap": 0
 }
 
-var passives: Dictionary = {
-	"Fire Damage": 0,
-	"Cold Damage": 0,
-	"Lightning Damage": 0,
-	"Void Damage": 0,
-	"Melee Damage": 0,
-	"Trap Damage": 0,
-	"Maximum Life": 0,
-	"Mana": 0
+var passive_nodes: Dictionary = {
+	"life_1": false,
+	"mana_1": false,
+	"fire_1": false,
+	"cold_1": false,
+	"lightning_1": false,
+	"void_1": false,
+	"melee_1": false,
+	"trap_1": false
 }
 
-var equipped: Dictionary = {}
-var backpack: Array = []
-var stash: Array = []
+var skill_supports: Dictionary = {
+	"Fireball": [],
+	"Cleave": [],
+	"Frost Nova": [],
+	"Storm Lance": [],
+	"Void Rift": [],
+	"Blade Trap": []
+}
+
+var equipped: Dictionary = {
+	"weapon": {},
+	"offhand": {},
+	"head": {},
+	"chest": {},
+	"gloves": {},
+	"boots": {},
+	"amulet": {},
+	"ring1": {},
+	"ring2": {},
+	"relic": {}
+}
+
+var backpack: Array[Dictionary] = []
+var stash: Array[Dictionary] = []
 
 var current_activity: Dictionary = {}
-var run_depth: int = 0
+var room_index: int = 0
 var rooms_cleared: int = 0
 var kills: int = 0
 var deaths: int = 0
 
-var prompt: String = ""
-var notice: String = ""
+var focused_hub_station_id: String = ""
+var focused_hub_station_name: String = ""
+var prompt_text: String = ""
+var notice_text: String = ""
 var notice_time: float = 0.0
-var panel_mode: String = ""
 
-# Compatibility fields from earlier buildcraft patches.
-var spirit_max: int = 30
-var spirit_reserved: int = 0
-var spirit_gems_enabled: Dictionary = {}
-var passive_atlas_allocated: Array = ["center"]
-var passive_atlas_refund_stack: Array = []
-var build_stats: Dictionary = {}
-var build_flags: Array = []
-var skill_gem_sockets: Dictionary = {}
-var support_gem_inventory: Dictionary = {}
-var crafting_shards: Dictionary = {}
-var glyph_counts: Dictionary = {}
-var rune_counts: Dictionary = {}
-
-func init() -> void:
+func init_new() -> void:
 	rng.randomize()
-	if active_skills.size() == 0:
-		active_skills = ["Fireball", "Cleave"]
-	selected_skill = clamp(selected_skill, 0, max(0, active_skills.size() - 1))
-	for skill in available_skills:
-		if not skill_cooldowns.has(skill):
-			skill_cooldowns[skill] = 0.0
-		if not skill_ranks.has(skill):
-			skill_ranks[skill] = 0
-		if not skill_gem_sockets.has(skill):
-			skill_gem_sockets[skill] = []
+	ensure_defaults()
 	recompute_stats()
-
-func enter_hub() -> void:
-	mode = "hub"
-	current_activity = {}
-	run_depth = 0
-	panel_mode = ""
 	full_restore()
 
-func enter_combat(activity: Dictionary) -> void:
-	mode = "combat"
-	current_activity = activity.duplicate(true)
-	run_depth = 1
-	rooms_cleared = 0
-	kills = 0
-	panel_mode = ""
-	full_restore()
+
+func ensure_defaults() -> void:
+	if active_skills.is_empty():
+		active_skills = ["Fireball", "Cleave"]
+
+	for skill_name: String in unlocked_skills:
+		if not skill_cooldowns.has(skill_name):
+			skill_cooldowns[skill_name] = 0.0
+		if not skill_ranks.has(skill_name):
+			skill_ranks[skill_name] = 0
+		if not skill_supports.has(skill_name):
+			skill_supports[skill_name] = []
+
+	if equipped["weapon"].is_empty():
+		equipped["weapon"] = RVItemDB.make_starter_weapon()
+
+	selected_skill_index = clamp(selected_skill_index, 0, max(0, active_skills.size() - 1))
+
 
 func full_restore() -> void:
 	recompute_stats()
@@ -111,18 +123,44 @@ func full_restore() -> void:
 	player_mana = max_mana
 	invuln = 0.0
 
+
 func recompute_stats() -> void:
-	max_hp = 120.0 + float(level - 1) * 5.0 + float(passives.get("Maximum Life", 0)) * 6.0
-	max_mana = 100.0 + float(level - 1) * 2.0 + float(passives.get("Mana", 0)) * 4.0
+	max_hp = 120.0 + float(level - 1) * 5.0
+	max_mana = 100.0 + float(level - 1) * 3.0
+	spirit_max = 30 + int(level / 5) * 5
+
+	if bool(passive_nodes.get("life_1", false)):
+		max_hp += 25.0
+	if bool(passive_nodes.get("mana_1", false)):
+		max_mana += 20.0
+
+	for slot_name: String in equipped.keys():
+		var item_value: Variant = equipped[slot_name]
+		if typeof(item_value) != TYPE_DICTIONARY:
+			continue
+		var item: Dictionary = item_value
+		var stats: Dictionary = item.get("stats", {})
+		max_hp += float(stats.get("Maximum Life", 0.0))
+		max_mana += float(stats.get("Maximum Mana", 0.0))
+
 	player_hp = min(player_hp, max_hp)
 	player_mana = min(player_mana, max_mana)
 
+
 func add_notice(text: String) -> void:
-	notice = text
-	notice_time = 2.4
+	notice_text = text
+	notice_time = 2.2
+
+
+func clear_prompt() -> void:
+	focused_hub_station_id = ""
+	focused_hub_station_name = ""
+	prompt_text = ""
+
 
 func xp_to_next() -> float:
-	return 160.0 + pow(float(level), 1.35) * 70.0
+	return 120.0 + pow(float(level), 1.35) * 80.0
+
 
 func add_xp(amount: float) -> void:
 	xp += amount
@@ -131,8 +169,41 @@ func add_xp(amount: float) -> void:
 		level += 1
 		mastery_points += 1
 		refund_points += 1
-		add_notice("Level Up: Passive Point gained")
+		add_notice("Level Up - Mastery Point Gained")
 	recompute_stats()
+
+
+func get_selected_skill() -> String:
+	if active_skills.is_empty():
+		return ""
+	selected_skill_index = clamp(selected_skill_index, 0, active_skills.size() - 1)
+	return str(active_skills[selected_skill_index])
+
+
+func enter_hub() -> void:
+	mode = "hub"
+	current_activity = {}
+	room_index = 0
+	player_pos = Vector2(640.0, 360.0)
+	full_restore()
+	clear_prompt()
+
+
+func enter_combat(activity: Dictionary) -> void:
+	mode = "combat"
+	current_activity = activity.duplicate(true)
+	room_index = 1
+	player_pos = Vector2(640.0, 360.0)
+	full_restore()
+	clear_prompt()
+
+
+func toggle_panel(mode_name: String) -> void:
+	if panel_mode == mode_name:
+		panel_mode = ""
+	else:
+		panel_mode = mode_name
+
 
 func to_save_dict() -> Dictionary:
 	return {
@@ -144,26 +215,19 @@ func to_save_dict() -> Dictionary:
 		"gold": gold,
 		"materials": materials,
 		"active_skills": active_skills,
-		"selected_skill": selected_skill,
+		"unlocked_skills": unlocked_skills,
+		"selected_skill_index": selected_skill_index,
 		"skill_ranks": skill_ranks,
-		"passives": passives,
+		"passive_nodes": passive_nodes,
+		"skill_supports": skill_supports,
 		"equipped": equipped,
 		"backpack": backpack,
 		"stash": stash,
-		"deaths": deaths,
-		"spirit_max": spirit_max,
-		"spirit_reserved": spirit_reserved,
-		"spirit_gems_enabled": spirit_gems_enabled,
-		"passive_atlas_allocated": passive_atlas_allocated,
-		"passive_atlas_refund_stack": passive_atlas_refund_stack,
-		"build_stats": build_stats,
-		"build_flags": build_flags,
-		"skill_gem_sockets": skill_gem_sockets,
-		"support_gem_inventory": support_gem_inventory,
-		"crafting_shards": crafting_shards,
-		"glyph_counts": glyph_counts,
-		"rune_counts": rune_counts
+		"rooms_cleared": rooms_cleared,
+		"kills": kills,
+		"deaths": deaths
 	}
+
 
 func apply_save_dict(data: Dictionary) -> void:
 	level = int(data.get("level", level))
@@ -171,30 +235,49 @@ func apply_save_dict(data: Dictionary) -> void:
 	mastery_points = int(data.get("mastery_points", mastery_points))
 	refund_points = int(data.get("refund_points", refund_points))
 	gold = int(data.get("gold", gold))
+
 	if typeof(data.get("materials", {})) == TYPE_DICTIONARY:
 		materials.merge(data.get("materials", {}), true)
+
 	if typeof(data.get("active_skills", [])) == TYPE_ARRAY:
-		active_skills = data.get("active_skills", active_skills)
-	if active_skills.size() == 0:
-		active_skills = ["Fireball", "Cleave"]
-	selected_skill = clamp(int(data.get("selected_skill", selected_skill)), 0, max(0, active_skills.size() - 1))
+		active_skills.clear()
+		for value: Variant in data.get("active_skills", []):
+			active_skills.append(str(value))
+
+	if typeof(data.get("unlocked_skills", [])) == TYPE_ARRAY:
+		unlocked_skills.clear()
+		for value2: Variant in data.get("unlocked_skills", []):
+			unlocked_skills.append(str(value2))
+
+	selected_skill_index = int(data.get("selected_skill_index", selected_skill_index))
+
 	if typeof(data.get("skill_ranks", {})) == TYPE_DICTIONARY:
 		skill_ranks.merge(data.get("skill_ranks", {}), true)
-	if typeof(data.get("passives", {})) == TYPE_DICTIONARY:
-		passives.merge(data.get("passives", {}), true)
+
+	if typeof(data.get("passive_nodes", {})) == TYPE_DICTIONARY:
+		passive_nodes.merge(data.get("passive_nodes", {}), true)
+
+	if typeof(data.get("skill_supports", {})) == TYPE_DICTIONARY:
+		skill_supports.merge(data.get("skill_supports", {}), true)
+
 	if typeof(data.get("equipped", {})) == TYPE_DICTIONARY:
-		equipped = data.get("equipped", equipped)
+		equipped.merge(data.get("equipped", {}), true)
+
 	if typeof(data.get("backpack", [])) == TYPE_ARRAY:
-		backpack = data.get("backpack", backpack)
+		backpack.clear()
+		for item_value: Variant in data.get("backpack", []):
+			if typeof(item_value) == TYPE_DICTIONARY:
+				backpack.append(item_value)
+
 	if typeof(data.get("stash", [])) == TYPE_ARRAY:
-		stash = data.get("stash", stash)
+		stash.clear()
+		for stash_value: Variant in data.get("stash", []):
+			if typeof(stash_value) == TYPE_DICTIONARY:
+				stash.append(stash_value)
+
+	rooms_cleared = int(data.get("rooms_cleared", rooms_cleared))
+	kills = int(data.get("kills", kills))
 	deaths = int(data.get("deaths", deaths))
-	spirit_max = int(data.get("spirit_max", spirit_max))
-	spirit_reserved = int(data.get("spirit_reserved", spirit_reserved))
-	if typeof(data.get("spirit_gems_enabled", {})) == TYPE_DICTIONARY:
-		spirit_gems_enabled = data.get("spirit_gems_enabled", spirit_gems_enabled)
-	if typeof(data.get("passive_atlas_allocated", [])) == TYPE_ARRAY:
-		passive_atlas_allocated = data.get("passive_atlas_allocated", passive_atlas_allocated)
-	if typeof(data.get("passive_atlas_refund_stack", [])) == TYPE_ARRAY:
-		passive_atlas_refund_stack = data.get("passive_atlas_refund_stack", passive_atlas_refund_stack)
-	init()
+
+	ensure_defaults()
+	recompute_stats()

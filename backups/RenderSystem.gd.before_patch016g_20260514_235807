@@ -1,0 +1,223 @@
+class_name RVRenderSystem
+extends RefCounted
+
+static func draw_world(node: Node2D, state: RVGameState, textures: Dictionary) -> void:
+	if state.mode == "hub": draw_hub(node, state)
+	else: draw_combat(node, state)
+	draw_entities(node, state)
+	draw_hud(node, state)
+	if state.panel_mode == "passive_tree": draw_passive_panel(node, state)
+	elif state.panel_mode == "skill_gems": draw_skill_gem_panel(node, state)
+	elif state.panel_mode == "crafting": draw_crafting_panel(node, state)
+
+static func draw_hub(node: Node2D, state: RVGameState) -> void:
+	var rect: Rect2 = state.hub_bounds.grow(25.0)
+	node.draw_rect(rect, Color(0.014, 0.013, 0.016, 0.96), true)
+	node.draw_rect(rect, Color(0.70, 0.54, 0.30, 0.24), false, 2.0)
+	var c: Vector2 = Vector2(640.0, 370.0)
+	node.draw_arc(c, 265.0, -PI, PI, 128, Color(0.85, 0.62, 0.34, 0.10), 2.0)
+	draw_label(node, Vector2(640.0, 95.0), "CONTRACTS", Color(0.90, 0.58, 1.0), 12)
+	draw_label(node, Vector2(995.0, 185.0), "FORGECRAFT", Color(1.0, 0.48, 0.18), 12)
+	draw_label(node, Vector2(330.0, 205.0), "PASSIVE ATLAS", Color(0.74, 0.62, 1.0), 12)
+	draw_label(node, Vector2(650.0, 500.0), "GEM CODEX", Color(0.56, 1.0, 0.76), 12)
+	for obj in state.hub_objects: draw_hub_object(node, state, obj)
+
+static func draw_hub_object(node: Node2D, state: RVGameState, obj: Dictionary) -> void:
+	var pos: Vector2 = obj["pos"]
+	var color: Color = obj.get("color", Color(0.90, 0.84, 0.70))
+	var kind: String = str(obj["type"])
+	var focused: bool = false
+	if not state.focused_object.is_empty(): focused = state.focused_object.get("name", "") == obj.get("name", "") and state.player_pos.distance_to(pos) <= 62.0
+	var radius: float = 31.0 if focused else 24.0
+	node.draw_circle(pos + Vector2(5.0, 8.0), radius + 6.0, Color(0.0, 0.0, 0.0, 0.30))
+	if kind == "contract":
+		node.draw_arc(pos, radius + 8.0, -PI, PI, 64, Color(color.r, color.g, color.b, 0.65), 4.0)
+		node.draw_line(pos + Vector2(-18.0, 18.0), pos + Vector2(0.0, -22.0), color, 3.0)
+		node.draw_line(pos + Vector2(18.0, 18.0), pos + Vector2(0.0, -22.0), color, 3.0)
+	elif kind == "forge" or kind == "forgecraft":
+		node.draw_rect(Rect2(pos - Vector2(24.0, 14.0), Vector2(48.0, 28.0)), Color(0.035, 0.032, 0.034), true)
+		node.draw_rect(Rect2(pos - Vector2(24.0, 14.0), Vector2(48.0, 28.0)), color, false, 3.0)
+	elif kind == "passive_atlas":
+		node.draw_circle(pos, radius, Color(0.030, 0.025, 0.038))
+		node.draw_arc(pos, radius + 6.0, -PI, PI, 80, color, 3.0)
+	elif kind == "skill_codex":
+		node.draw_circle(pos, radius, Color(0.025, 0.032, 0.038))
+		node.draw_arc(pos, radius + 6.0, -PI, PI, 80, color, 3.0)
+	else:
+		node.draw_circle(pos, radius, Color(0.030, 0.030, 0.036))
+		node.draw_arc(pos, radius + 4.0, -PI, PI, 64, color, 3.0)
+	draw_label(node, pos + Vector2(0.0, radius + 22.0), str(obj["name"]), color, 10)
+
+static func draw_combat(node: Node2D, state: RVGameState) -> void:
+	node.draw_rect(state.arena, Color(0.030, 0.022, 0.018, 0.98), true)
+	node.draw_rect(state.arena, Color(0.75, 0.33, 0.16, 0.24), false, 2.0)
+	for ob in state.obstacles:
+		var pos: Vector2 = ob.get("pos", Vector2.ZERO)
+		var radius: float = float(ob.get("radius", 24.0))
+		node.draw_circle(pos + Vector2(6.0, 9.0), radius + 3.0, Color(0.0, 0.0, 0.0, 0.32))
+		node.draw_circle(pos, radius, Color(0.10, 0.085, 0.075, 0.95))
+
+static func draw_entities(node: Node2D, state: RVGameState) -> void:
+	for z in state.zones:
+		var pos: Vector2 = z["pos"]
+		var radius: float = float(z["radius"])
+		var color: Color = color_for_tags(z.get("tags", []))
+		node.draw_circle(pos, radius, Color(color.r, color.g, color.b, 0.10))
+		node.draw_arc(pos, radius, -PI, PI, 72, Color(color.r, color.g, color.b, 0.52), 3.0)
+	for p in state.projectiles:
+		var pos2: Vector2 = p["pos"]
+		var color2: Color = color_for_tags(p.get("tags", []))
+		if bool(p.get("enemy", false)): color2 = Color(1.0, 0.20, 0.12)
+		node.draw_circle(pos2, float(p["radius"]) * 2.0, Color(color2.r, color2.g, color2.b, 0.18))
+		node.draw_circle(pos2, float(p["radius"]), color2)
+	for e in state.enemies:
+		if float(e["hp"]) <= 0.0: continue
+		var epos: Vector2 = e["pos"]
+		var er: float = float(e["radius"])
+		var ecol: Color = e.get("color", Color(0.90, 0.25, 0.15))
+		node.draw_circle(epos + Vector2(6.0, 10.0), er * 1.15, Color(0.0, 0.0, 0.0, 0.36))
+		node.draw_circle(epos, er, Color(0.030, 0.030, 0.036))
+		node.draw_circle(epos, er * 0.70, ecol)
+		var pct: float = clamp(float(e["hp"]) / max(1.0, float(e["max_hp"])), 0.0, 1.0)
+		node.draw_rect(Rect2(epos + Vector2(-er, -er - 12.0), Vector2(er * 2.0, 4.0)), Color(0.08, 0.04, 0.04, 0.75), true)
+		node.draw_rect(Rect2(epos + Vector2(-er, -er - 12.0), Vector2(er * 2.0 * pct, 4.0)), Color(0.90, 0.20, 0.14, 0.85), true)
+	draw_player(node, state)
+
+static func draw_player(node: Node2D, state: RVGameState) -> void:
+	var pos: Vector2 = state.player_pos
+	var aim: Vector2 = node.get_global_mouse_position()
+	var dir: Vector2 = aim - pos
+	if dir.length() < 0.01: dir = Vector2.RIGHT
+	else: dir = dir.normalized()
+	var side: Vector2 = Vector2(-dir.y, dir.x)
+	node.draw_circle(pos + Vector2(6.0, 10.0), 20.0, Color(0.0, 0.0, 0.0, 0.36))
+	node.draw_circle(pos, 17.0, Color(0.020, 0.020, 0.024))
+	node.draw_circle(pos, 12.0, Color(0.92, 0.84, 0.66))
+	node.draw_polygon(PackedVector2Array([pos + dir * 25.0, pos - dir * 9.0 + side * 9.0, pos - dir * 9.0 - side * 9.0]), PackedColorArray([Color(1.0, 0.68, 0.26)]))
+
+static func draw_hud(node: Node2D, state: RVGameState) -> void:
+	var font: Font = ThemeDB.fallback_font
+	var top: String = "Lv " + str(state.level) + "  XP " + str(int(state.xp)) + "/" + str(int(state.xp_to_next())) + "  MP " + str(state.mastery_points) + "  Refund " + str(state.refund_points) + "  Spirit " + str(state.spirit_reserved) + "/" + str(state.spirit_max) + "  Gold " + str(state.gold)
+	node.draw_rect(Rect2(Vector2(14.0, 14.0), Vector2(1250.0, 30.0)), Color(0.018, 0.017, 0.020, 0.82), true)
+	node.draw_string(font, Vector2(28.0, 35.0), top, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color(0.88, 0.84, 0.74))
+	var hp_pct: float = clamp(state.player_hp / max(1.0, state.max_hp), 0.0, 1.0)
+	var mana_pct: float = clamp(state.player_mana / max(1.0, state.max_mana), 0.0, 1.0)
+	node.draw_rect(Rect2(Vector2(18.0, 620.0), Vector2(240.0, 12.0)), Color(0.08, 0.03, 0.03), true)
+	node.draw_rect(Rect2(Vector2(18.0, 620.0), Vector2(240.0 * hp_pct, 12.0)), Color(0.90, 0.18, 0.12), true)
+	node.draw_rect(Rect2(Vector2(18.0, 640.0), Vector2(240.0, 12.0)), Color(0.03, 0.05, 0.08), true)
+	node.draw_rect(Rect2(Vector2(18.0, 640.0), Vector2(240.0 * mana_pct, 12.0)), Color(0.25, 0.68, 1.0), true)
+	var start_x: float = 440.0
+	for i in range(6):
+		var pos: Vector2 = Vector2(start_x + float(i) * 62.0, 620.0)
+		var selected: bool = i == state.selected_skill
+		node.draw_rect(Rect2(pos, Vector2(52.0, 52.0)), Color(0.030, 0.030, 0.036), true)
+		node.draw_rect(Rect2(pos, Vector2(52.0, 52.0)), Color(1.0, 0.76, 0.35) if selected else Color(0.35, 0.32, 0.28), false, 2.0)
+		if i < state.active_skills.size():
+			var skill: String = str(state.active_skills[i])
+			var col: Color = RVSkillDB.color(skill)
+			node.draw_circle(pos + Vector2(26.0, 24.0), 14.0, Color(col.r, col.g, col.b, 0.85))
+			node.draw_string(font, pos + Vector2(4.0, 48.0), str(i + 1), HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(0.94, 0.86, 0.68))
+	if state.prompt != "":
+		node.draw_rect(Rect2(Vector2(315.0, 675.0), Vector2(650.0, 28.0)), Color(0.018, 0.017, 0.020, 0.84), true)
+		node.draw_string(font, Vector2(334.0, 695.0), state.prompt, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color(0.96, 0.88, 0.68))
+
+	if RVBuildcraftSystem != null:
+		RVBuildcraftSystem.draw_overlay(node, state)
+
+	if state.notice_time > 0.0:
+		node.draw_rect(Rect2(Vector2(440.0, 52.0), Vector2(480.0, 30.0)), Color(0.018, 0.017, 0.020, 0.84), true)
+		node.draw_string(font, Vector2(465.0, 73.0), state.notice, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(1.0, 0.82, 0.44))
+
+static func draw_passive_panel(node: Node2D, state: RVGameState) -> void:
+	var rect: Rect2 = Rect2(70.0, 80.0, 1140.0, 560.0)
+	node.draw_rect(rect, Color(0.012, 0.011, 0.015, 0.94), true)
+	node.draw_rect(rect, Color(0.72, 0.54, 1.0, 0.34), false, 2.0)
+	var nodes: Dictionary = RVPassiveTreeDB.nodes()
+	for id in nodes.keys():
+		var n: Dictionary = nodes[id]
+		var p: Vector2 = n["pos"]
+		for linked in n.get("links", []):
+			if nodes.has(linked):
+				node.draw_line(p, nodes[linked]["pos"], Color(0.28, 0.25, 0.34, 0.55), 1.0)
+	var selected: Dictionary = RVPassiveTreeSystem.selected_node(state)
+	for id2 in nodes.keys():
+		var n2: Dictionary = nodes[id2]
+		var p2: Vector2 = n2["pos"]
+		var branch: String = str(n2.get("branch", "core"))
+		var c: Color = RVPassiveTreeDB.branch_color(branch)
+		var allocated: bool = state.passive_nodes_allocated.has(id2)
+		var selectable: bool = RVPassiveTreeSystem.can_allocate(state, id2)
+		var r: float = 9.0 if allocated else 6.0
+		if str(selected.get("id", "")) == id2: r = 13.0
+		node.draw_circle(p2, r, Color(c.r, c.g, c.b, 0.95 if allocated else (0.55 if selectable else 0.18)))
+		node.draw_arc(p2, r + 3.0, -PI, PI, 24, c, 1.5)
+	var text: String = "PASSIVE ATLAS   Q/E select   Enter allocate   Backspace refund   Esc close\n"
+	text += "Points: " + str(state.mastery_points) + "   Refunds: " + str(state.refund_points) + "   Allocated: " + str(state.passive_nodes_allocated.size()) + "\n"
+	if not selected.is_empty():
+		text += "Selected: " + str(selected.get("name", "")) + "   Branch: " + str(selected.get("branch", ""))
+	draw_multiline(node, Vector2(95.0, 112.0), text, Color(0.92, 0.86, 0.72), 13)
+
+static func draw_skill_gem_panel(node: Node2D, state: RVGameState) -> void:
+	var rect: Rect2 = Rect2(120.0, 90.0, 1040.0, 520.0)
+	node.draw_rect(rect, Color(0.012, 0.011, 0.015, 0.94), true)
+	node.draw_rect(rect, Color(0.40, 0.78, 1.0, 0.34), false, 2.0)
+	var skill: String = RVSkillGemSystem.selected_skill_name(state)
+	var support: String = RVSkillGemSystem.selected_support_name(state)
+	var gem: Dictionary = state.skill_gems.get(skill, {})
+	var supports: Array = gem.get("supports", [])
+	var text: String = "SKILL GEM CODEX   Q/E skill   W/S support   Enter socket   X unsocket   1-6 loadout   Esc close\n"
+	text += "Spirit: " + str(state.spirit_reserved) + "/" + str(state.spirit_max) + "\n\n"
+	text += "Selected Skill: " + skill + "   sockets " + str(supports.size()) + "/" + str(gem.get("sockets", 2)) + "\n"
+	text += "Supports: " + ", ".join(supports) + "\n"
+	text += "Selected Support: " + support + "  " + str(RVSkillGemDB.support_data(support).get("desc", "")) + "\n\n"
+	text += "Active Loadout: " + ", ".join(state.active_skills) + "\n\n"
+	text += "Spirit Gems: "
+	for s in state.spirit_gems.keys(): text += str(s) + ("[on] " if bool(state.spirit_gems[s].get("enabled", false)) else "[off] ")
+	draw_multiline(node, Vector2(150.0, 130.0), text, Color(0.90, 0.88, 0.78), 14)
+	var x: float = 155.0
+	for name in RVSkillGemDB.active_skill_names():
+		var col: Color = RVSkillGemDB.active_data(name).get("color", Color.WHITE)
+		node.draw_circle(Vector2(x, 420.0), 28.0, Color(col.r, col.g, col.b, 0.65 if state.active_skills.has(name) else 0.22))
+		draw_label(node, Vector2(x, 465.0), str(name), col, 10)
+		x += 150.0
+
+static func draw_crafting_panel(node: Node2D, state: RVGameState) -> void:
+	var rect: Rect2 = Rect2(110.0, 82.0, 1060.0, 540.0)
+	node.draw_rect(rect, Color(0.012, 0.011, 0.015, 0.95), true)
+	node.draw_rect(rect, Color(1.0, 0.48, 0.18, 0.34), false, 2.0)
+	var item: Dictionary = RVCraftingSystem.focused_item(state)
+	var text: String = "FORGECRAFT   F base   E add/upgrade affix   X chaos reroll   Q seal   R shatter   W/S focus   Esc close\n"
+	text += "Hope " + str(state.craft_bag.get("hope_sigils", 0)) + "  Chaos " + str(state.craft_bag.get("chaos_sigils", 0)) + "  Seal " + str(state.craft_bag.get("seal_sigils", 0)) + "  Shatter " + str(state.craft_bag.get("shatter_runes", 0)) + "\n\n"
+	if item.is_empty():
+		text += "No backpack item focused. Press F to craft a blank base."
+	else:
+		text += "Focused: " + str(item.get("name", "item")) + "   " + str(item.get("rarity", "")) + "   Integrity: " + str(item.get("forge_integrity", 0)) + "\n"
+		text += "Slot: " + str(item.get("slot", "")) + "\n"
+		text += "Affixes:\n"
+		for affix in item.get("affixes", []):
+			if typeof(affix) == TYPE_DICTIONARY:
+				text += "  T" + str(affix.get("tier", 1)) + " " + str(affix.get("name", "")) + "  " + str(affix.get("stat", "")) + " +" + str(snapped(float(affix.get("value", 0.0)), 0.001)) + "\n"
+		var sealed: Dictionary = item.get("sealed_affix", {})
+		if not sealed.is_empty(): text += "Sealed: T" + str(sealed.get("tier", 1)) + " " + str(sealed.get("name", "")) + "\n"
+	draw_multiline(node, Vector2(145.0, 122.0), text, Color(0.92, 0.86, 0.72), 14)
+
+static func draw_multiline(node: Node2D, pos: Vector2, text: String, color: Color, size: int) -> void:
+	var font: Font = ThemeDB.fallback_font
+	var y: float = pos.y
+	for line in text.split("\n"):
+		node.draw_string(font, Vector2(pos.x, y), line, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
+		y += float(size) + 7.0
+
+static func draw_label(node: Node2D, pos: Vector2, text: String, color: Color, size: int) -> void:
+	var font: Font = ThemeDB.fallback_font
+	var s: Vector2 = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, size)
+	node.draw_string(font, pos - Vector2(s.x * 0.5, 0.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
+
+static func color_for_tags(tags: Array) -> Color:
+	if tags.has("Fire"): return Color(1.0, 0.34, 0.10)
+	if tags.has("Cold"): return Color(0.42, 0.82, 1.0)
+	if tags.has("Lightning"): return Color(0.72, 0.92, 1.0)
+	if tags.has("Void"): return Color(0.70, 0.36, 1.0)
+	if tags.has("Trap"): return Color(0.95, 0.72, 0.28)
+	if tags.has("Physical"): return Color(1.0, 0.80, 0.48)
+	return Color(0.90, 0.84, 0.70)

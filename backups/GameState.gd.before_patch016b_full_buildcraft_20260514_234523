@@ -1,0 +1,325 @@
+class_name RVGameState
+extends RefCounted
+
+const SAVE_VERSION = 16
+
+var mode: String = "hub"
+var panel_mode: String = ""
+var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+
+var arena: Rect2 = Rect2(60.0, 84.0, 1160.0, 566.0)
+var hub_bounds: Rect2 = Rect2(80.0, 105.0, 1120.0, 525.0)
+
+var player_pos: Vector2 = Vector2(640.0, 370.0)
+var player_radius: float = 15.0
+var player_speed: float = 235.0
+var player_hp: float = 120.0
+var player_mana: float = 100.0
+var max_hp: float = 120.0
+var max_mana: float = 100.0
+var invuln: float = 0.0
+
+var level: int = 1
+var xp: float = 0.0
+var mastery_points: int = 0
+var refund_points: int = 5
+var gold: int = 0
+
+var materials: Dictionary = {
+	"embers": 12,
+	"shards": 6,
+	"runes": 0,
+	"echo_glass": 0
+}
+
+var craft_bag: Dictionary = {
+	"affix_shards": {},
+	"hope_sigils": 4,
+	"chaos_sigils": 2,
+	"seal_sigils": 1,
+	"removal_runes": 1,
+	"shatter_runes": 6,
+	"refinement_runes": 2
+}
+
+var active_skills: Array = ["Fireball", "Cleave"]
+var selected_skill: int = 0
+var skill_cooldowns: Dictionary = {}
+var skill_ranks: Dictionary = {
+	"Fireball": 0,
+	"Cleave": 0,
+	"Frost Nova": 0,
+	"Storm Lance": 0,
+	"Void Rift": 0,
+	"Blade Trap": 0
+}
+
+var skill_gems: Dictionary = {}
+var support_gems_owned: Array = []
+var spirit_gems: Dictionary = {}
+var spirit_max: int = 100
+var spirit_reserved: int = 0
+var skill_supports: Dictionary = {}
+var spirit_bonuses: Dictionary = {}
+var skill_board_cursor: int = 0
+var support_board_cursor: int = 0
+
+var passives: Dictionary = {
+	"ash": 0,
+	"frost": 0,
+	"storm": 0,
+	"void": 0,
+	"steel": 0,
+	"trap": 0,
+	"blood": 0,
+	"relic": 0
+}
+var passive_nodes_allocated: Array = ["root"]
+var passive_selected_index: int = 0
+var passive_refund_history: Array = []
+var passive_stats: Dictionary = {}
+var passive_flags: Array = []
+
+var equipped: Dictionary = {
+	"weapon": {},
+	"offhand": {},
+	"head": {},
+	"chest": {},
+	"gloves": {},
+	"boots": {},
+	"amulet": {},
+	"ring1": {},
+	"ring2": {},
+	"relic": {}
+}
+
+var backpack: Array = []
+var stash: Array = []
+var craft_focus_index: int = 0
+
+var enemies: Array = []
+var projectiles: Array = []
+var zones: Array = []
+var loot_drops: Array = []
+var obstacles: Array = []
+var floating_text: Array = []
+
+var hub_objects: Array = []
+var focused_object: Dictionary = {}
+var prompt: String = ""
+var notice: String = ""
+var notice_time: float = 0.0
+
+var current_contract: Dictionary = {}
+var run_depth: int = 0
+var rooms_cleared: int = 0
+var kills: int = 0
+var deaths: int = 0
+
+func init() -> void:
+	rng.randomize()
+	_init_default_gems()
+	_init_default_crafting()
+
+	if equipped["weapon"].is_empty():
+		equipped["weapon"] = RVItemDB.make_base_item(self, "weapon")
+		equipped["weapon"]["name"] = "Cracked Initiate Focus"
+		equipped["weapon"]["rarity"] = "Starter"
+		equipped["weapon"]["stats"] = {"spell_damage": 0.04}
+
+	for skill in active_skills:
+		if not skill_cooldowns.has(skill):
+			skill_cooldowns[skill] = 0.0
+
+	RVPassiveTreeSystem.recompute(self)
+	RVSkillGemSystem.rebuild(self)
+	recompute_stats()
+	full_restore()
+
+func _init_default_gems() -> void:
+	if skill_gems.is_empty():
+		for skill in RVSkillGemDB.active_skill_names():
+			skill_gems[skill] = {
+				"id": skill,
+				"level": 1,
+				"sockets": 2,
+				"supports": []
+			}
+
+	if support_gems_owned.is_empty():
+		support_gems_owned = [
+			"Brutality", "Acceleration", "Ignition", "Frostbite", "Conduction", "Echo", "Fork", "Riftbind", "Traplink", "Efficiency"
+		]
+
+	if spirit_gems.is_empty():
+		spirit_gems = {
+			"Ember Wisp": {"enabled": false, "level": 1},
+			"Frost Ward": {"enabled": false, "level": 1},
+			"Storm Choir": {"enabled": false, "level": 1},
+			"Void Pact": {"enabled": false, "level": 1},
+			"Blade Familiar": {"enabled": false, "level": 1}
+		}
+
+func _init_default_crafting() -> void:
+	if not craft_bag.has("affix_shards") or typeof(craft_bag["affix_shards"]) != TYPE_DICTIONARY:
+		craft_bag["affix_shards"] = {}
+
+	var shards: Dictionary = craft_bag["affix_shards"]
+	for affix_id in RVItemDB.affix_ids():
+		if not shards.has(affix_id):
+			shards[affix_id] = 5
+
+	craft_bag["affix_shards"] = shards
+
+func reset_combat_runtime() -> void:
+	enemies.clear()
+	projectiles.clear()
+	zones.clear()
+	loot_drops.clear()
+	obstacles.clear()
+	floating_text.clear()
+	kills = 0
+
+func enter_hub() -> void:
+	mode = "hub"
+	panel_mode = ""
+	player_pos = Vector2(640.0, 370.0)
+	reset_combat_runtime()
+	full_restore()
+	focus_clear()
+
+func full_restore() -> void:
+	recompute_stats()
+	player_hp = max_hp
+	player_mana = max_mana
+	invuln = 0.0
+
+func recompute_stats() -> void:
+	max_hp = 120.0 + float(level - 1) * 5.0
+	max_mana = 100.0 + float(level - 1) * 2.0
+
+	max_hp += float(passive_stats.get("max_hp", 0.0))
+	max_mana += float(passive_stats.get("max_mana", 0.0))
+	spirit_max = 100 + int(passive_stats.get("spirit", 0.0))
+
+	for slot in equipped.keys():
+		var item: Variant = equipped[slot]
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		var stats: Dictionary = item.get("stats", {})
+		max_hp += float(stats.get("max_hp", 0.0))
+		max_mana += float(stats.get("max_mana", 0.0))
+
+	max_hp += float(passives.get("steel", 0)) * 5.0
+	max_hp += float(passives.get("blood", 0)) * 4.0
+	max_mana += float(passives.get("void", 0)) * 3.0
+	max_mana += float(passives.get("relic", 0)) * 2.0
+
+	RVSkillGemSystem.rebuild(self)
+
+	player_hp = min(player_hp, max_hp)
+	player_mana = min(player_mana, max_mana)
+
+func build_stat_bonus(key: String) -> float:
+	var value: float = float(passive_stats.get(key, 0.0))
+	value += float(spirit_bonuses.get(key, 0.0))
+	for slot in equipped.keys():
+		var item: Variant = equipped[slot]
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		var stats: Dictionary = item.get("stats", {})
+		value += float(stats.get(key, 0.0))
+	return value
+
+func has_flag(flag: String) -> bool:
+	if passive_flags.has(flag):
+		return true
+	for slot in equipped.keys():
+		var item: Variant = equipped[slot]
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		var flags: Array = item.get("flags", [])
+		if flags.has(flag):
+			return true
+	return false
+
+func focus_clear() -> void:
+	focused_object = {}
+	prompt = ""
+
+func add_notice(text: String) -> void:
+	notice = text
+	notice_time = 2.2
+
+func xp_to_next() -> float:
+	return 160.0 + pow(float(level), 1.35) * 70.0
+
+func to_save_dict() -> Dictionary:
+	return {
+		"version": SAVE_VERSION,
+		"level": level,
+		"xp": xp,
+		"mastery_points": mastery_points,
+		"refund_points": refund_points,
+		"gold": gold,
+		"materials": materials,
+		"craft_bag": craft_bag,
+		"active_skills": active_skills,
+		"selected_skill": selected_skill,
+		"skill_ranks": skill_ranks,
+		"skill_gems": skill_gems,
+		"support_gems_owned": support_gems_owned,
+		"spirit_gems": spirit_gems,
+		"passives": passives,
+		"passive_nodes_allocated": passive_nodes_allocated,
+		"passive_refund_history": passive_refund_history,
+		"equipped": equipped,
+		"backpack": backpack,
+		"stash": stash,
+		"craft_focus_index": craft_focus_index,
+		"rooms_cleared": rooms_cleared,
+		"kills": kills,
+		"deaths": deaths
+	}
+
+func apply_save_dict(data: Dictionary) -> void:
+	level = int(data.get("level", level))
+	xp = float(data.get("xp", xp))
+	mastery_points = int(data.get("mastery_points", mastery_points))
+	refund_points = int(data.get("refund_points", refund_points))
+	gold = int(data.get("gold", gold))
+
+	if typeof(data.get("materials", {})) == TYPE_DICTIONARY:
+		materials.merge(data["materials"], true)
+	if typeof(data.get("craft_bag", {})) == TYPE_DICTIONARY:
+		craft_bag.merge(data["craft_bag"], true)
+	if typeof(data.get("active_skills", [])) == TYPE_ARRAY:
+		active_skills = data["active_skills"]
+	selected_skill = int(data.get("selected_skill", selected_skill))
+	if typeof(data.get("skill_ranks", {})) == TYPE_DICTIONARY:
+		skill_ranks.merge(data["skill_ranks"], true)
+	if typeof(data.get("skill_gems", {})) == TYPE_DICTIONARY:
+		skill_gems.merge(data["skill_gems"], true)
+	if typeof(data.get("support_gems_owned", [])) == TYPE_ARRAY:
+		support_gems_owned = data["support_gems_owned"]
+	if typeof(data.get("spirit_gems", {})) == TYPE_DICTIONARY:
+		spirit_gems.merge(data["spirit_gems"], true)
+	if typeof(data.get("passives", {})) == TYPE_DICTIONARY:
+		passives.merge(data["passives"], true)
+	if typeof(data.get("passive_nodes_allocated", [])) == TYPE_ARRAY:
+		passive_nodes_allocated = data["passive_nodes_allocated"]
+	if typeof(data.get("passive_refund_history", [])) == TYPE_ARRAY:
+		passive_refund_history = data["passive_refund_history"]
+	if typeof(data.get("equipped", {})) == TYPE_DICTIONARY:
+		equipped.merge(data["equipped"], true)
+	if typeof(data.get("backpack", [])) == TYPE_ARRAY:
+		backpack = data["backpack"]
+	if typeof(data.get("stash", [])) == TYPE_ARRAY:
+		stash = data["stash"]
+	craft_focus_index = int(data.get("craft_focus_index", craft_focus_index))
+	deaths = int(data.get("deaths", deaths))
+	_init_default_gems()
+	_init_default_crafting()
+	RVPassiveTreeSystem.recompute(self)
+	RVSkillGemSystem.rebuild(self)
+	recompute_stats()

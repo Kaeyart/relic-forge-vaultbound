@@ -2,281 +2,30 @@
 
 [ext_resource type="Script" path="res://scripts/ui/panels/PassiveAtlasPanel.gd" id="1"]
 
-[node name="PassiveAtlasPanel" type="Control"]
-visible = false
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="PassiveAtlasPanel" type="PanelContainer"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 110.0
+offset_right = 1020.0
+offset_bottom = 610.0
 script = ExtResource("1")
+title = "Passive Atlas"
 
-[node name="Backdrop" type="ColorRect" parent="."]
-layout_mode = 0
-offset_left = 210.0
-offset_top = 80.0
-offset_right = 1070.0
-offset_bottom = 640.0
-color = Color(0.02, 0.018, 0.022, 0.92)
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
 
-[node name="Title" type="Label" parent="."]
-layout_mode = 0
-offset_left = 240.0
-offset_top = 104.0
-offset_right = 1040.0
-offset_bottom = 132.0
-text = "PassiveAtlasPanel"
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
 
-[node name="CloseHint" type="Label" parent="."]
-layout_mode = 0
-offset_left = 890.0
-offset_top = 104.0
-offset_right = 1040.0
-offset_bottom = 132.0
-text = "Esc close"
-horizontal_alignment = 2
+[node name="TitleLabel" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "Passive Atlas"
 
-[node name="Body" type="RichTextLabel" parent="."]
-layout_mode = 0
-offset_left = 240.0
-offset_top = 150.0
-offset_right = 630.0
-offset_bottom = 595.0
-bbcode_enabled = false
+[node name="ContentLabel" type="Label" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
 text = ""
-fit_content = false
-scroll_active = true
-
-[node name="Detail" type="RichTextLabel" parent="."]
-layout_mode = 0
-offset_left = 660.0
-offset_top = 150.0
-offset_right = 1040.0
-offset_bottom = 595.0
-bbcode_enabled = false
-text = ""
-fit_content = false
-scroll_active = true
-
-[node name="ArtRoot" type="Control" parent="."]
-layout_mode = 0
-offset_left = 210.0
-offset_top = 80.0
-offset_right = 1070.0
-offset_bottom = 640.0
-
-[node name="AtlasPlane" type="ColorRect" parent="ArtRoot"]
-layout_mode = 0
-offset_left = 36.0
-offset_top = 76.0
-offset_right = 824.0
-offset_bottom = 474.0
-color = Color(0.04, 0.035, 0.045, 0.50)
-
-[node name="AtlasNodes" type="Control" parent="."]
-layout_mode = 0
-offset_left = 210.0
-offset_top = 80.0
-offset_right = 1070.0
-offset_bottom = 640.0
-
-[node name="AtlasNode_000" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 417.0
-offset_top = 237.0
-offset_right = 443.0
-offset_bottom = 263.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_001" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 337.0
-offset_top = 237.0
-offset_right = 363.0
-offset_bottom = 263.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_002" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 497.0
-offset_top = 237.0
-offset_right = 523.0
-offset_bottom = 263.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_003" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 417.0
-offset_top = 157.0
-offset_right = 443.0
-offset_bottom = 183.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_004" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 417.0
-offset_top = 317.0
-offset_right = 443.0
-offset_bottom = 343.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_005" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 267.0
-offset_top = 177.0
-offset_right = 293.0
-offset_bottom = 203.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_006" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 267.0
-offset_top = 297.0
-offset_right = 293.0
-offset_bottom = 323.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_007" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 567.0
-offset_top = 177.0
-offset_right = 593.0
-offset_bottom = 203.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_008" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 567.0
-offset_top = 297.0
-offset_right = 593.0
-offset_bottom = 323.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_009" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 197.0
-offset_top = 127.0
-offset_right = 223.0
-offset_bottom = 153.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_010" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 197.0
-offset_top = 347.0
-offset_right = 223.0
-offset_bottom = 373.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_011" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 637.0
-offset_top = 127.0
-offset_right = 663.0
-offset_bottom = 153.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_012" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 637.0
-offset_top = 347.0
-offset_right = 663.0
-offset_bottom = 373.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_013" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 337.0
-offset_top = 97.0
-offset_right = 363.0
-offset_bottom = 123.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_014" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 497.0
-offset_top = 97.0
-offset_right = 523.0
-offset_bottom = 123.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_015" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 337.0
-offset_top = 377.0
-offset_right = 363.0
-offset_bottom = 403.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_016" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 497.0
-offset_top = 377.0
-offset_right = 523.0
-offset_bottom = 403.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_017" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 117.0
-offset_top = 237.0
-offset_right = 143.0
-offset_bottom = 263.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_018" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 717.0
-offset_top = 237.0
-offset_right = 743.0
-offset_bottom = 263.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_019" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 417.0
-offset_top = 57.0
-offset_right = 443.0
-offset_bottom = 83.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_020" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 417.0
-offset_top = 417.0
-offset_right = 443.0
-offset_bottom = 443.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_021" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 77.0
-offset_top = 147.0
-offset_right = 103.0
-offset_bottom = 173.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_022" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 77.0
-offset_top = 327.0
-offset_right = 103.0
-offset_bottom = 353.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_023" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 757.0
-offset_top = 147.0
-offset_right = 783.0
-offset_bottom = 173.0
-color = Color(0.72, 0.56, 0.28, 0.70)
-
-[node name="AtlasNode_024" type="ColorRect" parent="AtlasNodes"]
-layout_mode = 0
-offset_left = 757.0
-offset_top = 327.0
-offset_right = 783.0
-offset_bottom = 353.0
-color = Color(0.72, 0.56, 0.28, 0.70)

@@ -1,22 +1,27 @@
 extends RVUIPanelBase
 
-func refresh(state: Object) -> void:
-	super.refresh(state)
-	var active: Array = _arr(state, "active_skills")
-	var sockets: Dictionary = _dict(state, "skill_gem_sockets")
-	var support_inventory: Dictionary = _dict(state, "support_gem_inventory")
-	var spirit_enabled: Dictionary = _dict(state, "spirit_gems_enabled")
-	var text: String = "SKILL GEMS\n\nActive Skills\n"
-	for skill in active:
-		text += "- " + str(skill) + "\n"
-		var supports: Array = sockets.get(skill, [])
-		for support in supports:
-			text += "    + " + str(support).replace("_", " ").capitalize() + "\n"
-	var detail: String = "SUPPORT INVENTORY\n\n"
-	for key in support_inventory.keys():
-		detail += "- " + str(key).replace("_", " ").capitalize() + ": " + str(support_inventory[key]) + "\n"
-	detail += "\nSPIRIT\nReserved: " + str(_int(state, "spirit_reserved", 0)) + "/" + str(_int(state, "spirit_max", 0)) + "\n"
-	for spirit in spirit_enabled.keys():
-		detail += "- " + str(spirit).replace("_", " ").capitalize() + ": " + str(spirit_enabled[spirit]) + "\n"
-	_set_rich_text("Body", text)
-	_set_rich_text("Detail", detail)
+@onready var content_label: Label = %ContentLabel
+
+func update_from_state(state: RVGameState) -> void:
+	if content_label == null:
+		return
+	content_label.text = _build_text(state)
+
+
+func _build_text(state: RVGameState) -> String:
+	match title:
+		"Inventory":
+			return "Backpack Items: %s\nPress E to equip first item.\nPress X to salvage first item." % state.backpack.size()
+		"Crafting":
+			return "Basic Forge\nPress F to craft a basic item.\nMaterials: Embers %s  Shards %s  Runes %s" % [state.materials.get("embers", 0), state.materials.get("shards", 0), state.materials.get("runes", 0)]
+		"Passive Atlas":
+			return "Mastery Points: %s\nRefund Points: %s\nPress Enter to allocate first available node.\nPress Backspace to refund first allocated node." % [state.mastery_points, state.refund_points]
+		"Skill Gems":
+			return "Active Skills:\n%s\n\nPress 1-6 to toggle skills." % "\n".join(state.active_skills)
+		"Character":
+			return "Level %s\nLife %s/%s\nMana %s/%s\nKills %s\nDeaths %s" % [state.level, int(state.player_hp), int(state.max_hp), int(state.player_mana), int(state.max_mana), state.kills, state.deaths]
+		"Stash":
+			return "Stash Items: %s\nPress E to deposit backpack.\nPress X to withdraw first stash item." % state.stash.size()
+		"Activities":
+			return "Activities live in the physical hub.\nWalk to a gate and press E."
+	return ""

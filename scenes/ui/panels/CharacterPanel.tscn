@@ -2,146 +2,30 @@
 
 [ext_resource type="Script" path="res://scripts/ui/panels/CharacterPanel.gd" id="1"]
 
-[node name="CharacterPanel" type="Control"]
-visible = false
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="CharacterPanel" type="PanelContainer"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 110.0
+offset_right = 1020.0
+offset_bottom = 610.0
 script = ExtResource("1")
+title = "Character"
 
-[node name="Backdrop" type="ColorRect" parent="."]
-layout_mode = 0
-offset_left = 210.0
-offset_top = 80.0
-offset_right = 1070.0
-offset_bottom = 640.0
-color = Color(0.02, 0.018, 0.022, 0.92)
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
 
-[node name="Title" type="Label" parent="."]
-layout_mode = 0
-offset_left = 240.0
-offset_top = 104.0
-offset_right = 1040.0
-offset_bottom = 132.0
-text = "CharacterPanel"
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
 
-[node name="CloseHint" type="Label" parent="."]
-layout_mode = 0
-offset_left = 890.0
-offset_top = 104.0
-offset_right = 1040.0
-offset_bottom = 132.0
-text = "Esc close"
-horizontal_alignment = 2
+[node name="TitleLabel" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "Character"
 
-[node name="Body" type="RichTextLabel" parent="."]
-layout_mode = 0
-offset_left = 240.0
-offset_top = 150.0
-offset_right = 630.0
-offset_bottom = 595.0
-bbcode_enabled = false
+[node name="ContentLabel" type="Label" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
 text = ""
-fit_content = false
-scroll_active = true
-
-[node name="Detail" type="RichTextLabel" parent="."]
-layout_mode = 0
-offset_left = 660.0
-offset_top = 150.0
-offset_right = 1040.0
-offset_bottom = 595.0
-bbcode_enabled = false
-text = ""
-fit_content = false
-scroll_active = true
-
-[node name="ArtRoot" type="Control" parent="."]
-layout_mode = 0
-offset_left = 210.0
-offset_top = 80.0
-offset_right = 1070.0
-offset_bottom = 640.0
-
-[node name="GearSlot_00" type="ColorRect" parent="ArtRoot"]
-layout_mode = 0
-offset_left = 560.0
-offset_top = 96.0
-offset_right = 622.0
-offset_bottom = 158.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="GearSlot_01" type="ColorRect" parent="ArtRoot"]
-layout_mode = 0
-offset_left = 634.0
-offset_top = 96.0
-offset_right = 696.0
-offset_bottom = 158.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="GearSlot_02" type="ColorRect" parent="ArtRoot"]
-layout_mode = 0
-offset_left = 560.0
-offset_top = 170.0
-offset_right = 622.0
-offset_bottom = 232.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="GearSlot_03" type="ColorRect" parent="ArtRoot"]
-layout_mode = 0
-offset_left = 634.0
-offset_top = 170.0
-offset_right = 696.0
-offset_bottom = 232.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="GearSlot_04" type="ColorRect" parent="ArtRoot"]
-layout_mode = 0
-offset_left = 560.0
-offset_top = 244.0
-offset_right = 622.0
-offset_bottom = 306.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="GearSlot_05" type="ColorRect" parent="ArtRoot"]
-layout_mode = 0
-offset_left = 634.0
-offset_top = 244.0
-offset_right = 696.0
-offset_bottom = 306.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="GearSlot_06" type="ColorRect" parent="ArtRoot"]
-layout_mode = 0
-offset_left = 560.0
-offset_top = 318.0
-offset_right = 622.0
-offset_bottom = 380.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="GearSlot_07" type="ColorRect" parent="ArtRoot"]
-layout_mode = 0
-offset_left = 634.0
-offset_top = 318.0
-offset_right = 696.0
-offset_bottom = 380.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="GearSlot_08" type="ColorRect" parent="ArtRoot"]
-layout_mode = 0
-offset_left = 560.0
-offset_top = 392.0
-offset_right = 622.0
-offset_bottom = 454.0
-color = Color(0.12, 0.11, 0.13, 0.45)
-
-[node name="GearSlot_09" type="ColorRect" parent="ArtRoot"]
-layout_mode = 0
-offset_left = 634.0
-offset_top = 392.0
-offset_right = 696.0
-offset_bottom = 454.0
-color = Color(0.12, 0.11, 0.13, 0.45)

@@ -1,0 +1,131 @@
+class_name RVItemDB
+extends RefCounted
+
+const SLOTS = ["weapon", "offhand", "head", "chest", "gloves", "boots", "amulet", "ring", "relic"]
+
+const AFFIXES = {
+	"fire_damage": {"name": "Pyre", "stat": "fire_damage", "family": "ash", "type": "prefix", "base": 0.035},
+	"cold_damage": {"name": "Rime", "stat": "cold_damage", "family": "frost", "type": "prefix", "base": 0.035},
+	"lightning_damage": {"name": "Static", "stat": "lightning_damage", "family": "storm", "type": "prefix", "base": 0.035},
+	"void_damage": {"name": "Abyss", "stat": "void_damage", "family": "void", "type": "prefix", "base": 0.035},
+	"melee_damage": {"name": "Butcher", "stat": "melee_damage", "family": "steel", "type": "prefix", "base": 0.040},
+	"trap_damage": {"name": "Mechanist", "stat": "trap_damage", "family": "trap", "type": "prefix", "base": 0.040},
+	"spell_damage": {"name": "Ritual", "stat": "spell_damage", "family": "blood", "type": "prefix", "base": 0.030},
+	"global_damage": {"name": "Relic", "stat": "global_damage", "family": "relic", "type": "prefix", "base": 0.025},
+	"max_hp": {"name": "Bulwark", "stat": "max_hp", "family": "steel", "type": "suffix", "base": 9.0},
+	"max_mana": {"name": "Channel", "stat": "max_mana", "family": "void", "type": "suffix", "base": 7.0},
+	"cooldown_reduction": {"name": "Tempo", "stat": "cooldown_reduction", "family": "storm", "type": "suffix", "base": 0.007},
+	"spirit": {"name": "Spirit", "stat": "spirit", "family": "relic", "type": "suffix", "base": 2.0}
+}
+
+const RECIPES = [
+	{"name": "Ashen Conductor", "slot": "weapon", "cost": {"embers": 18, "shards": 6}, "stats": {"fire_damage": 0.20, "lightning_damage": 0.10, "spell_damage": 0.08}, "flags": ["fire_calls_lance", "cascade_engine"], "pos": Vector2(940.0, 230.0), "color": Color(1.0, 0.34, 0.12)},
+	{"name": "Frostfire Reactor", "slot": "relic", "cost": {"embers": 12, "shards": 12, "echo_glass": 1}, "stats": {"fire_damage": 0.12, "cold_damage": 0.18, "freeze_duration": 0.25}, "flags": ["frostfire_steam", "nova_calls_fire"], "pos": Vector2(1035.0, 285.0), "color": Color(0.42, 0.82, 1.0)},
+	{"name": "Void Trap Engine", "slot": "offhand", "cost": {"shards": 14, "runes": 2}, "stats": {"void_damage": 0.20, "trap_damage": 0.18, "max_mana": 18.0}, "flags": ["trap_calls_rift", "rift_calls_trap", "rift_pull"], "pos": Vector2(945.0, 345.0), "color": Color(0.70, 0.36, 1.0)},
+	{"name": "Butcher Moon Cleaver", "slot": "weapon", "cost": {"embers": 16, "runes": 1}, "stats": {"melee_damage": 0.30, "max_hp": 22.0}, "flags": ["slash_bleed", "cleave_wave", "execute_low_hp"], "pos": Vector2(1040.0, 400.0), "color": Color(1.0, 0.78, 0.42)}
+]
+
+static func recipes() -> Array:
+	return RECIPES.duplicate(true)
+
+static func affix_ids() -> Array:
+	return AFFIXES.keys()
+
+static func affix_data(id: String) -> Dictionary:
+	return AFFIXES.get(id, {})
+
+static func can_pay(state: RVGameState, cost: Dictionary) -> bool:
+	for k in cost.keys():
+		if int(state.materials.get(k, 0)) < int(cost[k]):
+			return false
+	return true
+
+static func pay(state: RVGameState, cost: Dictionary) -> void:
+	for k in cost.keys():
+		state.materials[k] = int(state.materials.get(k, 0)) - int(cost[k])
+
+static func craft(state: RVGameState, recipe: Dictionary) -> Dictionary:
+	var item: Dictionary = make_base_item(state, str(recipe.get("slot", "relic")))
+	item["name"] = str(recipe["name"]) + " +" + str(max(1, state.level / 3))
+	item["rarity"] = "Crafted"
+	item["stats"] = recipe.get("stats", {}).duplicate(true)
+	item["flags"] = recipe.get("flags", []).duplicate(true)
+	item["forge_integrity"] = 28 + state.level
+	return normalize_item(item)
+
+static func make_base_item(state: RVGameState, slot: String = "weapon") -> Dictionary:
+	return normalize_item({
+		"name": "Blank " + slot.capitalize(),
+		"slot": slot,
+		"rarity": "Common",
+		"stats": {},
+		"flags": [],
+		"affixes": [],
+		"sealed_affix": {},
+		"forge_integrity": 22 + state.level + state.rng.randi_range(0, 12),
+		"level": state.level,
+		"desc": "Crafting base."
+	})
+
+static func normalize_item(item: Dictionary) -> Dictionary:
+	var out: Dictionary = item
+	if not out.has("stats") or typeof(out["stats"]) != TYPE_DICTIONARY:
+		out["stats"] = {}
+	if not out.has("flags") or typeof(out["flags"]) != TYPE_ARRAY:
+		out["flags"] = []
+	if not out.has("affixes") or typeof(out["affixes"]) != TYPE_ARRAY:
+		out["affixes"] = []
+	if not out.has("sealed_affix") or typeof(out["sealed_affix"]) != TYPE_DICTIONARY:
+		out["sealed_affix"] = {}
+	if not out.has("forge_integrity"):
+		out["forge_integrity"] = 20
+	_recompute_item_stats(out)
+	return out
+
+static func _recompute_item_stats(item: Dictionary) -> void:
+	var stats: Dictionary = {}
+	for affix in item.get("affixes", []):
+		if typeof(affix) != TYPE_DICTIONARY:
+			continue
+		var stat: String = str(affix.get("stat", ""))
+		if stat == "":
+			continue
+		stats[stat] = float(stats.get(stat, 0.0)) + float(affix.get("value", 0.0))
+	var sealed: Dictionary = item.get("sealed_affix", {})
+	if not sealed.is_empty():
+		var sstat: String = str(sealed.get("stat", ""))
+		if sstat != "":
+			stats[sstat] = float(stats.get(sstat, 0.0)) + float(sealed.get("value", 0.0))
+	var base_stats: Dictionary = item.get("base_stats", {})
+	for k in base_stats.keys():
+		stats[k] = float(stats.get(k, 0.0)) + float(base_stats[k])
+	item["stats"] = stats
+
+static func make_affix(state: RVGameState, affix_id: String, tier: int = 1) -> Dictionary:
+	var d: Dictionary = affix_data(affix_id)
+	var value: float = float(d.get("base", 0.01)) * float(tier)
+	return {"id": affix_id, "name": str(d.get("name", affix_id)), "stat": str(d.get("stat", affix_id)), "family": str(d.get("family", "relic")), "type": str(d.get("type", "prefix")), "tier": tier, "value": value}
+
+static func generate_drop(state: RVGameState, depth: int) -> Dictionary:
+	var slot: String = SLOTS[state.rng.randi_range(0, SLOTS.size() - 1)]
+	var item: Dictionary = make_base_item(state, slot)
+	var roll: float = state.rng.randf()
+	var rarity: String = "Magic"
+	var affix_count: int = 1
+	if roll > 0.94:
+		rarity = "Legendary"
+		affix_count = 4
+	elif roll > 0.72:
+		rarity = "Rare"
+		affix_count = 3
+	else:
+		affix_count = 2
+	item["rarity"] = rarity
+	item["name"] = rarity + " " + slot.capitalize()
+	item["forge_integrity"] = 18 + depth + state.rng.randi_range(0, 18)
+	var ids: Array = affix_ids()
+	for i in range(affix_count):
+		var affix_id: String = ids[state.rng.randi_range(0, ids.size() - 1)]
+		var tier: int = clamp(1 + int(depth / 4) + state.rng.randi_range(0, 1), 1, 5)
+		item["affixes"].append(make_affix(state, affix_id, tier))
+	return normalize_item(item)

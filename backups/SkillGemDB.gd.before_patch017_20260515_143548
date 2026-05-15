@@ -1,0 +1,64 @@
+class_name RVSkillGemDB
+extends RefCounted
+
+const ACTIVE_GEMS = {
+	"Fireball": {"tags": ["Fire", "Projectile", "Spell", "Burn"], "color": Color(1.0, 0.34, 0.10), "base_cost": 12.0, "base_cd": 0.42, "base_damage": 22.0},
+	"Cleave": {"tags": ["Physical", "Melee", "Slash"], "color": Color(1.0, 0.80, 0.48), "base_cost": 9.0, "base_cd": 0.36, "base_damage": 28.0},
+	"Frost Nova": {"tags": ["Cold", "Area", "Freeze"], "color": Color(0.42, 0.82, 1.0), "base_cost": 18.0, "base_cd": 1.25, "base_damage": 18.0},
+	"Storm Lance": {"tags": ["Lightning", "Projectile", "Spell", "Chain"], "color": Color(0.72, 0.92, 1.0), "base_cost": 14.0, "base_cd": 0.55, "base_damage": 24.0},
+	"Void Rift": {"tags": ["Void", "Area", "Curse"], "color": Color(0.70, 0.36, 1.0), "base_cost": 22.0, "base_cd": 1.35, "base_damage": 20.0},
+	"Blade Trap": {"tags": ["Trap", "Physical", "Area"], "color": Color(0.95, 0.72, 0.28), "base_cost": 16.0, "base_cd": 0.90, "base_damage": 26.0}
+}
+
+const SUPPORT_GEMS = {
+	"Brutality": {"tags": ["Hit"], "damage_more": 0.18, "cost_mult": 1.10, "desc": "More hit damage."},
+	"Acceleration": {"tags": ["Any"], "cooldown_mult": 0.86, "cost_mult": 1.12, "desc": "Faster repeat casts."},
+	"Ignition": {"tags": ["Fire"], "damage_more": 0.10, "adds_tag": "Burn", "desc": "Adds burn pressure."},
+	"Frostbite": {"tags": ["Cold"], "damage_more": 0.08, "freeze_more": 0.25, "desc": "Longer freeze effects."},
+	"Conduction": {"tags": ["Lightning"], "chain_bonus": 1, "damage_more": 0.08, "desc": "Better chaining."},
+	"Echo": {"tags": ["Spell"], "echo": 1, "damage_less": 0.18, "cost_mult": 1.20, "desc": "Repeats a weaker echo."},
+	"Fork": {"tags": ["Projectile"], "extra_projectiles": 2, "damage_less": 0.20, "cost_mult": 1.18, "desc": "Adds two side projectiles."},
+	"Riftbind": {"tags": ["Void"], "trigger_rift": 1, "cost_mult": 1.15, "desc": "Void hits create small rifts."},
+	"Traplink": {"tags": ["Trap", "Area"], "trigger_trap": 1, "damage_less": 0.10, "desc": "Area skills drop auxiliary traps."},
+	"Efficiency": {"tags": ["Any"], "cost_mult": 0.82, "damage_less": 0.06, "desc": "Lower cost with slight loss."}
+}
+
+const SPIRIT_GEMS = {
+	"Ember Wisp": {"reservation": 30, "stats": {"fire_damage": 0.12, "burn_power": 0.10}, "color": Color(1.0, 0.34, 0.12)},
+	"Frost Ward": {"reservation": 25, "stats": {"cold_damage": 0.10, "max_hp": 16.0}, "color": Color(0.42, 0.82, 1.0)},
+	"Storm Choir": {"reservation": 35, "stats": {"lightning_damage": 0.12, "cooldown_reduction": 0.04}, "color": Color(0.72, 0.92, 1.0)},
+	"Void Pact": {"reservation": 40, "stats": {"void_damage": 0.16, "max_mana": 20.0}, "color": Color(0.70, 0.36, 1.0)},
+	"Blade Familiar": {"reservation": 30, "stats": {"trap_damage": 0.12, "melee_damage": 0.08}, "color": Color(0.95, 0.72, 0.28)}
+}
+
+static func active_skill_names() -> Array:
+	return ACTIVE_GEMS.keys()
+
+static func support_names() -> Array:
+	return SUPPORT_GEMS.keys()
+
+static func spirit_names() -> Array:
+	return SPIRIT_GEMS.keys()
+
+static func active_data(skill: String) -> Dictionary:
+	return ACTIVE_GEMS.get(skill, {})
+
+static func support_data(support: String) -> Dictionary:
+	return SUPPORT_GEMS.get(support, {})
+
+static func spirit_data(spirit: String) -> Dictionary:
+	return SPIRIT_GEMS.get(spirit, {})
+
+static func support_can_attach(support: String, skill: String) -> bool:
+	var sd: Dictionary = support_data(support)
+	var ad: Dictionary = active_data(skill)
+	if sd.is_empty() or ad.is_empty():
+		return false
+	var required: Array = sd.get("tags", [])
+	if required.has("Any"):
+		return true
+	var tags: Array = ad.get("tags", [])
+	for tag in required:
+		if tags.has(tag):
+			return true
+	return false
