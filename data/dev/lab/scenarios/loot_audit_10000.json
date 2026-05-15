@@ -1,0 +1,1 @@
+{"id":"loot_audit_10000","name":"Loot Audit 10000 Drops","rooms":100,"start_level":1,"items_per_room_min":5,"items_per_room_max":10,"gem_reward_chance":0.05,"material_reward_chance":0.0,"tracked_questions":["Are rarity rates sane?","Are affix tags coherent?","How much loot is confusing?"]}

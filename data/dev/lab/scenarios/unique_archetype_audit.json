@@ -1,0 +1,1 @@
+{"id":"unique_archetype_audit","name":"Unique Archetype Audit","rooms":120,"start_level":20,"items_per_room_min":2,"items_per_room_max":4,"gem_reward_chance":0.10,"material_reward_chance":0.20,"tracked_questions":["Do uniques create archetypes?","Are conversions rejected by narrow profiles?","Do build flags matter?"]}
