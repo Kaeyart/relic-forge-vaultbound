@@ -1,14 +1,9 @@
 class_name RVSkillGemDB
 extends RefCounted
 
-# Relic Forge: Vaultbound
-# Patch 042: Uncut gem crafting model.
-# Design shape:
-# - uncut active gems drop as white craftable skill gems
-# - uncut support gems drop as white craftable support gems
-# - uncut spirit gems drop as white craftable reservation gems
-# - active/spirit gems start with 2 support sockets and can reach 6
-# - supports socket into active or spirit gems; spirit supports increase reservation
+# Patch 043: Uncut gem choice database + first real skill identity pass.
+# Active and spirit gems are selected from uncut gems. Support effects are also
+# selected from uncut support gems, then socketed directly into a target gem.
 
 const ACTIVE_GEMS: Dictionary = {
 	"fireball": {
@@ -19,7 +14,8 @@ const ACTIVE_GEMS: Dictionary = {
 		"max_level": 20,
 		"base_sockets": 2,
 		"max_sockets": 6,
-		"description": "Launch a burning projectile. Clear, direct, and easy to build around."
+		"flags": ["fireball_explodes", "inflicts_burn"],
+		"description": "Launch a burning projectile. It explodes on impact and applies Burn. Strong clear, moderate mana pressure."
 	},
 	"cleave": {
 		"name": "Cleave",
@@ -29,7 +25,8 @@ const ACTIVE_GEMS: Dictionary = {
 		"max_level": 20,
 		"base_sockets": 2,
 		"max_sockets": 6,
-		"description": "Swing in a wide arc. A simple melee core that can become bleed, fire, or proc based."
+		"flags": ["inflicts_bleed", "close_combat_bonus"],
+		"description": "A fast frontal melee arc. Applies Bleed and rewards fighting close."
 	},
 	"frost_nova": {
 		"name": "Frost Nova",
@@ -39,7 +36,8 @@ const ACTIVE_GEMS: Dictionary = {
 		"max_level": 20,
 		"base_sockets": 2,
 		"max_sockets": 6,
-		"description": "Release a freezing burst around you. Strong control and area identity."
+		"flags": ["inflicts_freeze", "control_skill"],
+		"description": "Release a cold burst around you. Slows/freeze-locks enemies and controls crowded rooms."
 	},
 	"storm_lance": {
 		"name": "Storm Lance",
@@ -49,7 +47,8 @@ const ACTIVE_GEMS: Dictionary = {
 		"max_level": 20,
 		"base_sockets": 2,
 		"max_sockets": 6,
-		"description": "Fire a fast lightning lance. Designed for chaining, crit, and overload builds."
+		"flags": ["lightning_chains", "shock_pressure"],
+		"description": "Fire a fast piercing lightning lance. Chains to nearby enemies and pressures clustered packs."
 	},
 	"void_rift": {
 		"name": "Void Rift",
@@ -59,7 +58,8 @@ const ACTIVE_GEMS: Dictionary = {
 		"max_level": 20,
 		"base_sockets": 2,
 		"max_sockets": 6,
-		"description": "Open a damaging rift at the target point. Built for curse, pull, and delayed damage."
+		"flags": ["inflicts_curse", "rift_pull"],
+		"description": "Open a rift at the cursor. It pulls enemies inward and curses them so later hits matter more."
 	},
 	"blade_trap": {
 		"name": "Blade Trap",
@@ -69,7 +69,8 @@ const ACTIVE_GEMS: Dictionary = {
 		"max_level": 20,
 		"base_sockets": 2,
 		"max_sockets": 6,
-		"description": "Place a trap that cuts enemies in an area. Built for setup, mechanical control, and trap chains."
+		"flags": ["trap_arms", "inflicts_bleed"],
+		"description": "Place a cutting trap at the cursor. It bleeds enemies and works well with curse/control setups."
 	}
 }
 
@@ -77,87 +78,95 @@ const SUPPORT_GEMS: Dictionary = {
 	"controlled_power": {
 		"name": "Controlled Power Support",
 		"tags": ["Support", "Damage"],
-		"compatible_tags": ["Spell", "Projectile", "Area", "Melee", "Trap"],
+		"compatible_tags": ["Spell", "Projectile", "Area", "Melee", "Trap", "Spirit", "Aura"],
 		"damage_more": 0.18,
 		"mana_more": 0.14,
 		"cooldown_more": 0.00,
 		"spirit_more": 0.12,
-		"description": "More damage, higher cost. Clean raw power."
+		"flags": [],
+		"description": "More damage. Higher cost or reservation."
 	},
-	"efficient_casting": {
-		"name": "Efficiency Support",
-		"tags": ["Support", "Resource"],
-		"compatible_tags": ["Spell", "Projectile", "Area", "Melee", "Trap", "Aura", "Spirit"],
-		"damage_more": -0.04,
-		"mana_more": -0.18,
-		"cooldown_more": 0.00,
-		"spirit_more": -0.10,
-		"description": "Lower cost/reservation, slightly less damage."
+	"swift_cast": {
+		"name": "Swift Cast Support",
+		"tags": ["Support", "Speed"],
+		"compatible_tags": ["Spell", "Projectile"],
+		"damage_more": -0.05,
+		"mana_more": 0.08,
+		"cooldown_more": -0.18,
+		"spirit_more": 0.10,
+		"flags": ["fast_casting"],
+		"description": "Lower cooldown. Slightly less damage."
+	},
+	"chain": {
+		"name": "Chain Support",
+		"tags": ["Support", "Projectile", "Lightning"],
+		"compatible_tags": ["Projectile", "Lightning"],
+		"damage_more": -0.10,
+		"mana_more": 0.22,
+		"cooldown_more": 0.04,
+		"spirit_more": 0.18,
+		"chain_count": 2,
+		"flags": ["chain_plus"],
+		"description": "Projectile and Lightning skills chain to additional enemies."
 	},
 	"area_expansion": {
 		"name": "Area Expansion Support",
 		"tags": ["Support", "Area"],
-		"compatible_tags": ["Area", "Aura", "Spirit"],
-		"damage_more": -0.08,
+		"compatible_tags": ["Area"],
+		"damage_more": -0.07,
 		"mana_more": 0.18,
-		"cooldown_more": 0.08,
+		"cooldown_more": 0.06,
 		"spirit_more": 0.16,
-		"radius_more": 0.25,
-		"description": "Area effects become larger."
-	},
-	"chain_reaction": {
-		"name": "Chain Reaction Support",
-		"tags": ["Support", "Projectile", "Proc"],
-		"compatible_tags": ["Projectile", "Lightning", "Fire", "Spell"],
-		"damage_more": -0.12,
-		"mana_more": 0.22,
-		"cooldown_more": 0.04,
-		"spirit_more": 0.18,
-		"flags": ["chain_plus"],
-		"description": "Projectile skills gain chain/proc pressure."
-	},
-	"critical_focus": {
-		"name": "Critical Focus Support",
-		"tags": ["Support", "Critical"],
-		"compatible_tags": ["Projectile", "Melee", "Spell", "Trap"],
-		"damage_more": 0.10,
-		"mana_more": 0.12,
-		"cooldown_more": 0.00,
-		"spirit_more": 0.14,
-		"stats": {"Critical Chance": 0.04},
-		"description": "Adds critical scaling pressure."
-	},
-	"mana_efficiency": {
-		"name": "Mana Efficiency Support",
-		"tags": ["Support", "Mana"],
-		"compatible_tags": ["Spell", "Projectile", "Area", "Melee", "Trap", "Aura", "Spirit"],
-		"damage_more": -0.08,
-		"mana_more": -0.25,
-		"cooldown_more": 0.00,
-		"spirit_more": -0.12,
-		"description": "Reduces mana pressure and reservation."
+		"radius_more": 0.28,
+		"flags": ["larger_area"],
+		"description": "Area skills become larger and easier to use."
 	},
 	"burning": {
 		"name": "Burning Support",
-		"tags": ["Support", "Fire", "Burn"],
+		"tags": ["Support", "Fire", "Ailment"],
 		"compatible_tags": ["Fire"],
-		"damage_more": 0.12,
+		"damage_more": 0.10,
 		"mana_more": 0.10,
 		"cooldown_more": 0.00,
 		"spirit_more": 0.12,
-		"flags": ["burning_hits"],
-		"description": "Fire skills hit harder and burn better."
+		"status_power": 0.40,
+		"flags": ["strong_burn"],
+		"description": "Fire skills apply stronger Burn."
 	},
 	"frostbite": {
 		"name": "Frostbite Support",
-		"tags": ["Support", "Cold", "Freeze"],
+		"tags": ["Support", "Cold", "Control"],
 		"compatible_tags": ["Cold"],
-		"damage_more": 0.10,
+		"damage_more": 0.08,
 		"mana_more": 0.12,
 		"cooldown_more": 0.00,
 		"spirit_more": 0.12,
+		"status_power": 0.35,
 		"flags": ["strong_freeze"],
-		"description": "Cold skills gain stronger freeze pressure."
+		"description": "Cold skills freeze harder and slow longer."
+	},
+	"overcharge": {
+		"name": "Overcharge Support",
+		"tags": ["Support", "Lightning", "Proc"],
+		"compatible_tags": ["Lightning"],
+		"damage_more": 0.06,
+		"mana_more": 0.18,
+		"cooldown_more": 0.02,
+		"spirit_more": 0.14,
+		"chain_count": 1,
+		"flags": ["shock_burst"],
+		"description": "Lightning skills shock and burst into extra chain damage."
+	},
+	"void_echo": {
+		"name": "Void Echo Support",
+		"tags": ["Support", "Void", "Proc"],
+		"compatible_tags": ["Void"],
+		"damage_more": 0.08,
+		"mana_more": 0.16,
+		"cooldown_more": 0.06,
+		"spirit_more": 0.14,
+		"flags": ["void_echo"],
+		"description": "Void skills echo for a weaker second pulse."
 	},
 	"trap_mechanism": {
 		"name": "Trap Mechanism Support",
@@ -167,40 +176,55 @@ const SUPPORT_GEMS: Dictionary = {
 		"mana_more": 0.16,
 		"cooldown_more": 0.04,
 		"spirit_more": 0.15,
-		"flags": ["trap_damage"],
-		"description": "Improves trap and placed-area skills."
+		"flags": ["trap_damage", "secondary_trap_tick"],
+		"description": "Trap and placed area skills gain a secondary damage tick."
 	},
-	"void_tether": {
-		"name": "Void Tether Support",
-		"tags": ["Support", "Void", "Curse"],
-		"compatible_tags": ["Void", "Area", "Spell"],
-		"damage_more": 0.11,
-		"mana_more": 0.14,
-		"cooldown_more": 0.04,
-		"spirit_more": 0.15,
-		"flags": ["void_curse_pressure"],
-		"description": "Void skills gain stronger curse/control identity."
+	"bloodletting": {
+		"name": "Bloodletting Support",
+		"tags": ["Support", "Physical", "Bleed"],
+		"compatible_tags": ["Physical", "Melee", "Trap"],
+		"damage_more": 0.10,
+		"mana_more": 0.08,
+		"cooldown_more": 0.00,
+		"spirit_more": 0.10,
+		"status_power": 0.35,
+		"flags": ["strong_bleed"],
+		"description": "Physical, melee, and trap skills apply stronger Bleed."
 	},
-	"brutality": {
-		"name": "Brutality Support",
-		"tags": ["Support", "Physical", "Melee"],
-		"compatible_tags": ["Physical", "Melee"],
-		"damage_more": 0.20,
-		"mana_more": 0.15,
-		"cooldown_more": 0.03,
-		"spirit_more": 0.12,
-		"description": "Physical and melee skills gain direct impact."
+	"critical_focus": {
+		"name": "Critical Focus Support",
+		"tags": ["Support", "Critical"],
+		"compatible_tags": ["Projectile", "Melee", "Spell", "Trap"],
+		"damage_more": 0.05,
+		"mana_more": 0.10,
+		"cooldown_more": 0.00,
+		"spirit_more": 0.10,
+		"crit_chance_more": 0.10,
+		"flags": ["critical_focus"],
+		"description": "Higher critical pressure and better proc setups."
 	},
-	"overload": {
-		"name": "Overload Support",
-		"tags": ["Support", "Lightning", "Proc"],
-		"compatible_tags": ["Lightning"],
-		"damage_more": 0.09,
-		"mana_more": 0.20,
+	"mana_efficiency": {
+		"name": "Mana Efficiency Support",
+		"tags": ["Support", "Resource"],
+		"compatible_tags": ["Spell", "Projectile", "Area", "Melee", "Trap", "Spirit", "Aura"],
+		"damage_more": -0.04,
+		"mana_more": -0.22,
+		"cooldown_more": 0.00,
+		"spirit_more": -0.12,
+		"flags": ["efficient"],
+		"description": "Lower cost and reservation. Slightly less damage."
+	},
+	"multi_projectile": {
+		"name": "Split Projectile Support",
+		"tags": ["Support", "Projectile"],
+		"compatible_tags": ["Projectile"],
+		"damage_more": -0.18,
+		"mana_more": 0.24,
 		"cooldown_more": 0.02,
-		"spirit_more": 0.16,
-		"flags": ["overload_proc"],
-		"description": "Lightning skills gain high proc pressure."
+		"spirit_more": 0.18,
+		"extra_projectiles": 2,
+		"flags": ["split_projectile"],
+		"description": "Projectile skills fire extra side projectiles at reduced damage."
 	}
 }
 
@@ -212,8 +236,8 @@ const SPIRIT_GEMS: Dictionary = {
 		"base_reservation": 10,
 		"base_sockets": 2,
 		"max_sockets": 6,
-		"stats": {"Mana Recovery": 0.18},
-		"description": "Reserve spirit to improve mana recovery."
+		"stats": {"Mana Recovery": 0.18, "Maximum Mana": 12.0},
+		"description": "Reserve Spirit to improve mana recovery and maximum mana."
 	},
 	"vitality": {
 		"name": "Vitality",
@@ -222,18 +246,19 @@ const SPIRIT_GEMS: Dictionary = {
 		"base_reservation": 15,
 		"base_sockets": 2,
 		"max_sockets": 6,
-		"stats": {"Maximum Life": 25.0},
-		"description": "Reserve spirit to gain maximum life."
+		"stats": {"Maximum Life": 28.0},
+		"description": "Reserve Spirit to gain maximum life."
 	},
 	"emberskin": {
 		"name": "Emberskin",
-		"effect": "Fire Damage",
+		"effect": "Fire Damage / Burn",
 		"tags": ["Spirit", "Aura", "Fire"],
 		"base_reservation": 20,
 		"base_sockets": 2,
 		"max_sockets": 6,
 		"stats": {"Fire Damage": 0.14},
-		"description": "Reserve spirit to improve fire damage."
+		"flags": ["aura_burn_boost"],
+		"description": "Reserve Spirit to improve Fire damage and Burn-oriented builds."
 	},
 	"storm_focus": {
 		"name": "Storm Focus",
@@ -243,27 +268,30 @@ const SPIRIT_GEMS: Dictionary = {
 		"base_sockets": 2,
 		"max_sockets": 6,
 		"stats": {"Lightning Damage": 0.14},
-		"description": "Reserve spirit to improve lightning damage."
+		"flags": ["aura_chain_boost"],
+		"description": "Reserve Spirit to improve Lightning damage and chain pressure."
 	},
 	"void_whisper": {
 		"name": "Void Whisper",
-		"effect": "Void Damage",
+		"effect": "Void Damage / Curse",
 		"tags": ["Spirit", "Aura", "Void"],
 		"base_reservation": 20,
 		"base_sockets": 2,
 		"max_sockets": 6,
 		"stats": {"Void Damage": 0.14},
-		"description": "Reserve spirit to improve void damage."
+		"flags": ["aura_curse_boost"],
+		"description": "Reserve Spirit to improve Void damage and curse-driven builds."
 	},
 	"war_banner": {
 		"name": "War Banner",
-		"effect": "Physical Damage",
+		"effect": "Melee / Physical",
 		"tags": ["Spirit", "Aura", "Physical", "Melee"],
-		"base_reservation": 20,
+		"base_reservation": 18,
 		"base_sockets": 2,
 		"max_sockets": 6,
-		"stats": {"Physical Damage": 0.12, "Global Damage": 0.04},
-		"description": "Reserve spirit to improve physical pressure."
+		"stats": {"Physical Damage": 0.12, "Maximum Life": 10.0},
+		"flags": ["aura_bleed_boost"],
+		"description": "Reserve Spirit to improve close-combat and bleed-oriented builds."
 	}
 }
 
@@ -295,11 +323,10 @@ static func support_compatible_with_tags(support_id: String, target_tags: Array)
 			return true
 	return false
 
-static func name_for_active(gem_id: String) -> String:
-	return str(active_data(gem_id).get("name", gem_id.capitalize()))
-
-static func name_for_support(gem_id: String) -> String:
-	return str(support_data(gem_id).get("name", gem_id.capitalize()))
-
-static func name_for_spirit(gem_id: String) -> String:
-	return str(spirit_data(gem_id).get("name", gem_id.capitalize()))
+static func compatible_support_ids_for_tags(target_tags: Array) -> Array:
+	var result: Array = []
+	for support_id_value: Variant in support_ids():
+		var support_id: String = str(support_id_value)
+		if support_compatible_with_tags(support_id, target_tags):
+			result.append(support_id)
+	return result

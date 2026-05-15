@@ -29,28 +29,44 @@ static func effective_skill_data(state: RVGameState, skill_name: String) -> Dict
 		return {}
 	var skill_data: Dictionary = RVSkillGemSystem.get_supported_skill_data(state, skill_name, base_data).duplicate(true)
 	var tags: Array = skill_data.get("tags", RVSkillDB.tags(skill_name)).duplicate(true)
-	var flags: Array[String] = RVItemDB.build_flags_from_equipped(state)
-	if skill_name == "Fireball" and flags.has("fireball_void_conversion"):
+	var flags: Array = skill_data.get("flags", RVSkillDB.flags(skill_name)).duplicate(true)
+	var equipped_flags: Array[String] = RVItemDB.build_flags_from_equipped(state)
+
+	if skill_name == "Fireball" and equipped_flags.has("fireball_void_conversion"):
 		_add_tag(tags, "Void")
+		_add_tag(flags, "inflicts_curse")
 		skill_data["damage"] = float(skill_data.get("damage", 10.0)) * 1.08
-	if skill_name == "Cleave" and flags.has("cleave_fire_conversion"):
+	if skill_name == "Cleave" and equipped_flags.has("cleave_fire_conversion"):
 		_add_tag(tags, "Fire")
-	if skill_name == "Cleave" and flags.has("cleave_larger_area"):
+		_add_tag(flags, "inflicts_burn")
+	if skill_name == "Cleave" and equipped_flags.has("cleave_larger_area"):
 		skill_data["radius"] = float(skill_data.get("radius", 76.0)) * 1.22
-	if skill_name == "Blade Trap" and flags.has("blade_trap_void_conversion"):
+	if skill_name == "Blade Trap" and equipped_flags.has("blade_trap_void_conversion"):
 		_add_tag(tags, "Void")
+		_add_tag(flags, "inflicts_curse")
 		skill_data["damage"] = float(skill_data.get("damage", 10.0)) * 1.06
-	if skill_name == "Void Rift" and flags.has("void_rift_larger"):
+	if skill_name == "Void Rift" and equipped_flags.has("void_rift_larger"):
 		skill_data["radius"] = float(skill_data.get("radius", 92.0)) * 1.28
-	if skill_name == "Void Rift" and flags.has("void_rift_cheaper"):
+	if skill_name == "Void Rift" and equipped_flags.has("void_rift_cheaper"):
 		skill_data["mana_cost"] = float(skill_data.get("mana_cost", 10.0)) * 0.82
-	if skill_name == "Storm Lance" and flags.has("storm_lance_cold_conversion"):
+	if skill_name == "Storm Lance" and equipped_flags.has("storm_lance_cold_conversion"):
 		_add_tag(tags, "Cold")
-	if skill_name == "Storm Lance" and flags.has("storm_lance_extra_radius"):
+		_add_tag(flags, "inflicts_freeze")
+	if skill_name == "Storm Lance" and equipped_flags.has("storm_lance_extra_radius"):
 		skill_data["radius"] = float(skill_data.get("radius", 6.0)) + 3.0
-	if flags.has("support_gem_resonance"):
+	if equipped_flags.has("support_gem_resonance"):
 		skill_data["damage"] = float(skill_data.get("damage", 10.0)) * 1.06
+
+	# Spirit auras add identity flags without needing hidden item text.
+	for spirit_gem: Dictionary in state.spirit_gem_inventory:
+		if not bool(spirit_gem.get("enabled", false)):
+			continue
+		var spirit_data: Dictionary = RVSkillGemDB.spirit_data(str(spirit_gem.get("gem_id", "")))
+		for flag_value: Variant in spirit_data.get("flags", []):
+			_add_tag(flags, str(flag_value))
+
 	skill_data["tags"] = tags
+	skill_data["flags"] = flags
 	return skill_data
 
 static func skill_damage(state: RVGameState, skill_name: String) -> float:
@@ -83,12 +99,32 @@ static func skill_damage(state: RVGameState, skill_name: String) -> float:
 static func toggle_skill_loadout(state: RVGameState, skill_name: String) -> void:
 	for i: int in range(state.skill_gem_inventory.size()):
 		var gem: Dictionary = state.skill_gem_inventory[i]
-		if str(gem.get("skill_id", "")) == skill_name:
+		if str(gem.get("type", "active")) == "active" and str(gem.get("skill_id", "")) == skill_name:
 			state.skill_gem_cursor = i
 			RVSkillGemSystem.toggle_selected_active_gem_equipped(state)
 			return
 	state.add_notice("No skill gem for " + skill_name)
 
-static func _add_tag(tags: Array, tag: String) -> void:
-	if not tags.has(tag):
-		tags.append(tag)
+static func skill_summary(state: RVGameState, skill_name: String) -> String:
+	var data: Dictionary = effective_skill_data(state, skill_name)
+	if data.is_empty():
+		return skill_name + "\nNo data."
+	var text: String = skill_name + "\n"
+	text += str(data.get("identity", "")) + "\n"
+	text += "Damage: " + str(snapped(skill_damage(state, skill_name), 0.1)) + "\n"
+	text += "Mana: " + str(snapped(float(data.get("mana_cost", 0.0)), 0.1)) + "  Cooldown: " + str(snapped(float(data.get("cooldown", 0.0)), 0.01)) + "\n"
+	text += "Tags: " + ", ".join(PackedStringArray(_string_array(data.get("tags", [])))) + "\n"
+	var flags: Array = data.get("flags", [])
+	if not flags.is_empty():
+		text += "Effects: " + ", ".join(PackedStringArray(_string_array(flags))) + "\n"
+	return text
+
+static func _string_array(values: Array) -> Array[String]:
+	var result: Array[String] = []
+	for value: Variant in values:
+		result.append(str(value))
+	return result
+
+static func _add_tag(values: Array, value: String) -> void:
+	if value != "" and not values.has(value):
+		values.append(value)
