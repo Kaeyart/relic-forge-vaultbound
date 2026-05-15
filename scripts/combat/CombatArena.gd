@@ -49,6 +49,9 @@ func spawn_room(state: RVGameState) -> void:
 	state.room_reward_claimed = false
 	state.room_exit_ready = false
 	state.room_objective = "Defeat all enemies."
+	if str(activity.get("kind", "")) == "map":
+		_spawn_map_room(state)
+		return
 	var player_spawn: Marker2D = spawn_points_root.get_node_or_null("PlayerSpawn") as Marker2D
 	if player_spawn != null:
 		state.player_pos = player_spawn.global_position
@@ -70,6 +73,48 @@ func spawn_room(state: RVGameState) -> void:
 		var enemy_data: Dictionary = RVEnemyDB.make(enemy_type, spawn_pos, threat, index)
 		_spawn_enemy(enemy_data)
 	state.add_notice("Room " + str(state.room_index) + " - Clear enemies")
+
+
+func _spawn_map_room(state: RVGameState) -> void:
+	_clear_children(enemies_root)
+	_clear_children(projectiles_root)
+	room_clear = false
+	reward_claimed = false
+	_set_reward_visible(false)
+	_set_exit_visible(false)
+	state.room_reward_ready = false
+	state.room_reward_claimed = false
+	state.room_exit_ready = false
+	var map_item: Dictionary = Dictionary(activity.get("map", {}))
+	state.room_objective = "Clear the map and kill: " + str(map_item.get("boss_name", "Map Boss"))
+	var player_spawn: Marker2D = spawn_points_root.get_node_or_null("PlayerSpawn") as Marker2D
+	if player_spawn != null:
+		state.player_pos = player_spawn.global_position
+	var threat: float = float(activity.get("threat", 1.0))
+	var pack_size: float = float(map_item.get("pack_size", 1.0))
+	var count: int = max(10, int(12.0 * pack_size + float(state.level) * 0.35))
+	var spawn_points: Array[Node] = _enemy_spawn_points()
+	var enemy_mix: Array = Array(map_item.get("enemy_mix", ["Grunt", "Archer", "Spitter", "Brute"]))
+	for index: int in range(count):
+		var spawn_pos: Vector2 = Vector2(640.0, 360.0)
+		if spawn_points.size() > 0:
+			var marker: Node2D = spawn_points[index % spawn_points.size()] as Node2D
+			spawn_pos = marker.global_position
+		var enemy_type: String = str(enemy_mix[index % max(1, enemy_mix.size())])
+		var enemy_data: Dictionary = RVEnemyDB.make(enemy_type, spawn_pos, threat, index)
+		_spawn_enemy(enemy_data)
+	var boss_pos: Vector2 = Vector2(640.0, 180.0)
+	if spawn_points.size() > 0:
+		boss_pos = (spawn_points[spawn_points.size() - 1] as Node2D).global_position
+	var boss_data: Dictionary = RVEnemyDB.make("Brute", boss_pos, threat * 2.35, 9999)
+	boss_data["type"] = str(map_item.get("boss_name", "Map Boss"))
+	boss_data["role"] = "brute"
+	boss_data["radius"] = 34.0
+	boss_data["hp"] = float(boss_data.get("hp", 200.0)) * 2.2
+	boss_data["max_hp"] = boss_data["hp"]
+	boss_data["is_map_boss"] = true
+	_spawn_enemy(boss_data)
+	state.add_notice("Map opened: " + str(map_item.get("name", "Map")))
 
 func update_combat(state: RVGameState, player: RVPlayerActor, delta: float) -> void:
 	if not active:
@@ -97,7 +142,10 @@ func interact(state: RVGameState) -> void:
 		return
 	if state.room_reward_ready and not state.room_reward_claimed:
 		if state.player_pos.distance_to(reward_chest.global_position) <= 82.0:
-			RVProgressionSystem.award_room(state)
+			if str(activity.get("kind", "")) == "map":
+				RVMapSystem.award_map_boss_loot(state, Dictionary(activity.get("map", {})))
+			else:
+				RVProgressionSystem.award_room(state)
 			state.room_reward_ready = false
 			state.room_reward_claimed = true
 			state.room_exit_ready = true

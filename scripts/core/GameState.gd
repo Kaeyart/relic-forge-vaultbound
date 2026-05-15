@@ -96,6 +96,9 @@ var equipped: Dictionary = {
 }
 var backpack: Array[Dictionary] = []
 var stash: Array[Dictionary] = []
+var map_stash: Array[Dictionary] = []
+var map_cursor: int = 0
+var pending_start_activity: Dictionary = {}
 var inventory_cursor: int = 0
 var stash_cursor: int = 0
 var equipment_cursor: int = 0
@@ -141,6 +144,8 @@ func ensure_defaults() -> void:
 	inventory_cursor = clamp(inventory_cursor, 0, max(0, backpack.size() - 1))
 	stash_cursor = clamp(stash_cursor, 0, max(0, stash.size() - 1))
 	equipment_cursor = clamp(equipment_cursor, 0, 9)
+	RVMapSystem.ensure_defaults(self)
+	map_cursor = clamp(map_cursor, 0, max(0, map_stash.size() - 1))
 	skill_gem_cursor = clamp(skill_gem_cursor, 0, max(0, skill_gem_inventory.size() - 1))
 	support_gem_cursor = clamp(support_gem_cursor, 0, max(0, support_gem_inventory.size() - 1))
 	spirit_gem_cursor = clamp(spirit_gem_cursor, 0, max(0, spirit_gem_inventory.size() - 1))
@@ -375,6 +380,8 @@ func to_save_dict() -> Dictionary:
 		"equipped": equipped,
 		"backpack": backpack,
 		"stash": stash,
+		"map_stash": map_stash,
+		"map_cursor": map_cursor,
 		"rooms_cleared": rooms_cleared,
 		"kills": kills,
 		"deaths": deaths,
@@ -447,6 +454,12 @@ func apply_save_dict(data: Dictionary) -> void:
 		for stash_value: Variant in data.get("stash", []):
 			if typeof(stash_value) == TYPE_DICTIONARY:
 				stash.append(stash_value)
+	if typeof(data.get("map_stash", [])) == TYPE_ARRAY:
+		map_stash.clear()
+		for map_value: Variant in data.get("map_stash", []):
+			if typeof(map_value) == TYPE_DICTIONARY:
+				map_stash.append(map_value)
+	map_cursor = int(data.get("map_cursor", map_cursor))
 
 	rooms_cleared = int(data.get("rooms_cleared", rooms_cleared))
 	kills = int(data.get("kills", kills))

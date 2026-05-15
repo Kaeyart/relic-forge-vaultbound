@@ -12,7 +12,7 @@ extends Node2D
 # - InteractionArea/CollisionShape2D: Area2D + CollisionShape2D
 
 @export var station_id: String = ""
-@export_enum("activity", "inventory", "crafting", "passive", "skills", "stash", "character", "training", "none") var station_type: String = "activity"
+@export_enum("activity", "inventory", "crafting", "passive", "skills", "stash", "character", "training", "map_device", "none") var station_type: String = "activity"
 @export var display_name: String = "Station"
 @export var activity_id: String = ""
 @export_multiline var prompt_text: String = "E - Interact"

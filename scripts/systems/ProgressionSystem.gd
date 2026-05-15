@@ -8,6 +8,8 @@ static func award_kill(state: RVGameState) -> void:
 	state.gold += 2 + state.room_index
 	state.materials["embers"] = int(state.materials.get("embers", 0)) + 1
 	state.add_xp(12.0 + float(state.room_index) * 2.0)
+	if str(state.current_activity.get("kind", "")) == "map":
+		RVMapSystem.award_map_enemy_drop(state, max(1, state.level + state.room_index))
 
 static func award_room(state: RVGameState) -> void:
 	state.rooms_cleared += 1
@@ -16,6 +18,8 @@ static func award_room(state: RVGameState) -> void:
 	state.add_xp(55.0 + float(state.room_index) * 8.0)
 	var drop: Dictionary = RVItemDB.generate_drop(state, max(1, state.room_index))
 	state.backpack.append(drop)
+	if state.rng.randf() < 0.30:
+		RVMapSystem.add_random_map_drop(state, max(1, state.level + state.room_index), "room")
 	var notice: String = "Room Complete - Item Added"
 	# Higher chance until the skill gem loop is proven in real play.
 	if state.rng.randf() < 0.78:
