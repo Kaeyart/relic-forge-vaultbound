@@ -18,7 +18,7 @@ static func award_room(state: RVGameState) -> void:
 	state.backpack.append(drop)
 	var notice: String = "Room Complete - Item Added"
 
-	if state.rng.randf() < 0.55:
+	if state.rng.randf() < 0.85:
 		var gem_notice: String = RVSkillGemSystem.award_random_gem_drop(state, max(1, state.room_index))
 		notice += " · " + gem_notice
 

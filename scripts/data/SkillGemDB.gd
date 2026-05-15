@@ -1,11 +1,14 @@
 class_name RVSkillGemDB
 extends RefCounted
 
-# Original ARPG-style gem database for Relic Forge.
-# Three gem types:
-# - active skill gems: grant usable skills and can hold support gems
-# - support gems: modify active/spirit gems when socketed
-# - spirit gems: reserve spirit for passive effects and can also hold supports
+# Relic Forge: Vaultbound
+# Patch 042: Uncut gem crafting model.
+# Design shape:
+# - uncut active gems drop as white craftable skill gems
+# - uncut support gems drop as white craftable support gems
+# - uncut spirit gems drop as white craftable reservation gems
+# - active/spirit gems start with 2 support sockets and can reach 6
+# - supports socket into active or spirit gems; spirit supports increase reservation
 
 const ACTIVE_GEMS: Dictionary = {
 	"fireball": {
@@ -16,7 +19,7 @@ const ACTIVE_GEMS: Dictionary = {
 		"max_level": 20,
 		"base_sockets": 2,
 		"max_sockets": 6,
-		"description": "Launch a burning projectile."
+		"description": "Launch a burning projectile. Clear, direct, and easy to build around."
 	},
 	"cleave": {
 		"name": "Cleave",
@@ -26,7 +29,7 @@ const ACTIVE_GEMS: Dictionary = {
 		"max_level": 20,
 		"base_sockets": 2,
 		"max_sockets": 6,
-		"description": "Swing in a wide arc."
+		"description": "Swing in a wide arc. A simple melee core that can become bleed, fire, or proc based."
 	},
 	"frost_nova": {
 		"name": "Frost Nova",
@@ -36,7 +39,7 @@ const ACTIVE_GEMS: Dictionary = {
 		"max_level": 20,
 		"base_sockets": 2,
 		"max_sockets": 6,
-		"description": "Release a freezing burst around you."
+		"description": "Release a freezing burst around you. Strong control and area identity."
 	},
 	"storm_lance": {
 		"name": "Storm Lance",
@@ -46,7 +49,7 @@ const ACTIVE_GEMS: Dictionary = {
 		"max_level": 20,
 		"base_sockets": 2,
 		"max_sockets": 6,
-		"description": "Fire a fast piercing lightning lance."
+		"description": "Fire a fast lightning lance. Designed for chaining, crit, and overload builds."
 	},
 	"void_rift": {
 		"name": "Void Rift",
@@ -56,7 +59,7 @@ const ACTIVE_GEMS: Dictionary = {
 		"max_level": 20,
 		"base_sockets": 2,
 		"max_sockets": 6,
-		"description": "Open a damaging rift at the target point."
+		"description": "Open a damaging rift at the target point. Built for curse, pull, and delayed damage."
 	},
 	"blade_trap": {
 		"name": "Blade Trap",
@@ -66,56 +69,77 @@ const ACTIVE_GEMS: Dictionary = {
 		"max_level": 20,
 		"base_sockets": 2,
 		"max_sockets": 6,
-		"description": "Place a trap that cuts enemies in an area."
+		"description": "Place a trap that cuts enemies in an area. Built for setup, mechanical control, and trap chains."
 	}
 }
 
 const SUPPORT_GEMS: Dictionary = {
 	"controlled_power": {
 		"name": "Controlled Power Support",
-		"tags": ["Support"],
+		"tags": ["Support", "Damage"],
 		"compatible_tags": ["Spell", "Projectile", "Area", "Melee", "Trap"],
 		"damage_more": 0.18,
 		"mana_more": 0.14,
 		"cooldown_more": 0.00,
 		"spirit_more": 0.12,
-		"description": "More damage, higher cost."
+		"description": "More damage, higher cost. Clean raw power."
 	},
-	"swift_cast": {
-		"name": "Swift Cast Support",
-		"tags": ["Support", "Spell"],
-		"compatible_tags": ["Spell"],
-		"damage_more": -0.06,
-		"mana_more": 0.08,
-		"cooldown_more": -0.16,
-		"spirit_more": 0.10,
-		"description": "Lower cooldown, slightly less damage."
-	},
-	"chain": {
-		"name": "Chain Support",
-		"tags": ["Support", "Projectile"],
-		"compatible_tags": ["Projectile"],
-		"damage_more": -0.12,
-		"mana_more": 0.22,
-		"cooldown_more": 0.04,
-		"spirit_more": 0.18,
-		"flags": ["chain_plus"],
-		"description": "Projectile skills gain chaining potential."
+	"efficient_casting": {
+		"name": "Efficiency Support",
+		"tags": ["Support", "Resource"],
+		"compatible_tags": ["Spell", "Projectile", "Area", "Melee", "Trap", "Aura", "Spirit"],
+		"damage_more": -0.04,
+		"mana_more": -0.18,
+		"cooldown_more": 0.00,
+		"spirit_more": -0.10,
+		"description": "Lower cost/reservation, slightly less damage."
 	},
 	"area_expansion": {
 		"name": "Area Expansion Support",
 		"tags": ["Support", "Area"],
-		"compatible_tags": ["Area"],
+		"compatible_tags": ["Area", "Aura", "Spirit"],
 		"damage_more": -0.08,
 		"mana_more": 0.18,
 		"cooldown_more": 0.08,
 		"spirit_more": 0.16,
 		"radius_more": 0.25,
-		"description": "Area skills become larger."
+		"description": "Area effects become larger."
+	},
+	"chain_reaction": {
+		"name": "Chain Reaction Support",
+		"tags": ["Support", "Projectile", "Proc"],
+		"compatible_tags": ["Projectile", "Lightning", "Fire", "Spell"],
+		"damage_more": -0.12,
+		"mana_more": 0.22,
+		"cooldown_more": 0.04,
+		"spirit_more": 0.18,
+		"flags": ["chain_plus"],
+		"description": "Projectile skills gain chain/proc pressure."
+	},
+	"critical_focus": {
+		"name": "Critical Focus Support",
+		"tags": ["Support", "Critical"],
+		"compatible_tags": ["Projectile", "Melee", "Spell", "Trap"],
+		"damage_more": 0.10,
+		"mana_more": 0.12,
+		"cooldown_more": 0.00,
+		"spirit_more": 0.14,
+		"stats": {"Critical Chance": 0.04},
+		"description": "Adds critical scaling pressure."
+	},
+	"mana_efficiency": {
+		"name": "Mana Efficiency Support",
+		"tags": ["Support", "Mana"],
+		"compatible_tags": ["Spell", "Projectile", "Area", "Melee", "Trap", "Aura", "Spirit"],
+		"damage_more": -0.08,
+		"mana_more": -0.25,
+		"cooldown_more": 0.00,
+		"spirit_more": -0.12,
+		"description": "Reduces mana pressure and reservation."
 	},
 	"burning": {
 		"name": "Burning Support",
-		"tags": ["Support", "Fire"],
+		"tags": ["Support", "Fire", "Burn"],
 		"compatible_tags": ["Fire"],
 		"damage_more": 0.12,
 		"mana_more": 0.10,
@@ -126,7 +150,7 @@ const SUPPORT_GEMS: Dictionary = {
 	},
 	"frostbite": {
 		"name": "Frostbite Support",
-		"tags": ["Support", "Cold"],
+		"tags": ["Support", "Cold", "Freeze"],
 		"compatible_tags": ["Cold"],
 		"damage_more": 0.10,
 		"mana_more": 0.12,
@@ -134,16 +158,6 @@ const SUPPORT_GEMS: Dictionary = {
 		"spirit_more": 0.12,
 		"flags": ["strong_freeze"],
 		"description": "Cold skills gain stronger freeze pressure."
-	},
-	"efficient_casting": {
-		"name": "Efficiency Support",
-		"tags": ["Support"],
-		"compatible_tags": ["Spell", "Projectile", "Area", "Melee", "Trap"],
-		"damage_more": -0.04,
-		"mana_more": -0.18,
-		"cooldown_more": 0.00,
-		"spirit_more": -0.10,
-		"description": "Lower cost and reservation, slightly less damage."
 	},
 	"trap_mechanism": {
 		"name": "Trap Mechanism Support",
@@ -154,13 +168,45 @@ const SUPPORT_GEMS: Dictionary = {
 		"cooldown_more": 0.04,
 		"spirit_more": 0.15,
 		"flags": ["trap_damage"],
-		"description": "Improves trap and placed area skills."
+		"description": "Improves trap and placed-area skills."
+	},
+	"void_tether": {
+		"name": "Void Tether Support",
+		"tags": ["Support", "Void", "Curse"],
+		"compatible_tags": ["Void", "Area", "Spell"],
+		"damage_more": 0.11,
+		"mana_more": 0.14,
+		"cooldown_more": 0.04,
+		"spirit_more": 0.15,
+		"flags": ["void_curse_pressure"],
+		"description": "Void skills gain stronger curse/control identity."
+	},
+	"brutality": {
+		"name": "Brutality Support",
+		"tags": ["Support", "Physical", "Melee"],
+		"compatible_tags": ["Physical", "Melee"],
+		"damage_more": 0.20,
+		"mana_more": 0.15,
+		"cooldown_more": 0.03,
+		"spirit_more": 0.12,
+		"description": "Physical and melee skills gain direct impact."
+	},
+	"overload": {
+		"name": "Overload Support",
+		"tags": ["Support", "Lightning", "Proc"],
+		"compatible_tags": ["Lightning"],
+		"damage_more": 0.09,
+		"mana_more": 0.20,
+		"cooldown_more": 0.02,
+		"spirit_more": 0.16,
+		"flags": ["overload_proc"],
+		"description": "Lightning skills gain high proc pressure."
 	}
 }
 
 const SPIRIT_GEMS: Dictionary = {
 	"clarity": {
-		"name": "Clarity Spirit Gem",
+		"name": "Clarity",
 		"effect": "Mana Recovery",
 		"tags": ["Spirit", "Aura", "Mana"],
 		"base_reservation": 10,
@@ -170,7 +216,7 @@ const SPIRIT_GEMS: Dictionary = {
 		"description": "Reserve spirit to improve mana recovery."
 	},
 	"vitality": {
-		"name": "Vitality Spirit Gem",
+		"name": "Vitality",
 		"effect": "Maximum Life",
 		"tags": ["Spirit", "Aura", "Life"],
 		"base_reservation": 15,
@@ -179,8 +225,8 @@ const SPIRIT_GEMS: Dictionary = {
 		"stats": {"Maximum Life": 25.0},
 		"description": "Reserve spirit to gain maximum life."
 	},
-	"herald_of_ash": {
-		"name": "Herald of Ash Spirit Gem",
+	"emberskin": {
+		"name": "Emberskin",
 		"effect": "Fire Damage",
 		"tags": ["Spirit", "Aura", "Fire"],
 		"base_reservation": 20,
@@ -190,7 +236,7 @@ const SPIRIT_GEMS: Dictionary = {
 		"description": "Reserve spirit to improve fire damage."
 	},
 	"storm_focus": {
-		"name": "Storm Focus Spirit Gem",
+		"name": "Storm Focus",
 		"effect": "Lightning Damage",
 		"tags": ["Spirit", "Aura", "Lightning"],
 		"base_reservation": 20,
@@ -198,6 +244,26 @@ const SPIRIT_GEMS: Dictionary = {
 		"max_sockets": 6,
 		"stats": {"Lightning Damage": 0.14},
 		"description": "Reserve spirit to improve lightning damage."
+	},
+	"void_whisper": {
+		"name": "Void Whisper",
+		"effect": "Void Damage",
+		"tags": ["Spirit", "Aura", "Void"],
+		"base_reservation": 20,
+		"base_sockets": 2,
+		"max_sockets": 6,
+		"stats": {"Void Damage": 0.14},
+		"description": "Reserve spirit to improve void damage."
+	},
+	"war_banner": {
+		"name": "War Banner",
+		"effect": "Physical Damage",
+		"tags": ["Spirit", "Aura", "Physical", "Melee"],
+		"base_reservation": 20,
+		"base_sockets": 2,
+		"max_sockets": 6,
+		"stats": {"Physical Damage": 0.12, "Global Damage": 0.04},
+		"description": "Reserve spirit to improve physical pressure."
 	}
 }
 
@@ -224,7 +290,16 @@ static func support_compatible_with_tags(support_id: String, target_tags: Array)
 	if support.is_empty():
 		return false
 	var compatible_tags: Array = support.get("compatible_tags", [])
-	for tag: Variant in target_tags:
-		if compatible_tags.has(str(tag)):
+	for tag_value: Variant in target_tags:
+		if compatible_tags.has(str(tag_value)):
 			return true
 	return false
+
+static func name_for_active(gem_id: String) -> String:
+	return str(active_data(gem_id).get("name", gem_id.capitalize()))
+
+static func name_for_support(gem_id: String) -> String:
+	return str(support_data(gem_id).get("name", gem_id.capitalize()))
+
+static func name_for_spirit(gem_id: String) -> String:
+	return str(spirit_data(gem_id).get("name", gem_id.capitalize()))

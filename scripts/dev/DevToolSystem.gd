@@ -64,15 +64,13 @@ static func clear_backpack(state: RVGameState) -> void:
 	state.add_notice("Dev: backpack cleared")
 
 static func grant_all_gems(state: RVGameState) -> void:
-	if state == null: return
-	var active_names: Array = ["Fireball", "Cleave", "Frost Nova", "Storm Lance", "Void Rift", "Blade Trap"]
-	for skill_name in active_names:
-		state.skill_gem_inventory.append({"id": skill_name.to_snake_case(), "name": skill_name, "skill": skill_name, "level": max(1, state.level), "socket_cap": 2, "supports": [], "tags": [skill_name, "Skill"]})
-	for support_name in ["More Damage", "Faster Cast", "Area Increase", "Chain", "Burn", "Cooldown Reduction", "Mana Efficiency"]:
-		state.support_gem_inventory.append({"id": support_name.to_snake_case(), "name": support_name, "level": 1, "tags": ["Support"]})
-	for spirit_name in ["Flame Aura", "Storm Reserve", "Void Pact"]:
-		state.spirit_gem_inventory.append({"id": spirit_name.to_snake_case(), "name": spirit_name, "level": 1, "socket_cap": 2, "supports": [], "reservation": 20, "tags": ["Spirit"]})
-	state.add_notice("Dev: gem bundle added")
+	state.skill_gem_inventory.append(RVSkillGemSystem.make_uncut_active_gem(state, max(1, state.level)))
+	state.skill_gem_inventory.append(RVSkillGemSystem.make_uncut_active_gem(state, max(1, state.level)))
+	state.support_gem_inventory.append(RVSkillGemSystem.make_uncut_support_gem(state, max(1, state.level)))
+	state.support_gem_inventory.append(RVSkillGemSystem.make_uncut_support_gem(state, max(1, state.level)))
+	state.spirit_gem_inventory.append(RVSkillGemSystem.make_uncut_spirit_gem(state, max(1, state.level)))
+	state.add_notice("Dev: uncut gem bundle added")
+
 
 static func improve_all_socket_caps(state: RVGameState) -> void:
 	if state == null: return

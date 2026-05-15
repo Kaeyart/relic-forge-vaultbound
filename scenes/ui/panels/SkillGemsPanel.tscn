@@ -2,161 +2,209 @@
 
 [ext_resource type="Script" path="res://scripts/ui/panels/SkillGemsPanel.gd" id="1"]
 
-[node name="SkillGemsPanel" type="PanelContainer"]
-layout_mode = 0
-offset_left = 150.0
-offset_top = 72.0
-offset_right = 1130.0
-offset_bottom = 665.0
+[node name="SkillGemsPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
 script = ExtResource("1")
-title = "Skill Gems"
 
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.015, 0.014, 0.018, 0.91)
+
+[node name="MainFrame" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -600.0
+offset_top = -330.0
+offset_right = 600.0
+offset_bottom = 330.0
+
+[node name="RootMargin" type="MarginContainer" parent="MainFrame"]
 layout_mode = 2
 theme_override_constants/margin_left = 18
-theme_override_constants/margin_top = 18
+theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 18
-theme_override_constants/margin_bottom = 18
+theme_override_constants/margin_bottom = 16
 
-[node name="RootVBox" type="VBoxContainer" parent="Margin"]
+[node name="RootVBox" type="VBoxContainer" parent="MainFrame/RootMargin"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Header" type="HBoxContainer" parent="Margin/RootVBox"]
+[node name="TitleRow" type="HBoxContainer" parent="MainFrame/RootMargin/RootVBox"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="TitleLabel" type="Label" parent="Margin/RootVBox/Header"]
+[node name="Title" type="Label" parent="MainFrame/RootMargin/RootVBox/TitleRow"]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Skill Gems"
+text = "SKILL GEM FORGE"
+theme_override_font_sizes/font_size = 22
 
-[node name="SummaryLabel" type="Label" parent="Margin/RootVBox/Header"]
+[node name="HelpLabel" type="Label" parent="MainFrame/RootMargin/RootVBox/TitleRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = ""
+text = "Right-click uncut gems to choose what they become. Right-click support gems to socket them."
+horizontal_alignment = 2
 
-[node name="CloseButton" type="Button" parent="Margin/RootVBox/Header"]
+[node name="MainColumns" type="HBoxContainer" parent="MainFrame/RootMargin/RootVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="ActiveColumn" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns"]
+layout_mode = 2
+custom_minimum_size = Vector2(250, 0)
+theme_override_constants/separation = 6
+
+[node name="ActiveHeader" type="Label" parent="MainFrame/RootMargin/RootVBox/MainColumns/ActiveColumn"]
+layout_mode = 2
+text = "ACTIVE SKILL GEMS"
+theme_override_font_sizes/font_size = 15
+
+[node name="ActiveScroll" type="ScrollContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/ActiveColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="ActiveGemList" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/ActiveColumn/ActiveScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="SupportColumn" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns"]
+layout_mode = 2
+custom_minimum_size = Vector2(250, 0)
+theme_override_constants/separation = 6
+
+[node name="SupportHeader" type="Label" parent="MainFrame/RootMargin/RootVBox/MainColumns/SupportColumn"]
+layout_mode = 2
+text = "SUPPORT GEMS"
+theme_override_font_sizes/font_size = 15
+
+[node name="SupportScroll" type="ScrollContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/SupportColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="SupportGemList" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/SupportColumn/SupportScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="SpiritColumn" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns"]
+layout_mode = 2
+custom_minimum_size = Vector2(250, 0)
+theme_override_constants/separation = 6
+
+[node name="SpiritHeader" type="Label" parent="MainFrame/RootMargin/RootVBox/MainColumns/SpiritColumn"]
+layout_mode = 2
+text = "SPIRIT / RESERVATION GEMS"
+theme_override_font_sizes/font_size = 15
+
+[node name="SpiritScroll" type="ScrollContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/SpiritColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="SpiritGemList" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/SpiritColumn/SpiritScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="DetailColumn" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="GemDetailLabel" type="RichTextLabel" parent="MainFrame/RootMargin/RootVBox/MainColumns/DetailColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+fit_content = false
+scroll_active = true
+text = "Select a gem."
+
+[node name="ChoicePanel" type="PanelContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/DetailColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+visible = false
+custom_minimum_size = Vector2(0, 220)
+
+[node name="ChoiceMargin" type="MarginContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/DetailColumn/ChoicePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="ChoiceVBox" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/DetailColumn/ChoicePanel/ChoiceMargin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ChoiceTitle" type="Label" parent="MainFrame/RootMargin/RootVBox/MainColumns/DetailColumn/ChoicePanel/ChoiceMargin/ChoiceVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Choose"
+theme_override_font_sizes/font_size = 15
+
+[node name="ChoiceScroll" type="ScrollContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/DetailColumn/ChoicePanel/ChoiceMargin/ChoiceVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="ChoiceList" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/DetailColumn/ChoicePanel/ChoiceMargin/ChoiceVBox/ChoiceScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="ActionRow" type="HBoxContainer" parent="MainFrame/RootMargin/RootVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="EquipButton" type="Button" parent="MainFrame/RootMargin/RootVBox/ActionRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Equip Skill"
+
+[node name="EnableSpiritButton" type="Button" parent="MainFrame/RootMargin/RootVBox/ActionRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Enable Spirit"
+
+[node name="RemoveSupportButton" type="Button" parent="MainFrame/RootMargin/RootVBox/ActionRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Remove Last Support"
+
+[node name="SocketPrismButton" type="Button" parent="MainFrame/RootMargin/RootVBox/ActionRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Use Socket Prism"
+
+[node name="Spacer" type="Control" parent="MainFrame/RootMargin/RootVBox/ActionRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CloseButton" type="Button" parent="MainFrame/RootMargin/RootVBox/ActionRow"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Close"
-
-[node name="Body" type="HBoxContainer" parent="Margin/RootVBox"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 12
-
-[node name="ActiveColumn" type="VBoxContainer" parent="Margin/RootVBox/Body"]
-layout_mode = 2
-custom_minimum_size = Vector2(220, 0)
-theme_override_constants/separation = 8
-
-[node name="ActiveTitle" type="Label" parent="Margin/RootVBox/Body/ActiveColumn"]
-layout_mode = 2
-text = "Active Skill Gems"
-
-[node name="ActiveScroll" type="ScrollContainer" parent="Margin/RootVBox/Body/ActiveColumn"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="ActiveGemList" type="VBoxContainer" parent="Margin/RootVBox/Body/ActiveColumn/ActiveScroll"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="SupportColumn" type="VBoxContainer" parent="Margin/RootVBox/Body"]
-layout_mode = 2
-custom_minimum_size = Vector2(220, 0)
-theme_override_constants/separation = 8
-
-[node name="SupportTitle" type="Label" parent="Margin/RootVBox/Body/SupportColumn"]
-layout_mode = 2
-text = "Support Gems"
-
-[node name="SupportScroll" type="ScrollContainer" parent="Margin/RootVBox/Body/SupportColumn"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="SupportGemList" type="VBoxContainer" parent="Margin/RootVBox/Body/SupportColumn/SupportScroll"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="SpiritColumn" type="VBoxContainer" parent="Margin/RootVBox/Body"]
-layout_mode = 2
-custom_minimum_size = Vector2(220, 0)
-theme_override_constants/separation = 8
-
-[node name="SpiritTitle" type="Label" parent="Margin/RootVBox/Body/SpiritColumn"]
-layout_mode = 2
-text = "Spirit Gems"
-
-[node name="SpiritScroll" type="ScrollContainer" parent="Margin/RootVBox/Body/SpiritColumn"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="SpiritGemList" type="VBoxContainer" parent="Margin/RootVBox/Body/SpiritColumn/SpiritScroll"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="DetailColumn" type="VBoxContainer" parent="Margin/RootVBox/Body"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 8
-
-[node name="DetailTitle" type="Label" parent="Margin/RootVBox/Body/DetailColumn"]
-layout_mode = 2
-text = "Details"
-
-[node name="DetailPanel" type="PanelContainer" parent="Margin/RootVBox/Body/DetailColumn"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="DetailMargin" type="MarginContainer" parent="Margin/RootVBox/Body/DetailColumn/DetailPanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="DetailLabel" type="Label" parent="Margin/RootVBox/Body/DetailColumn/DetailPanel/DetailMargin"]
-unique_name_in_owner = true
-layout_mode = 2
-autowrap_mode = 3
-text = ""
-
-[node name="Actions" type="HBoxContainer" parent="Margin/RootVBox"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="EquipButton" type="Button" parent="Margin/RootVBox/Actions"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Equip / Unequip Active"
-
-[node name="SocketButton" type="Button" parent="Margin/RootVBox/Actions"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Socket Support"
-
-[node name="SocketSpiritButton" type="Button" parent="Margin/RootVBox/Actions"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Support Spirit"
-
-[node name="RemoveSupportButton" type="Button" parent="Margin/RootVBox/Actions"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Remove Support"
-
-[node name="AddSocketButton" type="Button" parent="Margin/RootVBox/Actions"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Add Socket"
-
-[node name="ToggleSpiritButton" type="Button" parent="Margin/RootVBox/Actions"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Toggle Spirit"
