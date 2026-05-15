@@ -8,6 +8,8 @@ extends CanvasLayer
 @onready var prompt_label: Label = %PromptLabel
 @onready var notice_label: Label = %NoticeLabel
 @onready var notice_panel: Control = %NoticePanel
+@onready var objective_panel: Control = get_node_or_null("%ObjectivePanel") as Control
+@onready var objective_label: Label = get_node_or_null("%ObjectiveLabel") as Label
 
 func update_from_state(state: RVGameState) -> void:
 	top_status_label.text = "Lv %s  XP %s/%s  Gold %s  MP %s  Refund %s  Spirit %s/%s" % [
@@ -33,6 +35,10 @@ func update_from_state(state: RVGameState) -> void:
 
 	notice_label.text = state.notice_text
 	notice_panel.visible = state.notice_time > 0.0
+
+	if objective_panel != null and objective_label != null:
+		objective_label.text = state.room_objective
+		objective_panel.visible = state.mode == "combat" and state.room_objective != ""
 
 
 func _update_skill_bar(state: RVGameState) -> void:

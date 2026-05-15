@@ -64,12 +64,8 @@ func _update_player(delta: float) -> void:
 		move = move.normalized()
 		state.player_pos += move * state.player_speed * delta
 
-	if state.mode == "hub":
-		state.player_pos.x = clamp(state.player_pos.x, 80.0, 1200.0)
-		state.player_pos.y = clamp(state.player_pos.y, 95.0, 620.0)
-	else:
-		state.player_pos.x = clamp(state.player_pos.x, 80.0, 1200.0)
-		state.player_pos.y = clamp(state.player_pos.y, 95.0, 620.0)
+	state.player_pos.x = clamp(state.player_pos.x, 80.0, 1200.0)
+	state.player_pos.y = clamp(state.player_pos.y, 95.0, 620.0)
 
 	state.invuln = max(0.0, state.invuln - delta)
 	state.player_mana = min(state.max_mana, state.player_mana + 14.0 * delta)
@@ -115,6 +111,11 @@ func _handle_key(keycode: int) -> void:
 				var activity: Dictionary = hub.interact_primary(state)
 				if not activity.is_empty():
 					_start_activity(activity)
+			elif state.mode == "combat":
+				combat.interact(state)
+		KEY_X:
+			if state.mode == "hub" and hub.has_method("interact_secondary"):
+				hub.call("interact_secondary", state)
 		KEY_I:
 			state.toggle_panel("inventory")
 		KEY_C:
@@ -133,8 +134,11 @@ func _handle_key(keycode: int) -> void:
 			if state.mode == "combat":
 				combat.cast_selected_skill(state, get_global_mouse_position())
 		KEY_Q:
-			if state.mode == "combat":
+			if state.mode == "combat" and state.active_skills.size() > 0:
 				state.selected_skill_index = wrapi(state.selected_skill_index - 1, 0, state.active_skills.size())
+		KEY_R:
+			if state.mode == "combat" and state.active_skills.size() > 0:
+				state.selected_skill_index = wrapi(state.selected_skill_index + 1, 0, state.active_skills.size())
 		KEY_F:
 			if state.panel_mode == "crafting":
 				RVBuildcraftSystem.handle_crafting_key(state, KEY_F)
@@ -171,5 +175,4 @@ func _on_combat_finished() -> void:
 
 
 func _on_player_died() -> void:
-	state.deaths += 1
 	_return_to_hub("You died")

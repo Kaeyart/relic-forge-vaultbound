@@ -4,6 +4,16 @@ extends RefCounted
 const SAVE_VERSION: int = 21
 
 var mode: String = "hub"
+
+# Patch 024: scene-authored combat room flow.
+var combat_room_layout: Dictionary = {}
+var room_objective: String = ""
+var room_reward_ready: bool = false
+var room_reward_claimed: bool = false
+var room_exit_ready: bool = false
+var reward_pos: Vector2 = Vector2(640.0, 285.0)
+var exit_pos: Vector2 = Vector2(640.0, 600.0)
+
 var panel_mode: String = ""
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
@@ -181,6 +191,10 @@ func get_selected_skill() -> String:
 
 
 func enter_hub() -> void:
+	room_objective = ""
+	room_reward_ready = false
+	room_reward_claimed = false
+	room_exit_ready = false
 	mode = "hub"
 	current_activity = {}
 	room_index = 0
@@ -190,6 +204,10 @@ func enter_hub() -> void:
 
 
 func enter_combat(activity: Dictionary) -> void:
+	room_objective = "Defeat all enemies."
+	room_reward_ready = false
+	room_reward_claimed = false
+	room_exit_ready = false
 	mode = "combat"
 	current_activity = activity.duplicate(true)
 	room_index = 1
