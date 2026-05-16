@@ -1,924 +1,2220 @@
-[gd_scene load_steps=21 format=3]
-[ext_resource type="Script" path="res://scripts/ui/panels/SkillGemsPanel.gd" id="1"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_01_main_window_panel.png" id="2"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_08_list_panel_rows.png" id="3"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_04_detail_panel_tall.png" id="4"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_05_info_panel_wide.png" id="5"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_02_medium_panel_top.png" id="6"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_03_medium_panel_bottom.png" id="7"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_06_header_bar_skull.png" id="8"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_03_02_button_normal.png" id="9"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_03_05_button_hover.png" id="10"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_09_socket_row_frame.png" id="11"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_02_01_gem_slot_empty.png" id="12"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_02_03_gem_slot_selected.png" id="13"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_02_05_gem_slot_equipped.png" id="14"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_02_08_spirit_gem_frame_blue.png" id="15"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_02_09_uncut_gem_holder.png" id="16"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_02_10_mini_support_slot.png" id="17"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_04_02_choice_card_red.png" id="18"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_04_14_divider_bar_large.png" id="19"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_04_26_divider_gold.png" id="20"]
+[gd_scene format=3 uid="uid://dtvriitmtuqhx"]
 
-[node name="SkillGemsPanel" type="Control"]
+[ext_resource type="Script" uid="uid://c1cssjkqv1f1g" path="res://scripts/ui/panels/SkillGemsPanel.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://dhc7vqxihx7g2" path="res://assets/ui/skill_gems/patch054/slices/sg_01_00_main_window_panel.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://uhljyk24rq" path="res://assets/ui/skill_gems/patch054/slices/sg_01_07_list_panel.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://cw6godo8f17kr" path="res://assets/ui/skill_gems/patch054/slices/sg_01_03_center_detail_panel.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://dg0elrn2ueqkc" path="res://assets/ui/skill_gems/patch054/slices/sg_01_04_wide_detail_panel.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://bbmrcn5uguiox" path="res://assets/ui/skill_gems/patch054/slices/sg_01_06_header_bar_skull.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://dxil5bpov2ay3" path="res://assets/ui/skill_gems/patch054/slices/sg_01_08_socket_row_frame.png" id="7"]
+[ext_resource type="Texture2D" uid="uid://dwsc0ucewptb7" path="res://assets/ui/skill_gems/patch054/slices/sg_02_06_featured_skill_red.png" id="8"]
+[ext_resource type="Texture2D" uid="uid://rdjlnwkunmtu" path="res://assets/ui/skill_gems/patch054/slices/sg_03_01_button_normal.png" id="10"]
+[ext_resource type="Texture2D" uid="uid://c4ci8f66nny77" path="res://assets/ui/skill_gems/patch054/slices/sg_03_21_button_small_dark.png" id="12"]
+[ext_resource type="Texture2D" uid="uid://8hk7iyd655w6" path="res://assets/ui/skill_gems/patch054/slices/sg_03_14_card_frame_red.png" id="13"]
+[ext_resource type="Texture2D" uid="uid://d2w4dvxgqsvhr" path="res://assets/ui/skill_gems/patch054/slices/sg_04_11_choice_card_blue.png" id="15"]
+[ext_resource type="Texture2D" uid="uid://1rsikiuyvg8o" path="res://assets/ui/skill_gems/patch054/slices/sg_04_18_divider_red.png" id="18"]
+[ext_resource type="Texture2D" uid="uid://1i8431ekrriw" path="res://assets/ui/skill_gems/patch054/slices/sg_04_21_divider_blue.png" id="19"]
+[ext_resource type="Texture2D" uid="uid://ccxkcay5a1f5a" path="res://assets/ui/skill_gems/patch054/slices/sg_04_04_gem_badge_gold.png" id="22"]
+[ext_resource type="Texture2D" uid="uid://dpd8l5yphhlfj" path="res://assets/ui/skill_gems/patch054/slices/sg_04_05_gem_badge_blue.png" id="23"]
+[ext_resource type="Texture2D" uid="uid://brgoive2flf2l" path="res://assets/ui/skill_gems/patch054/slices/sg_04_06_gem_badge_purple.png" id="24"]
+
+[node name="SkillGemsPanel" type="Control" unique_id=2144964746]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
 script = ExtResource("1")
 
-[node name="MainWindowArt" type="TextureRect" parent="SkillGemsPanel"]
-offset_left = 20.0
-offset_top = 15.0
-offset_right = 1260.0
-offset_bottom = 705.0
+[node name="BackdropLayer" type="Control" parent="." unique_id=1258153556]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DimBackground" type="ColorRect" parent="BackdropLayer" unique_id=1477188791]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.74)
+
+[node name="PanelRoot" type="Control" parent="." unique_id=1967211299]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="FrameArt" type="Control" parent="PanelRoot" unique_id=262608235]
+anchors_preset = 0
+offset_left = 40.0
+offset_top = 20.0
+offset_right = 1240.0
+offset_bottom = 700.0
+
+[node name="MainWindowFrame" type="TextureRect" parent="PanelRoot/FrameArt" unique_id=1396172309]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -391.0
+offset_top = -214.0
+offset_right = 1534.0
+offset_bottom = 741.0
+mouse_filter = 2
 texture = ExtResource("2")
 expand_mode = 1
-stretch_mode = 0
-
-[node name="TitleBarArt" type="TextureRect" parent="SkillGemsPanel"]
-offset_left = 430.0
-offset_top = 22.0
-offset_right = 850.0
-offset_bottom = 82.0
-texture = ExtResource("8")
-expand_mode = 1
-stretch_mode = 0
-
-[node name="TitleLabel" type="Label" parent="SkillGemsPanel"]
-offset_left = 485.0
-offset_top = 36.0
-offset_right = 785.0
-offset_bottom = 71.0
-text = "SKILL GEMS"
-theme_override_font_sizes/font_size = 28
-theme_override_colors/font_color = Color(0.95, 0.82, 0.48, 1.0)
-horizontal_alignment = 1
-
-[node name="ActivePanel" type="Control" parent="SkillGemsPanel"]
-offset_left = 58.0
-offset_top = 92.0
-offset_right = 358.0
-offset_bottom = 637.0
-
-[node name="PanelArt" type="TextureRect" parent="SkillGemsPanel/ActivePanel"]
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 300.0
-offset_bottom = 545.0
-texture = ExtResource("3")
-expand_mode = 1
-stretch_mode = 0
-
-[node name="ActiveHeader" type="Label" parent="SkillGemsPanel/ActivePanel"]
-offset_left = 18.0
-offset_top = 16.0
-offset_right = 278.0
-offset_bottom = 40.0
-text = "ACTIVE / UNCUT SKILL GEMS"
-theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.95, 0.84, 0.55, 1.0)
-horizontal_alignment = 1
-
-[node name="ActiveGemButton0" type="Button" parent="SkillGemsPanel/ActivePanel"]
-offset_left = 18.0
-offset_top = 54.0
-offset_right = 282.0
-offset_bottom = 97.0
-text = "Active 1"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 12
-
-[node name="ActiveGemButton1" type="Button" parent="SkillGemsPanel/ActivePanel"]
-offset_left = 18.0
-offset_top = 109.0
-offset_right = 282.0
-offset_bottom = 152.0
-text = "Active 2"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 12
-
-[node name="ActiveGemButton2" type="Button" parent="SkillGemsPanel/ActivePanel"]
-offset_left = 18.0
-offset_top = 164.0
-offset_right = 282.0
-offset_bottom = 207.0
-text = "Active 3"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 12
-
-[node name="ActiveGemButton3" type="Button" parent="SkillGemsPanel/ActivePanel"]
-offset_left = 18.0
-offset_top = 219.0
-offset_right = 282.0
-offset_bottom = 262.0
-text = "Active 4"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 12
-
-[node name="ActiveGemButton4" type="Button" parent="SkillGemsPanel/ActivePanel"]
-offset_left = 18.0
-offset_top = 274.0
-offset_right = 282.0
-offset_bottom = 317.0
-text = "Active 5"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 12
-
-[node name="ActiveGemButton5" type="Button" parent="SkillGemsPanel/ActivePanel"]
-offset_left = 18.0
-offset_top = 329.0
-offset_right = 282.0
-offset_bottom = 372.0
-text = "Active 6"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 12
-
-[node name="ActiveGemButton6" type="Button" parent="SkillGemsPanel/ActivePanel"]
-offset_left = 18.0
-offset_top = 384.0
-offset_right = 282.0
-offset_bottom = 427.0
-text = "Active 7"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 12
-
-[node name="ActiveGemButton7" type="Button" parent="SkillGemsPanel/ActivePanel"]
-offset_left = 18.0
-offset_top = 439.0
-offset_right = 282.0
-offset_bottom = 482.0
-text = "Active 8"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 12
-
-[node name="DetailPanel" type="Control" parent="SkillGemsPanel"]
-offset_left = 380.0
-offset_top = 92.0
-offset_right = 870.0
-offset_bottom = 494.0
-
-[node name="PanelArt" type="TextureRect" parent="SkillGemsPanel/DetailPanel"]
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 490.0
-offset_bottom = 402.0
-texture = ExtResource("4")
-expand_mode = 1
-stretch_mode = 0
-
-[node name="DetailTitleLabel" type="Label" parent="SkillGemsPanel/DetailPanel"]
-offset_left = 40.0
-offset_top = 24.0
-offset_right = 450.0
-offset_bottom = 50.0
-text = "SELECTED GEM"
-theme_override_font_sizes/font_size = 18
-theme_override_colors/font_color = Color(0.95, 0.82, 0.48, 1.0)
-horizontal_alignment = 1
-
-[node name="SelectedContextLabel" type="Label" parent="SkillGemsPanel/DetailPanel"]
-offset_left = 40.0
-offset_top = 54.0
-offset_right = 450.0
-offset_bottom = 76.0
-text = "Selected: none"
-theme_override_font_sizes/font_size = 12
-theme_override_colors/font_color = Color(0.72, 0.68, 0.58, 1.0)
-horizontal_alignment = 1
-
-[node name="DetailLabel" type="RichTextLabel" parent="SkillGemsPanel/DetailPanel"]
-offset_left = 42.0
-offset_top = 82.0
-offset_right = 447.0
-offset_bottom = 272.0
-bbcode_enabled = true
-scroll_active = true
-text = "Select a gem."
-theme_override_font_sizes/normal_font_size = 13
-
-[node name="SocketRowArt" type="TextureRect" parent="SkillGemsPanel/DetailPanel"]
-offset_left = 28.0
-offset_top = 276.0
-offset_right = 460.0
-offset_bottom = 356.0
-texture = ExtResource("11")
-expand_mode = 1
-stretch_mode = 0
-
-[node name="SocketButton0" type="Button" parent="SkillGemsPanel/DetailPanel"]
-offset_left = 45.0
-offset_top = 298.0
-offset_right = 103.0
-offset_bottom = 334.0
-text = "-"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SocketButton1" type="Button" parent="SkillGemsPanel/DetailPanel"]
-offset_left = 113.0
-offset_top = 298.0
-offset_right = 171.0
-offset_bottom = 334.0
-text = "-"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SocketButton2" type="Button" parent="SkillGemsPanel/DetailPanel"]
-offset_left = 181.0
-offset_top = 298.0
-offset_right = 239.0
-offset_bottom = 334.0
-text = "-"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SocketButton3" type="Button" parent="SkillGemsPanel/DetailPanel"]
-offset_left = 249.0
-offset_top = 298.0
-offset_right = 307.0
-offset_bottom = 334.0
-text = "-"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SocketButton4" type="Button" parent="SkillGemsPanel/DetailPanel"]
-offset_left = 317.0
-offset_top = 298.0
-offset_right = 375.0
-offset_bottom = 334.0
-text = "-"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SocketButton5" type="Button" parent="SkillGemsPanel/DetailPanel"]
-offset_left = 385.0
-offset_top = 298.0
-offset_right = 443.0
-offset_bottom = 334.0
-text = "-"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportPanel" type="Control" parent="SkillGemsPanel"]
-offset_left = 905.0
-offset_top = 92.0
-offset_right = 1220.0
-offset_bottom = 637.0
-
-[node name="PanelArt" type="TextureRect" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 315.0
-offset_bottom = 545.0
-texture = ExtResource("3")
-expand_mode = 1
-stretch_mode = 0
-
-[node name="SupportHeader" type="Label" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 26.0
-offset_top = 16.0
-offset_right = 286.0
-offset_bottom = 40.0
-text = "SUPPORT GEMS"
-theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.95, 0.84, 0.55, 1.0)
-horizontal_alignment = 1
-
-[node name="SupportHintLabel" type="Label" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 20.0
-offset_top = 42.0
-offset_right = 298.0
-offset_bottom = 74.0
-text = "Click to inspect. Drag onto a skill/spirit. RMB uncut supports."
-theme_override_font_sizes/font_size = 11
-theme_override_colors/font_color = Color(0.72, 0.68, 0.58, 1.0)
-horizontal_alignment = 1
-
-[node name="SupportGemButton0" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 18.0
-offset_top = 84.0
-offset_right = 150.0
-offset_bottom = 126.0
-text = "Support 1"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportGemButton1" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 158.0
-offset_top = 84.0
-offset_right = 290.0
-offset_bottom = 126.0
-text = "Support 2"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportGemButton2" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 18.0
-offset_top = 135.0
-offset_right = 150.0
-offset_bottom = 177.0
-text = "Support 3"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportGemButton3" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 158.0
-offset_top = 135.0
-offset_right = 290.0
-offset_bottom = 177.0
-text = "Support 4"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportGemButton4" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 18.0
-offset_top = 186.0
-offset_right = 150.0
-offset_bottom = 228.0
-text = "Support 5"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportGemButton5" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 158.0
-offset_top = 186.0
-offset_right = 290.0
-offset_bottom = 228.0
-text = "Support 6"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportGemButton6" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 18.0
-offset_top = 237.0
-offset_right = 150.0
-offset_bottom = 279.0
-text = "Support 7"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportGemButton7" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 158.0
-offset_top = 237.0
-offset_right = 290.0
-offset_bottom = 279.0
-text = "Support 8"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportGemButton8" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 18.0
-offset_top = 288.0
-offset_right = 150.0
-offset_bottom = 330.0
-text = "Support 9"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportGemButton9" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 158.0
-offset_top = 288.0
-offset_right = 290.0
-offset_bottom = 330.0
-text = "Support 10"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportGemButton10" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 18.0
-offset_top = 339.0
-offset_right = 150.0
-offset_bottom = 381.0
-text = "Support 11"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportGemButton11" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 158.0
-offset_top = 339.0
-offset_right = 290.0
-offset_bottom = 381.0
-text = "Support 12"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportGemButton12" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 18.0
-offset_top = 390.0
-offset_right = 150.0
-offset_bottom = 432.0
-text = "Support 13"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportGemButton13" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 158.0
-offset_top = 390.0
-offset_right = 290.0
-offset_bottom = 432.0
-text = "Support 14"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportGemButton14" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 18.0
-offset_top = 441.0
-offset_right = 150.0
-offset_bottom = 483.0
-text = "Support 15"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SupportGemButton15" type="Button" parent="SkillGemsPanel/SupportPanel"]
-offset_left = 158.0
-offset_top = 441.0
-offset_right = 290.0
-offset_bottom = 483.0
-text = "Support 16"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="SpiritPanel" type="Control" parent="SkillGemsPanel"]
-offset_left = 380.0
-offset_top = 510.0
-offset_right = 870.0
-offset_bottom = 625.0
-
-[node name="PanelArt" type="TextureRect" parent="SkillGemsPanel/SpiritPanel"]
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 490.0
-offset_bottom = 115.0
-texture = ExtResource("5")
-expand_mode = 1
-stretch_mode = 0
-
-[node name="SpiritHeader" type="Label" parent="SkillGemsPanel/SpiritPanel"]
-offset_left = 25.0
-offset_top = 12.0
-offset_right = 285.0
-offset_bottom = 34.0
-text = "SPIRIT GEMS / RESERVED SKILLS"
-theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.95, 0.84, 0.55, 1.0)
-horizontal_alignment = 0
-
-[node name="SpiritMeterLabel" type="Label" parent="SkillGemsPanel/SpiritPanel"]
-offset_left = 298.0
-offset_top = 12.0
-offset_right = 468.0
-offset_bottom = 34.0
-text = "Spirit: 0 / 0"
-theme_override_font_sizes/font_size = 12
-theme_override_colors/font_color = Color(0.78, 0.86, 1.0, 1.0)
-horizontal_alignment = 2
-
-[node name="SpiritGemButton0" type="Button" parent="SkillGemsPanel/SpiritPanel"]
-offset_left = 22.0
-offset_top = 45.0
-offset_right = 90.0
-offset_bottom = 91.0
-text = "Spirit 1"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 9
-
-[node name="SpiritGemButton1" type="Button" parent="SkillGemsPanel/SpiritPanel"]
-offset_left = 97.0
-offset_top = 45.0
-offset_right = 165.0
-offset_bottom = 91.0
-text = "Spirit 2"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 9
-
-[node name="SpiritGemButton2" type="Button" parent="SkillGemsPanel/SpiritPanel"]
-offset_left = 172.0
-offset_top = 45.0
-offset_right = 240.0
-offset_bottom = 91.0
-text = "Spirit 3"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 9
-
-[node name="SpiritGemButton3" type="Button" parent="SkillGemsPanel/SpiritPanel"]
-offset_left = 247.0
-offset_top = 45.0
-offset_right = 315.0
-offset_bottom = 91.0
-text = "Spirit 4"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 9
-
-[node name="SpiritGemButton4" type="Button" parent="SkillGemsPanel/SpiritPanel"]
-offset_left = 322.0
-offset_top = 45.0
-offset_right = 390.0
-offset_bottom = 91.0
-text = "Spirit 5"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 9
-
-[node name="SpiritGemButton5" type="Button" parent="SkillGemsPanel/SpiritPanel"]
-offset_left = 397.0
-offset_top = 45.0
-offset_right = 465.0
-offset_bottom = 91.0
-text = "Spirit 6"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 9
-
-[node name="Actions" type="Control" parent="SkillGemsPanel"]
-offset_left = 72.0
-offset_top = 645.0
-offset_right = 1202.0
-offset_bottom = 691.0
-
-[node name="EquipButtonArt" type="TextureRect" parent="SkillGemsPanel/Actions"]
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 148.0
-offset_bottom = 42.0
-texture = ExtResource("9")
-expand_mode = 1
-stretch_mode = 0
-
-[node name="EquipButton" type="Button" parent="SkillGemsPanel/Actions"]
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 148.0
-offset_bottom = 42.0
-text = "Equip / Unequip"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 12
-
-[node name="AddSkillSocketButtonArt" type="TextureRect" parent="SkillGemsPanel/Actions"]
-offset_left = 160.0
-offset_top = 0.0
-offset_right = 292.0
-offset_bottom = 42.0
-texture = ExtResource("9")
-expand_mode = 1
-stretch_mode = 0
-
-[node name="AddSkillSocketButton" type="Button" parent="SkillGemsPanel/Actions"]
-offset_left = 160.0
-offset_top = 0.0
-offset_right = 292.0
-offset_bottom = 42.0
-text = "+ Skill Socket"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 12
-
-[node name="AddSpiritSocketButtonArt" type="TextureRect" parent="SkillGemsPanel/Actions"]
-offset_left = 304.0
-offset_top = 0.0
-offset_right = 442.0
-offset_bottom = 42.0
-texture = ExtResource("9")
-expand_mode = 1
-stretch_mode = 0
-
-[node name="AddSpiritSocketButton" type="Button" parent="SkillGemsPanel/Actions"]
-offset_left = 304.0
-offset_top = 0.0
-offset_right = 442.0
-offset_bottom = 42.0
-text = "+ Spirit Socket"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 12
-
-[node name="EnableSpiritButtonArt" type="TextureRect" parent="SkillGemsPanel/Actions"]
-offset_left = 454.0
-offset_top = 0.0
-offset_right = 580.0
-offset_bottom = 42.0
-texture = ExtResource("9")
-expand_mode = 1
-stretch_mode = 0
-
-[node name="EnableSpiritButton" type="Button" parent="SkillGemsPanel/Actions"]
-offset_left = 454.0
-offset_top = 0.0
-offset_right = 580.0
-offset_bottom = 42.0
-text = "Enable Spirit"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 12
-
-[node name="UnsocketButtonArt" type="TextureRect" parent="SkillGemsPanel/Actions"]
-offset_left = 592.0
-offset_top = 0.0
-offset_right = 718.0
-offset_bottom = 42.0
-texture = ExtResource("9")
-expand_mode = 1
-stretch_mode = 0
-
-[node name="UnsocketButton" type="Button" parent="SkillGemsPanel/Actions"]
-offset_left = 592.0
-offset_top = 0.0
-offset_right = 718.0
-offset_bottom = 42.0
-text = "Unsocket Last"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 12
-
-[node name="CloseButtonArt" type="TextureRect" parent="SkillGemsPanel/Actions"]
-offset_left = 1030.0
-offset_top = 0.0
-offset_right = 1130.0
-offset_bottom = 42.0
-texture = ExtResource("9")
-expand_mode = 1
-stretch_mode = 0
-
-[node name="CloseButton" type="Button" parent="SkillGemsPanel/Actions"]
-offset_left = 1030.0
-offset_top = 0.0
-offset_right = 1130.0
-offset_bottom = 42.0
-text = "Close"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 12
-
-[node name="ChoicePanel" type="Control" parent="SkillGemsPanel"]
-offset_left = 420.0
-offset_top = 138.0
-offset_right = 870.0
-offset_bottom = 498.0
-visible = false
-
-[node name="PanelArt" type="TextureRect" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 450.0
-offset_bottom = 360.0
+stretch_mode = 5
+
+[node name="ContentRoot" type="Control" parent="PanelRoot" unique_id=1252693926]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="HeaderGroup" type="Control" parent="PanelRoot/ContentRoot" unique_id=1844037472]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 105.0
+
+[node name="TitleBarArt" type="TextureRect" parent="PanelRoot/ContentRoot/HeaderGroup" unique_id=253344772]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 405.0
+offset_top = 28.0
+offset_right = 825.0
+offset_bottom = 78.0
+mouse_filter = 2
 texture = ExtResource("6")
 expand_mode = 1
-stretch_mode = 0
+stretch_mode = 5
 
-[node name="ChoiceTitleLabel" type="Label" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 38.0
-offset_top = 28.0
-offset_right = 412.0
-offset_bottom = 54.0
-text = "Choose"
-theme_override_font_sizes/font_size = 18
-theme_override_colors/font_color = Color(0.95, 0.82, 0.48, 1.0)
+[node name="Title" type="Label" parent="PanelRoot/ContentRoot/HeaderGroup" unique_id=315217599]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 357.0
+offset_top = 38.0
+offset_right = 885.0
+offset_bottom = 74.0
+theme_override_colors/font_color = Color(0.9, 0.78, 0.48, 1)
+theme_override_font_sizes/font_size = 24
+text = "SKILL       GEMS"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="ChoiceButton0" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 42.0
-offset_top = 68.0
-offset_right = 212.0
-offset_bottom = 93.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton1" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 227.0
-offset_top = 68.0
-offset_right = 397.0
-offset_bottom = 93.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton2" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 42.0
-offset_top = 98.0
-offset_right = 212.0
-offset_bottom = 123.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton3" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 227.0
-offset_top = 98.0
-offset_right = 397.0
-offset_bottom = 123.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton4" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 42.0
-offset_top = 128.0
-offset_right = 212.0
-offset_bottom = 153.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton5" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 227.0
-offset_top = 128.0
-offset_right = 397.0
-offset_bottom = 153.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton6" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 42.0
-offset_top = 158.0
-offset_right = 212.0
-offset_bottom = 183.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton7" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 227.0
-offset_top = 158.0
-offset_right = 397.0
-offset_bottom = 183.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton8" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 42.0
-offset_top = 188.0
-offset_right = 212.0
-offset_bottom = 213.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton9" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 227.0
-offset_top = 188.0
-offset_right = 397.0
-offset_bottom = 213.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton10" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 42.0
-offset_top = 218.0
-offset_right = 212.0
-offset_bottom = 243.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton11" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 227.0
-offset_top = 218.0
-offset_right = 397.0
-offset_bottom = 243.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton12" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 42.0
-offset_top = 248.0
-offset_right = 212.0
-offset_bottom = 273.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton13" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 227.0
-offset_top = 248.0
-offset_right = 397.0
-offset_bottom = 273.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton14" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 42.0
-offset_top = 278.0
-offset_right = 212.0
-offset_bottom = 303.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton15" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 227.0
-offset_top = 278.0
-offset_right = 397.0
-offset_bottom = 303.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton16" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 42.0
-offset_top = 308.0
-offset_right = 212.0
-offset_bottom = 333.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceButton17" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 227.0
-offset_top = 308.0
-offset_right = 397.0
-offset_bottom = 333.0
-text = "Choice"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 10
-
-[node name="ChoiceCancelButtonArt" type="TextureRect" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 152.0
-offset_top = 318.0
-offset_right = 297.0
-offset_bottom = 348.0
-texture = ExtResource("9")
-expand_mode = 1
-stretch_mode = 0
-
-[node name="ChoiceCancelButton" type="Button" parent="SkillGemsPanel/ChoicePanel"]
-offset_left = 152.0
-offset_top = 318.0
-offset_right = 297.0
-offset_bottom = 348.0
-text = "Cancel"
-flat = true
-alignment = 0
-theme_override_font_sizes/font_size = 12
-
-[node name="DragPreview" type="Label" parent="SkillGemsPanel"]
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 180.0
-offset_bottom = 28.0
+[node name="HelpLabel" type="Label" parent="PanelRoot/ContentRoot/HeaderGroup" unique_id=161350502]
+unique_name_in_owner = true
 visible = false
-text = "Dragging"
-z_index = 200
-theme_override_colors/font_color = Color(1.0, 0.84, 0.45, 1.0)
-theme_override_font_sizes/font_size = 14
+layout_mode = 0
+offset_left = 220.0
+offset_top = 78.0
+offset_right = 1060.0
+offset_bottom = 101.0
+theme_override_colors/font_color = Color(0.9, 0.78, 0.48, 1)
+theme_override_font_sizes/font_size = 11
+text = "Click to inspect. Right-click uncut gems. Drag support gems onto skills, spirit gems, or sockets."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TopCloseButtonArt" type="TextureRect" parent="PanelRoot/ContentRoot/HeaderGroup" unique_id=663386663]
+layout_mode = 0
+offset_left = 901.0
+offset_top = -53.0
+offset_right = 1103.0
+offset_bottom = -3.0
+mouse_filter = 2
+texture = ExtResource("10")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CloseButton" type="Button" parent="PanelRoot/ContentRoot/HeaderGroup/TopCloseButtonArt" unique_id=1639153387]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 15.0
+offset_top = 9.0
+offset_right = 187.0
+offset_bottom = 55.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 11
+text = "CLOSE"
+flat = true
+clip_text = true
+
+[node name="BodyGroup" type="Control" parent="PanelRoot/ContentRoot" unique_id=363807162]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_top = 104.0
+offset_right = 1280.0
+offset_bottom = 552.0
+
+[node name="ActiveColumn" type="Control" parent="PanelRoot/ContentRoot/BodyGroup" unique_id=670490644]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 78.0
+offset_right = 406.0
+offset_bottom = 434.0
+
+[node name="ActiveColumnFrame" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn" unique_id=741339436]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 328.0
+offset_bottom = 434.0
+mouse_filter = 2
+texture = ExtResource("3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveColumnHeader" type="Label" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn" unique_id=1117468335]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 38.0
+offset_top = 15.0
+offset_right = 290.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.9, 0.78, 0.48, 1)
+theme_override_font_sizes/font_size = 15
+text = "ACTIVE GEMS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ActiveColumnDivider" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn" unique_id=80309658]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 39.0
+offset_right = 268.0
+offset_bottom = 54.0
+mouse_filter = 2
+texture = ExtResource("18")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemList" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn" unique_id=1667806306]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 26.0
+offset_top = 64.0
+offset_right = 302.0
+offset_bottom = 370.0
+
+[node name="ActiveGemRow0" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=998188050]
+anchors_preset = 0
+offset_right = 276.0
+offset_bottom = 34.0
+
+[node name="ActiveGemRowArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow0" unique_id=1002164422]
+layout_mode = 0
+offset_right = 276.0
+offset_bottom = 34.0
+mouse_filter = 2
+texture = ExtResource("12")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemIconArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow0" unique_id=1778934967]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 34.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemButton0" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow0" unique_id=1454998382]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 38.0
+offset_top = 2.0
+offset_right = 272.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 10
+text = "Active"
+flat = true
+clip_text = true
+
+[node name="ActiveGemRow1" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=1050649588]
+anchors_preset = 0
+offset_top = 38.0
+offset_right = 276.0
+offset_bottom = 72.0
+
+[node name="ActiveGemRowArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow1" unique_id=1856185981]
+layout_mode = 0
+offset_right = 276.0
+offset_bottom = 34.0
+mouse_filter = 2
+texture = ExtResource("12")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemIconArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow1" unique_id=163678636]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 34.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemButton1" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow1" unique_id=376535197]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 38.0
+offset_top = 2.0
+offset_right = 272.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 10
+text = "Active"
+flat = true
+clip_text = true
+
+[node name="ActiveGemRow2" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=179145132]
+anchors_preset = 0
+offset_top = 76.0
+offset_right = 276.0
+offset_bottom = 110.0
+
+[node name="ActiveGemRowArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow2" unique_id=1534312480]
+layout_mode = 0
+offset_right = 276.0
+offset_bottom = 34.0
+mouse_filter = 2
+texture = ExtResource("12")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemIconArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow2" unique_id=303627482]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 34.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemButton2" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow2" unique_id=1657039975]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 38.0
+offset_top = 2.0
+offset_right = 272.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 10
+text = "Active"
+flat = true
+clip_text = true
+
+[node name="ActiveGemRow3" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=1044707071]
+anchors_preset = 0
+offset_top = 114.0
+offset_right = 276.0
+offset_bottom = 148.0
+
+[node name="ActiveGemRowArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow3" unique_id=754211793]
+layout_mode = 0
+offset_right = 276.0
+offset_bottom = 34.0
+mouse_filter = 2
+texture = ExtResource("12")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemIconArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow3" unique_id=1922747954]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 34.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemButton3" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow3" unique_id=618726793]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 38.0
+offset_top = 2.0
+offset_right = 272.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 10
+text = "Active"
+flat = true
+clip_text = true
+
+[node name="ActiveGemRow4" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=597281338]
+anchors_preset = 0
+offset_top = 152.0
+offset_right = 276.0
+offset_bottom = 186.0
+
+[node name="ActiveGemRowArt4" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow4" unique_id=2134692771]
+layout_mode = 0
+offset_right = 276.0
+offset_bottom = 34.0
+mouse_filter = 2
+texture = ExtResource("12")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemIconArt4" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow4" unique_id=1948760912]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 34.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemButton4" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow4" unique_id=347782063]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 38.0
+offset_top = 2.0
+offset_right = 272.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 10
+text = "Active"
+flat = true
+clip_text = true
+
+[node name="ActiveGemRow5" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=1290099321]
+anchors_preset = 0
+offset_top = 190.0
+offset_right = 276.0
+offset_bottom = 224.0
+
+[node name="ActiveGemRowArt5" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow5" unique_id=843956868]
+layout_mode = 0
+offset_right = 276.0
+offset_bottom = 34.0
+mouse_filter = 2
+texture = ExtResource("12")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemIconArt5" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow5" unique_id=68020314]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 34.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemButton5" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow5" unique_id=710735412]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 38.0
+offset_top = 2.0
+offset_right = 272.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 10
+text = "Active"
+flat = true
+clip_text = true
+
+[node name="ActiveGemRow6" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=716514177]
+anchors_preset = 0
+offset_top = 228.0
+offset_right = 276.0
+offset_bottom = 262.0
+
+[node name="ActiveGemRowArt6" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow6" unique_id=2113746019]
+layout_mode = 0
+offset_right = 276.0
+offset_bottom = 34.0
+mouse_filter = 2
+texture = ExtResource("12")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemIconArt6" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow6" unique_id=356927793]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 34.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemButton6" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow6" unique_id=1084220028]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 38.0
+offset_top = 2.0
+offset_right = 272.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 10
+text = "Active"
+flat = true
+clip_text = true
+
+[node name="ActiveGemRow7" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=891981180]
+anchors_preset = 0
+offset_top = 266.0
+offset_right = 276.0
+offset_bottom = 300.0
+
+[node name="ActiveGemRowArt7" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow7" unique_id=1598638432]
+layout_mode = 0
+offset_right = 276.0
+offset_bottom = 34.0
+mouse_filter = 2
+texture = ExtResource("12")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemIconArt7" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow7" unique_id=1153884597]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 34.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveGemButton7" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow7" unique_id=1197896149]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 38.0
+offset_top = 2.0
+offset_right = 272.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 10
+text = "Active"
+flat = true
+clip_text = true
+
+[node name="DetailColumn" type="Control" parent="PanelRoot/ContentRoot/BodyGroup" unique_id=1455838981]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 430.0
+offset_right = 820.0
+offset_bottom = 434.0
+
+[node name="DetailPanelFrame" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=1574040561]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 390.0
+offset_bottom = 434.0
+mouse_filter = 2
+texture = ExtResource("4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FeaturedTitle" type="Label" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=326758006]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 18.0
+offset_top = 18.0
+offset_right = 372.0
+offset_bottom = 44.0
+theme_override_colors/font_color = Color(0.9, 0.78, 0.48, 1)
+theme_override_font_sizes/font_size = 22
+text = "Selected Gem"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FeaturedGemIcon" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=1633734631]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 42.0
+offset_top = 64.0
+offset_right = 160.0
+offset_bottom = 226.0
+mouse_filter = 2
+texture = ExtResource("8")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FeaturedTags" type="Label" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=279695246]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 170.0
+offset_top = 60.0
+offset_right = 358.0
+offset_bottom = 84.0
+theme_override_colors/font_color = Color(0.9, 0.78, 0.48, 1)
+theme_override_font_sizes/font_size = 12
+text = "Tags:"
+vertical_alignment = 1
+
+[node name="DetailLabel" type="RichTextLabel" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=1236972718]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 168.0
+offset_top = 88.0
+offset_right = 364.0
+offset_bottom = 250.0
+theme_override_colors/default_color = Color(0.86, 0.78, 0.62, 1)
+theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true
+text = "Selected gem details."
+
+[node name="SocketHeader" type="Label" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=109767010]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 48.0
+offset_top = 256.0
+offset_right = 342.0
+offset_bottom = 280.0
+theme_override_colors/font_color = Color(0.9, 0.78, 0.48, 1)
+theme_override_font_sizes/font_size = 15
+text = "SUPPORT SOCKETS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SocketRowArt" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=1327581094]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 34.0
+offset_top = 282.0
+offset_right = 356.0
+offset_bottom = 356.0
+mouse_filter = 2
+texture = ExtResource("7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SocketGroup" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=671423487]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 54.0
+offset_top = 294.0
+offset_right = 336.0
+offset_bottom = 346.0
+
+[node name="SocketArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=1292644856]
+layout_mode = 0
+offset_right = 38.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SocketButton0" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=984131421]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 38.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+flat = true
+clip_text = true
+
+[node name="SocketArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=18687557]
+layout_mode = 0
+offset_left = 46.0
+offset_right = 84.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SocketButton1" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=1599265929]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 46.0
+offset_right = 84.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+flat = true
+clip_text = true
+
+[node name="SocketArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=223315308]
+layout_mode = 0
+offset_left = 92.0
+offset_right = 130.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SocketButton2" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=1816838457]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 92.0
+offset_right = 130.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+flat = true
+clip_text = true
+
+[node name="SocketArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=323433431]
+layout_mode = 0
+offset_left = 138.0
+offset_right = 176.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SocketButton3" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=389881797]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 138.0
+offset_right = 176.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+flat = true
+clip_text = true
+
+[node name="SocketArt4" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=172746304]
+layout_mode = 0
+offset_left = 184.0
+offset_right = 222.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SocketButton4" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=396494948]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 184.0
+offset_right = 222.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+flat = true
+clip_text = true
+
+[node name="SocketArt5" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=1322287699]
+layout_mode = 0
+offset_left = 230.0
+offset_right = 268.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SocketButton5" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=1436597166]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 230.0
+offset_right = 268.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+flat = true
+clip_text = true
+
+[node name="DetailActionStrip" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=845870852]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 372.0
+offset_right = 360.0
+offset_bottom = 408.0
+mouse_filter = 2
+texture = ExtResource("10")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="EquipSkillButton" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=1086295458]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 38.0
+offset_top = 376.0
+offset_right = 128.0
+offset_bottom = 404.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 10
+text = "Equip"
+flat = true
+clip_text = true
+
+[node name="AddSkillSocketButton" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=1071754407]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 136.0
+offset_top = 376.0
+offset_right = 236.0
+offset_bottom = 404.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 9
+text = "+ Skill Socket"
+flat = true
+clip_text = true
+
+[node name="UnsocketButton" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=2003338473]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 244.0
+offset_top = 376.0
+offset_right = 352.0
+offset_bottom = 404.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 10
+text = "Unsocket"
+flat = true
+clip_text = true
+
+[node name="SupportColumn" type="Control" parent="PanelRoot/ContentRoot/BodyGroup" unique_id=210622717]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 842.0
+offset_right = 1198.0
+offset_bottom = 434.0
+
+[node name="SupportColumnFrame" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn" unique_id=1577350089]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 356.0
+offset_bottom = 434.0
+mouse_filter = 2
+texture = ExtResource("3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportColumnHeader" type="Label" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn" unique_id=1451136518]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 50.0
+offset_top = 15.0
+offset_right = 306.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.9, 0.78, 0.48, 1)
+theme_override_font_sizes/font_size = 15
+text = "SUPPORT GEMS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SupportColumnDivider" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn" unique_id=302669274]
+layout_mode = 0
+offset_left = 68.0
+offset_top = 39.0
+offset_right = 288.0
+offset_bottom = 54.0
+mouse_filter = 2
+texture = ExtResource("19")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportSearchArt" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn" unique_id=1824441179]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 62.0
+offset_right = 222.0
+offset_bottom = 88.0
+mouse_filter = 2
+texture = ExtResource("12")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportSearchText" type="Label" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn" unique_id=724773765]
+layout_mode = 0
+offset_left = 42.0
+offset_top = 64.0
+offset_right = 214.0
+offset_bottom = 86.0
+theme_override_colors/font_color = Color(0.58, 0.52, 0.42, 1)
+theme_override_font_sizes/font_size = 10
+text = "Search / filter"
+vertical_alignment = 1
+
+[node name="SupportFilterArt" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn" unique_id=545528582]
+layout_mode = 0
+offset_left = 230.0
+offset_top = 62.0
+offset_right = 326.0
+offset_bottom = 88.0
+mouse_filter = 2
+texture = ExtResource("12")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportFilterText" type="Label" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn" unique_id=590884682]
+layout_mode = 0
+offset_left = 238.0
+offset_top = 64.0
+offset_right = 318.0
+offset_bottom = 86.0
+theme_override_colors/font_color = Color(0.88, 0.76, 0.52, 1)
+theme_override_font_sizes/font_size = 10
+text = "All Tags"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SupportGemList" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn" unique_id=1173384646]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 28.0
+offset_top = 100.0
+offset_right = 328.0
+offset_bottom = 388.0
+
+[node name="SupportGemCard0" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=815263469]
+anchors_preset = 0
+offset_right = 68.0
+offset_bottom = 62.0
+
+[node name="SupportGemCardArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard0" unique_id=231317772]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard0" unique_id=1365139655]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton0" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard0" unique_id=1690124200]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard1" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=164176529]
+anchors_preset = 0
+offset_left = 74.0
+offset_right = 142.0
+offset_bottom = 62.0
+
+[node name="SupportGemCardArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard1" unique_id=227580206]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard1" unique_id=583797786]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("23")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton1" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard1" unique_id=162717453]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard2" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1991343154]
+anchors_preset = 0
+offset_left = 148.0
+offset_right = 216.0
+offset_bottom = 62.0
+
+[node name="SupportGemCardArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard2" unique_id=698062616]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard2" unique_id=20246778]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("24")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton2" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard2" unique_id=675339265]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard3" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=465782050]
+anchors_preset = 0
+offset_left = 222.0
+offset_right = 290.0
+offset_bottom = 62.0
+
+[node name="SupportGemCardArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard3" unique_id=1583100705]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard3" unique_id=1796071551]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton3" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard3" unique_id=1167949199]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard4" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=495342809]
+anchors_preset = 0
+offset_top = 68.0
+offset_right = 68.0
+offset_bottom = 130.0
+
+[node name="SupportGemCardArt4" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard4" unique_id=831592153]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt4" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard4" unique_id=1376580060]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("23")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton4" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard4" unique_id=1862856378]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard5" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=305507445]
+anchors_preset = 0
+offset_left = 74.0
+offset_top = 68.0
+offset_right = 142.0
+offset_bottom = 130.0
+
+[node name="SupportGemCardArt5" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard5" unique_id=2023015729]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt5" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard5" unique_id=1223678985]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("24")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton5" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard5" unique_id=2105956494]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard6" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1489421439]
+anchors_preset = 0
+offset_left = 148.0
+offset_top = 68.0
+offset_right = 216.0
+offset_bottom = 130.0
+
+[node name="SupportGemCardArt6" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard6" unique_id=1487134425]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt6" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard6" unique_id=1622514434]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton6" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard6" unique_id=15148688]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard7" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1209455897]
+anchors_preset = 0
+offset_left = 222.0
+offset_top = 68.0
+offset_right = 290.0
+offset_bottom = 130.0
+
+[node name="SupportGemCardArt7" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard7" unique_id=2043980760]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt7" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard7" unique_id=1130849926]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("23")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton7" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard7" unique_id=1977611790]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard8" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=578660596]
+anchors_preset = 0
+offset_top = 136.0
+offset_right = 68.0
+offset_bottom = 198.0
+
+[node name="SupportGemCardArt8" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard8" unique_id=759929400]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt8" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard8" unique_id=30191461]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("24")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton8" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard8" unique_id=401825742]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard9" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1930074370]
+anchors_preset = 0
+offset_left = 74.0
+offset_top = 136.0
+offset_right = 142.0
+offset_bottom = 198.0
+
+[node name="SupportGemCardArt9" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard9" unique_id=2037021478]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt9" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard9" unique_id=1936477652]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton9" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard9" unique_id=1443648173]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard10" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1845199998]
+anchors_preset = 0
+offset_left = 148.0
+offset_top = 136.0
+offset_right = 216.0
+offset_bottom = 198.0
+
+[node name="SupportGemCardArt10" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard10" unique_id=2128878057]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt10" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard10" unique_id=281542058]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("23")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton10" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard10" unique_id=1593254557]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard11" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1340914277]
+anchors_preset = 0
+offset_left = 222.0
+offset_top = 136.0
+offset_right = 290.0
+offset_bottom = 198.0
+
+[node name="SupportGemCardArt11" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard11" unique_id=1245493164]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt11" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard11" unique_id=692731073]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("24")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton11" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard11" unique_id=2059096732]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard12" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1761782620]
+anchors_preset = 0
+offset_top = 204.0
+offset_right = 68.0
+offset_bottom = 266.0
+
+[node name="SupportGemCardArt12" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard12" unique_id=595019088]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt12" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard12" unique_id=2084125955]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton12" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard12" unique_id=995073986]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard13" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=2113031184]
+anchors_preset = 0
+offset_left = 74.0
+offset_top = 204.0
+offset_right = 142.0
+offset_bottom = 266.0
+
+[node name="SupportGemCardArt13" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard13" unique_id=1594329256]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt13" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard13" unique_id=6611813]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("23")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton13" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard13" unique_id=1523203892]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard14" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1830130073]
+anchors_preset = 0
+offset_left = 148.0
+offset_top = 204.0
+offset_right = 216.0
+offset_bottom = 266.0
+
+[node name="SupportGemCardArt14" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard14" unique_id=177922031]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt14" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard14" unique_id=684053910]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("24")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton14" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard14" unique_id=1079466722]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard15" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=2098618954]
+anchors_preset = 0
+offset_left = 222.0
+offset_top = 204.0
+offset_right = 290.0
+offset_bottom = 266.0
+
+[node name="SupportGemCardArt15" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard15" unique_id=1019258395]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt15" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard15" unique_id=1869112145]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton15" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard15" unique_id=1772568974]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 38.0
+offset_right = 66.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="BottomGroup" type="Control" parent="PanelRoot/ContentRoot" unique_id=57111544]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 76.0
+offset_top = 544.0
+offset_right = 1204.0
+offset_bottom = 682.0
+
+[node name="SpiritSection" type="Control" parent="PanelRoot/ContentRoot/BottomGroup" unique_id=1912378906]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_right = 760.0
+offset_bottom = 98.0
+
+[node name="SpiritPanelFrame" type="TextureRect" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection" unique_id=1490354474]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 760.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = ExtResource("5")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SpiritHeader" type="Label" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection" unique_id=1844802914]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 24.0
+offset_top = 8.0
+offset_right = 230.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.9, 0.78, 0.48, 1)
+theme_override_font_sizes/font_size = 15
+text = "SPIRIT GEMS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SpiritMeterLabel" type="Label" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection" unique_id=334187508]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 24.0
+offset_top = 34.0
+offset_right = 230.0
+offset_bottom = 58.0
+theme_override_colors/font_color = Color(0.78, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "Spirit: 0 / 0 reserved"
+vertical_alignment = 1
+
+[node name="SpiritGemList" type="Control" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection" unique_id=208993650]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 242.0
+offset_top = 12.0
+offset_right = 742.0
+offset_bottom = 84.0
+
+[node name="SpiritGemCard0" type="Control" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList" unique_id=1011036059]
+anchors_preset = 0
+offset_right = 76.0
+offset_bottom = 68.0
+
+[node name="SpiritGemCardArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList/SpiritGemCard0" unique_id=48948848]
+layout_mode = 0
+offset_right = 76.0
+offset_bottom = 68.0
+mouse_filter = 2
+texture = ExtResource("15")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SpiritGemButton0" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList/SpiritGemCard0" unique_id=381146214]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 8.0
+offset_right = 72.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Spirit"
+flat = true
+clip_text = true
+
+[node name="SpiritGemCard1" type="Control" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList" unique_id=138434220]
+anchors_preset = 0
+offset_left = 82.0
+offset_right = 158.0
+offset_bottom = 68.0
+
+[node name="SpiritGemCardArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList/SpiritGemCard1" unique_id=1473609643]
+layout_mode = 0
+offset_right = 76.0
+offset_bottom = 68.0
+mouse_filter = 2
+texture = ExtResource("15")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SpiritGemButton1" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList/SpiritGemCard1" unique_id=919941428]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 8.0
+offset_right = 72.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Spirit"
+flat = true
+clip_text = true
+
+[node name="SpiritGemCard2" type="Control" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList" unique_id=1104810386]
+anchors_preset = 0
+offset_left = 164.0
+offset_right = 240.0
+offset_bottom = 68.0
+
+[node name="SpiritGemCardArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList/SpiritGemCard2" unique_id=752563558]
+layout_mode = 0
+offset_right = 76.0
+offset_bottom = 68.0
+mouse_filter = 2
+texture = ExtResource("15")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SpiritGemButton2" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList/SpiritGemCard2" unique_id=2118614516]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 8.0
+offset_right = 72.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Spirit"
+flat = true
+clip_text = true
+
+[node name="SpiritGemCard3" type="Control" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList" unique_id=124318844]
+anchors_preset = 0
+offset_left = 246.0
+offset_right = 322.0
+offset_bottom = 68.0
+
+[node name="SpiritGemCardArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList/SpiritGemCard3" unique_id=1280906627]
+layout_mode = 0
+offset_right = 76.0
+offset_bottom = 68.0
+mouse_filter = 2
+texture = ExtResource("15")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SpiritGemButton3" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList/SpiritGemCard3" unique_id=623254617]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 8.0
+offset_right = 72.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Spirit"
+flat = true
+clip_text = true
+
+[node name="SpiritGemCard4" type="Control" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList" unique_id=1533870502]
+anchors_preset = 0
+offset_left = 328.0
+offset_right = 404.0
+offset_bottom = 68.0
+
+[node name="SpiritGemCardArt4" type="TextureRect" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList/SpiritGemCard4" unique_id=253454887]
+layout_mode = 0
+offset_right = 76.0
+offset_bottom = 68.0
+mouse_filter = 2
+texture = ExtResource("15")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SpiritGemButton4" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList/SpiritGemCard4" unique_id=1591955803]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 8.0
+offset_right = 72.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Spirit"
+flat = true
+clip_text = true
+
+[node name="SpiritGemCard5" type="Control" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList" unique_id=1430278233]
+anchors_preset = 0
+offset_left = 410.0
+offset_right = 486.0
+offset_bottom = 68.0
+
+[node name="SpiritGemCardArt5" type="TextureRect" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList/SpiritGemCard5" unique_id=1955880599]
+layout_mode = 0
+offset_right = 76.0
+offset_bottom = 68.0
+mouse_filter = 2
+texture = ExtResource("15")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SpiritGemButton5" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList/SpiritGemCard5" unique_id=711980542]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 8.0
+offset_right = 72.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Spirit"
+flat = true
+clip_text = true
+
+[node name="ChoiceSection" type="Control" parent="PanelRoot/ContentRoot/BottomGroup" unique_id=1393940315]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 770.0
+offset_right = 1128.0
+offset_bottom = 98.0
+
+[node name="ChoicePanelFrame" type="TextureRect" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection" unique_id=634040451]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 358.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = ExtResource("5")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ChoiceTitle" type="Label" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection" unique_id=1788431401]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 346.0
+offset_bottom = 28.0
+theme_override_colors/font_color = Color(0.9, 0.78, 0.48, 1)
+theme_override_font_sizes/font_size = 11
+text = "No choice pending."
+vertical_alignment = 1
+
+[node name="ChoiceButtonGrid" type="Control" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection" unique_id=1184698268]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 12.0
+offset_top = 34.0
+offset_right = 346.0
+offset_bottom = 88.0
+
+[node name="ChoiceButton0" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=1659372506]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 52.0
+offset_bottom = 16.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton1" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=550768970]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 56.0
+offset_right = 108.0
+offset_bottom = 16.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton2" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=249341790]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 112.0
+offset_right = 164.0
+offset_bottom = 16.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton3" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=738394159]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 168.0
+offset_right = 220.0
+offset_bottom = 16.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton4" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=1422390803]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 224.0
+offset_right = 276.0
+offset_bottom = 16.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton5" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=451721129]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 280.0
+offset_right = 332.0
+offset_bottom = 16.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton6" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=732643492]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 18.0
+offset_right = 52.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton7" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=591983996]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 56.0
+offset_top = 18.0
+offset_right = 108.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton8" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=79455037]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 112.0
+offset_top = 18.0
+offset_right = 164.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton9" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=301971133]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 168.0
+offset_top = 18.0
+offset_right = 220.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton10" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=2077440402]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 224.0
+offset_top = 18.0
+offset_right = 276.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton11" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=1721488345]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 280.0
+offset_top = 18.0
+offset_right = 332.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton12" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=483286746]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 36.0
+offset_right = 52.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton13" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=1511252365]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 56.0
+offset_top = 36.0
+offset_right = 108.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton14" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=1168056137]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 112.0
+offset_top = 36.0
+offset_right = 164.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton15" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=1043468669]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 168.0
+offset_top = 36.0
+offset_right = 220.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton16" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=1999235056]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 224.0
+offset_top = 36.0
+offset_right = 276.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ChoiceButton17" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=95232019]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 280.0
+offset_top = 36.0
+offset_right = 332.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 7
+text = "Choice"
+flat = true
+clip_text = true
+
+[node name="ActionSection" type="Control" parent="PanelRoot/ContentRoot" unique_id=1066472695]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 278.0
+offset_top = 666.0
+offset_right = 1002.0
+offset_bottom = 712.0
+
+[node name="AddSpiritSocketButtonArt" type="TextureRect" parent="PanelRoot/ContentRoot/ActionSection" unique_id=1957522558]
+layout_mode = 0
+offset_top = 4.0
+offset_right = 150.0
+offset_bottom = 36.0
+mouse_filter = 2
+texture = ExtResource("10")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AddSpiritSocketButton" type="Button" parent="PanelRoot/ContentRoot/ActionSection" unique_id=1838632303]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 142.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 10
+text = "+ Spirit Socket"
+flat = true
+clip_text = true
+
+[node name="EnableSpiritButtonArt" type="TextureRect" parent="PanelRoot/ContentRoot/ActionSection" unique_id=5310800]
+layout_mode = 0
+offset_left = 164.0
+offset_top = 4.0
+offset_right = 314.0
+offset_bottom = 36.0
+mouse_filter = 2
+texture = ExtResource("10")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="EnableSpiritButton" type="Button" parent="PanelRoot/ContentRoot/ActionSection" unique_id=1171071784]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 172.0
+offset_top = 8.0
+offset_right = 306.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 10
+text = "Enable Spirit"
+flat = true
+clip_text = true
+
+[node name="CloseBottomButtonArt" type="TextureRect" parent="PanelRoot/ContentRoot/ActionSection" unique_id=2047055360]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 4.0
+offset_right = 670.0
+offset_bottom = 36.0
+mouse_filter = 2
+texture = ExtResource("10")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CloseBottomButton" type="Button" parent="PanelRoot/ContentRoot/ActionSection" unique_id=1209686020]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 528.0
+offset_top = 8.0
+offset_right = 662.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 10
+text = "Close"
+flat = true
+clip_text = true
+
+[node name="SwapDummyButton" type="Button" parent="PanelRoot/ContentRoot/ActionSection" unique_id=1354877613]
+layout_mode = 0
+offset_left = 338.0
+offset_top = 8.0
+offset_right = 488.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 10
+text = "Swap"
+flat = true
+clip_text = true
+
+[node name="DragLayer" type="Control" parent="PanelRoot/ContentRoot" unique_id=985185747]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
