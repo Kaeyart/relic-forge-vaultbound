@@ -67,6 +67,7 @@ static func effective_skill_data(state: RVGameState, skill_name: String) -> Dict
 
 	skill_data["tags"] = tags
 	skill_data["flags"] = flags
+	skill_data = RVSkillBehaviorSystem.apply_identity_scaling(state, skill_name, skill_data)
 	return skill_data
 
 static func skill_damage(state: RVGameState, skill_name: String) -> float:

@@ -1,6 +1,7 @@
 class_name RVCombatArena
 extends Node2D
 const SpellVFXSystemScript := preload("res://scripts/visuals/SpellVFXSystem.gd")
+const CombatFeedbackSystemScript := preload("res://scripts/systems/CombatFeedbackSystem.gd")
 const MapPropVisualSystemScript := preload("res://scripts/visuals/MapPropVisualSystem.gd")
 
 const MapLayoutSystemScript := preload("res://scripts/systems/MapLayoutSystem.gd")
@@ -245,6 +246,7 @@ func cast_selected_skill(state: RVGameState, aim: Vector2) -> void:
 		if not tags.has(str(flag_value)):
 			tags.append(str(flag_value))
 	_emit_skill_proxy_vfx(skill_name, state.player_pos, aim, direction, skill_data, tags)
+	RVSpellVFXSystem.spawn_skill_cast(self, skill_name, state.player_pos, aim, tags)
 	match skill_name:
 		"Cleave":
 			var center: Vector2 = state.player_pos + direction * 64.0
@@ -540,9 +542,14 @@ func _spawn_enemy(enemy_data: Dictionary) -> void:
 	enemy.setup(enemy_data)
 	enemy.died.connect(_on_enemy_died)
 	enemy.hit_player.connect(_on_enemy_hit_player)
-	enemy.projectile_requested.connect(_on_enemy_projectile_requested)
-	enemy.zone_requested.connect(_on_enemy_zone_requested)
-	enemy.spawn_requested.connect(_on_enemy_spawn_requested)
+	if enemy.has_signal("damaged"):
+		enemy.damaged.connect(_on_enemy_damaged)
+	if enemy.has_signal("projectile_requested"):
+		enemy.projectile_requested.connect(_on_enemy_projectile_requested)
+	if enemy.has_signal("zone_requested"):
+		enemy.zone_requested.connect(_on_enemy_zone_requested)
+	if enemy.has_signal("spawn_requested"):
+		enemy.spawn_requested.connect(_on_enemy_spawn_requested)
 
 func _spawn_projectile(pos: Vector2, vel: Vector2, damage: float, radius: float, tags: Array, from_enemy: bool) -> void:
 	if projectile_scene == null:
@@ -637,6 +644,8 @@ func _damage_player(state: RVGameState, amount: float) -> void:
 		player_died.emit()
 
 func _on_enemy_died(enemy: RVEnemyActor) -> void:
+	var death_root: Node2D = _ensure_vfx_root() if has_method("_ensure_vfx_root") else self
+	CombatFeedbackSystemScript.enemy_death(self, death_root, enemy.global_position, [])
 	if state_ref != null:
 		RVProgressionSystem.award_kill(state_ref)
 		if str(activity.get("kind", "")) == "map":
@@ -731,6 +740,7 @@ func _ensure_vfx_root() -> Node2D:
 func _emit_skill_proxy_vfx(skill_name: String, origin: Vector2, aim: Vector2, direction: Vector2, skill_data: Dictionary, tags: Array) -> void:
 	var root: Node2D = _ensure_vfx_root()
 	SpellVFXSystemScript.emit_skill(self, root, skill_name, origin, aim, direction, skill_data, tags)
+	CombatFeedbackSystemScript.skill_cast_feedback(self, root, skill_name, origin, aim, direction, skill_data, tags)
 
 func _decorate_runtime_map_props(layout: Dictionary) -> void:
 	if map_visual_root == null:
@@ -741,3 +751,8 @@ func _clear_runtime_vfx() -> void:
 	if vfx_root != null and is_instance_valid(vfx_root):
 		vfx_root.queue_free()
 	vfx_root = null
+
+
+func _on_enemy_damaged(enemy: RVEnemyActor, amount: float, tags: Array = []) -> void:
+	var root: Node2D = _ensure_vfx_root() if has_method("_ensure_vfx_root") else self
+	CombatFeedbackSystemScript.enemy_hit(self, root, enemy, amount, tags)
