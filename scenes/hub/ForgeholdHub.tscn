@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://do0qtk71pf6yr" path="res://assets/hub/stations/station_passive_shrine.svg" id="7_passive"]
 [ext_resource type="Texture2D" uid="uid://csucn1ajuc80" path="res://assets/hub/stations/station_skill_altar.svg" id="8_skill"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_station"]
+[ext_resource type="Texture2D" path="res://assets/hub/stations/station_map_device.svg" id="9_mapdevice"] [sub_resource type="CircleShape2D" id="CircleShape2D_station"]
 radius = 58.0
 
 [node name="ForgeholdHub" type="Node2D" unique_id=755738362]
@@ -386,3 +386,4 @@ vertical_alignment = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/HubServices/TrainingDummy/InteractionArea" unique_id=514205410]
 shape = SubResource("CircleShape2D_station")
+ [node name="MapDevice" type="Node2D" parent="Stations/HubServices"] position = Vector2(1010, 455) script = ExtResource("2_station") station_id = "map_device" station_type = "map_device" display_name = "Map Device" prompt_text = "E - Open Map Device" interaction_radius = 64.0 station_color = Color(0.58, 0.85, 1, 1) visual_texture = ExtResource("9_mapdevice") visual_scale = Vector2(1.05, 1.05) [node name="Visual" type="Sprite2D" parent="Stations/HubServices/MapDevice"] scale = Vector2(1.05, 1.05) texture = ExtResource("9_mapdevice") [node name="NameLabel" type="Label" parent="Stations/HubServices/MapDevice"] offset_left = -86.0 offset_top = 56.0 offset_right = 86.0 offset_bottom = 80.0 text = "Map Device" horizontal_alignment = 1 vertical_alignment = 1 [node name="InteractionArea" type="Area2D" parent="Stations/HubServices/MapDevice"] [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/HubServices/MapDevice/InteractionArea"] shape = SubResource("CircleShape2D_station")

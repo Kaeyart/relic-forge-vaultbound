@@ -73,7 +73,16 @@ func interact_primary(state: RVGameState) -> Dictionary:
 	if station == null:
 		return {}
 
-	match station.station_type:
+	var station_type: String = str(station.station_type)
+	var station_id: String = str(station.station_id)
+
+	# Map Device compatibility: handle either the proper station_type or a scene that
+	# still has the right station_id/display_name but an older enum value.
+	if station_type == "map_device" or station_id == "map_device" or station.display_name.to_lower().contains("map device"):
+		state.toggle_panel("map_device")
+		return {}
+
+	match station_type:
 		"activity":
 			return RVContractDB.by_id(station.activity_id)
 		"inventory":
@@ -91,17 +100,23 @@ func interact_primary(state: RVGameState) -> Dictionary:
 		"training":
 			state.add_notice("Training dummy not wired yet")
 		_:
-			state.add_notice("Station not wired yet")
+			state.add_notice("Station not wired yet: " + station.display_name)
 
 	return {}
-
 
 func interact_secondary(state: RVGameState) -> void:
 	var station: RVHubStation = get_nearest_station(state.player_pos)
 	if station == null:
 		return
 
-	match station.station_type:
+	var station_type: String = str(station.station_type)
+	var station_id: String = str(station.station_id)
+
+	if station_type == "map_device" or station_id == "map_device" or station.display_name.to_lower().contains("map device"):
+		state.toggle_panel("stash")
+		return
+
+	match station_type:
 		"inventory":
 			state.toggle_panel("character")
 		"crafting":
@@ -114,3 +129,4 @@ func interact_secondary(state: RVGameState) -> void:
 			state.toggle_panel("skill_gems")
 		_:
 			state.add_notice(station.display_name)
+
