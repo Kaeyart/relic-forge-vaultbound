@@ -1,0 +1,1283 @@
+{
+  "version": "048",
+  "assets": [
+    {
+      "sheet": 1,
+      "index": 0,
+      "name": "main_window_panel",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_01_00_main_window_panel.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_01.png",
+      "bbox": [
+        54,
+        16,
+        871,
+        574
+      ],
+      "size": [
+        817,
+        558
+      ],
+      "alpha_area": 371516
+    },
+    {
+      "sheet": 1,
+      "index": 1,
+      "name": "top_detail_panel",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_01_01_top_detail_panel.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_01.png",
+      "bbox": [
+        925,
+        58,
+        1345,
+        303
+      ],
+      "size": [
+        420,
+        245
+      ],
+      "alpha_area": 86773
+    },
+    {
+      "sheet": 1,
+      "index": 2,
+      "name": "mid_detail_panel",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_01_02_mid_detail_panel.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_01.png",
+      "bbox": [
+        925,
+        309,
+        1345,
+        560
+      ],
+      "size": [
+        420,
+        251
+      ],
+      "alpha_area": 87702
+    },
+    {
+      "sheet": 1,
+      "index": 3,
+      "name": "center_detail_panel",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_01_03_center_detail_panel.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_01.png",
+      "bbox": [
+        573,
+        565,
+        923,
+        878
+      ],
+      "size": [
+        350,
+        313
+      ],
+      "alpha_area": 90811
+    },
+    {
+      "sheet": 1,
+      "index": 4,
+      "name": "wide_detail_panel",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_01_04_wide_detail_panel.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_01.png",
+      "bbox": [
+        967,
+        574,
+        1353,
+        779
+      ],
+      "size": [
+        386,
+        205
+      ],
+      "alpha_area": 64302
+    },
+    {
+      "sheet": 1,
+      "index": 5,
+      "name": "header_bar_star",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_01_05_header_bar_star.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_01.png",
+      "bbox": [
+        59,
+        602,
+        553,
+        689
+      ],
+      "size": [
+        494,
+        87
+      ],
+      "alpha_area": 24506
+    },
+    {
+      "sheet": 1,
+      "index": 6,
+      "name": "header_bar_skull",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_01_06_header_bar_skull.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_01.png",
+      "bbox": [
+        59,
+        714,
+        553,
+        797
+      ],
+      "size": [
+        494,
+        83
+      ],
+      "alpha_area": 24371
+    },
+    {
+      "sheet": 1,
+      "index": 7,
+      "name": "list_panel",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_01_07_list_panel.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_01.png",
+      "bbox": [
+        968,
+        785,
+        1352,
+        1068
+      ],
+      "size": [
+        384,
+        283
+      ],
+      "alpha_area": 92561
+    },
+    {
+      "sheet": 1,
+      "index": 8,
+      "name": "socket_row_frame",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_01_08_socket_row_frame.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_01.png",
+      "bbox": [
+        54,
+        874,
+        759,
+        1035
+      ],
+      "size": [
+        705,
+        161
+      ],
+      "alpha_area": 80251
+    },
+    {
+      "sheet": 2,
+      "index": 0,
+      "name": "gem_slot_empty",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_02_00_gem_slot_empty.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_02.png",
+      "bbox": [
+        37,
+        58,
+        265,
+        352
+      ],
+      "size": [
+        228,
+        294
+      ],
+      "alpha_area": 35370
+    },
+    {
+      "sheet": 2,
+      "index": 1,
+      "name": "gem_slot_hover",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_02_01_gem_slot_hover.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_02.png",
+      "bbox": [
+        271,
+        58,
+        501,
+        352
+      ],
+      "size": [
+        230,
+        294
+      ],
+      "alpha_area": 35990
+    },
+    {
+      "sheet": 2,
+      "index": 2,
+      "name": "gem_slot_selected",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_02_02_gem_slot_selected.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_02.png",
+      "bbox": [
+        502,
+        58,
+        733,
+        353
+      ],
+      "size": [
+        231,
+        295
+      ],
+      "alpha_area": 36685
+    },
+    {
+      "sheet": 2,
+      "index": 3,
+      "name": "gem_slot_filled_red",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_02_03_gem_slot_filled_red.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_02.png",
+      "bbox": [
+        732,
+        59,
+        959,
+        353
+      ],
+      "size": [
+        227,
+        294
+      ],
+      "alpha_area": 35362
+    },
+    {
+      "sheet": 2,
+      "index": 4,
+      "name": "gem_slot_disabled",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_02_04_gem_slot_disabled.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_02.png",
+      "bbox": [
+        1183,
+        59,
+        1406,
+        352
+      ],
+      "size": [
+        223,
+        293
+      ],
+      "alpha_area": 34458
+    },
+    {
+      "sheet": 2,
+      "index": 5,
+      "name": "gem_slot_locked_web",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_02_05_gem_slot_locked_web.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_02.png",
+      "bbox": [
+        953,
+        61,
+        1175,
+        352
+      ],
+      "size": [
+        222,
+        291
+      ],
+      "alpha_area": 34120
+    },
+    {
+      "sheet": 2,
+      "index": 6,
+      "name": "featured_skill_red",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_02_06_featured_skill_red.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_02.png",
+      "bbox": [
+        131,
+        368,
+        406,
+        835
+      ],
+      "size": [
+        275,
+        467
+      ],
+      "alpha_area": 83215
+    },
+    {
+      "sheet": 2,
+      "index": 7,
+      "name": "featured_spirit_blue",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_02_07_featured_spirit_blue.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_02.png",
+      "bbox": [
+        463,
+        369,
+        734,
+        834
+      ],
+      "size": [
+        271,
+        465
+      ],
+      "alpha_area": 81841
+    },
+    {
+      "sheet": 2,
+      "index": 8,
+      "name": "uncut_gem_plate",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_02_08_uncut_gem_plate.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_02.png",
+      "bbox": [
+        835,
+        379,
+        1097,
+        811
+      ],
+      "size": [
+        262,
+        432
+      ],
+      "alpha_area": 78789
+    },
+    {
+      "sheet": 2,
+      "index": 9,
+      "name": "mini_socket_empty",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_02_09_mini_socket_empty.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_02.png",
+      "bbox": [
+        1181,
+        508,
+        1367,
+        704
+      ],
+      "size": [
+        186,
+        196
+      ],
+      "alpha_area": 16781
+    },
+    {
+      "sheet": 2,
+      "index": 10,
+      "name": "socket_empty_small",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_02_10_socket_empty_small.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_02.png",
+      "bbox": [
+        308,
+        849,
+        476,
+        1013
+      ],
+      "size": [
+        168,
+        164
+      ],
+      "alpha_area": 12949
+    },
+    {
+      "sheet": 2,
+      "index": 11,
+      "name": "socket_filled_red_small",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_02_11_socket_filled_red_small.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_02.png",
+      "bbox": [
+        517,
+        849,
+        687,
+        1013
+      ],
+      "size": [
+        170,
+        164
+      ],
+      "alpha_area": 13019
+    },
+    {
+      "sheet": 2,
+      "index": 12,
+      "name": "socket_locked_small",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_02_12_socket_locked_small.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_02.png",
+      "bbox": [
+        101,
+        853,
+        253,
+        1007
+      ],
+      "size": [
+        152,
+        154
+      ],
+      "alpha_area": 12626
+    },
+    {
+      "sheet": 2,
+      "index": 13,
+      "name": "socket_connector_skull",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_02_13_socket_connector_skull.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_02.png",
+      "bbox": [
+        746,
+        853,
+        1323,
+        1025
+      ],
+      "size": [
+        577,
+        172
+      ],
+      "alpha_area": 36749
+    },
+    {
+      "sheet": 3,
+      "index": 0,
+      "name": "wide_frame_open",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_00_wide_frame_open.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        721,
+        17,
+        1170,
+        338
+      ],
+      "size": [
+        449,
+        321
+      ],
+      "alpha_area": 31615
+    },
+    {
+      "sheet": 3,
+      "index": 1,
+      "name": "button_normal",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_01_button_normal.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        37,
+        33,
+        506,
+        165
+      ],
+      "size": [
+        469,
+        132
+      ],
+      "alpha_area": 38762
+    },
+    {
+      "sheet": 3,
+      "index": 2,
+      "name": "narrow_frame_open",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_02_narrow_frame_open.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        1183,
+        44,
+        1410,
+        329
+      ],
+      "size": [
+        227,
+        285
+      ],
+      "alpha_area": 19696
+    },
+    {
+      "sheet": 3,
+      "index": 3,
+      "name": "icon_button_normal",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_03_icon_button_normal.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        542,
+        55,
+        660,
+        173
+      ],
+      "size": [
+        118,
+        118
+      ],
+      "alpha_area": 11094
+    },
+    {
+      "sheet": 3,
+      "index": 4,
+      "name": "button_hover_red",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_04_button_hover_red.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        37,
+        167,
+        506,
+        300
+      ],
+      "size": [
+        469,
+        133
+      ],
+      "alpha_area": 39125
+    },
+    {
+      "sheet": 3,
+      "index": 5,
+      "name": "icon_button_hover_red",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_05_icon_button_hover_red.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        542,
+        190,
+        660,
+        308
+      ],
+      "size": [
+        118,
+        118
+      ],
+      "alpha_area": 11093
+    },
+    {
+      "sheet": 3,
+      "index": 6,
+      "name": "button_pressed",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_06_button_pressed.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        37,
+        302,
+        506,
+        434
+      ],
+      "size": [
+        469,
+        132
+      ],
+      "alpha_area": 38748
+    },
+    {
+      "sheet": 3,
+      "index": 7,
+      "name": "icon_button_pressed",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_07_icon_button_pressed.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        542,
+        325,
+        660,
+        443
+      ],
+      "size": [
+        118,
+        118
+      ],
+      "alpha_area": 11099
+    },
+    {
+      "sheet": 3,
+      "index": 8,
+      "name": "round_badge_neutral",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_08_round_badge_neutral.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        885,
+        351,
+        1053,
+        538
+      ],
+      "size": [
+        168,
+        187
+      ],
+      "alpha_area": 13241
+    },
+    {
+      "sheet": 3,
+      "index": 9,
+      "name": "round_badge_fire",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_09_round_badge_fire.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        1057,
+        351,
+        1226,
+        538
+      ],
+      "size": [
+        169,
+        187
+      ],
+      "alpha_area": 13255
+    },
+    {
+      "sheet": 3,
+      "index": 10,
+      "name": "round_badge_blue",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_10_round_badge_blue.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        1240,
+        351,
+        1408,
+        538
+      ],
+      "size": [
+        168,
+        187
+      ],
+      "alpha_area": 13229
+    },
+    {
+      "sheet": 3,
+      "index": 11,
+      "name": "round_badge_green",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_11_round_badge_green.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        706,
+        352,
+        875,
+        538
+      ],
+      "size": [
+        169,
+        186
+      ],
+      "alpha_area": 13256
+    },
+    {
+      "sheet": 3,
+      "index": 12,
+      "name": "button_disabled",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_12_button_disabled.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        39,
+        437,
+        504,
+        573
+      ],
+      "size": [
+        465,
+        136
+      ],
+      "alpha_area": 40175
+    },
+    {
+      "sheet": 3,
+      "index": 13,
+      "name": "icon_button_disabled",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_13_icon_button_disabled.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        542,
+        460,
+        660,
+        580
+      ],
+      "size": [
+        118,
+        120
+      ],
+      "alpha_area": 11311
+    },
+    {
+      "sheet": 3,
+      "index": 14,
+      "name": "card_frame_red",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_14_card_frame_red.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        1052,
+        572,
+        1412,
+        1020
+      ],
+      "size": [
+        360,
+        448
+      ],
+      "alpha_area": 48737
+    },
+    {
+      "sheet": 3,
+      "index": 15,
+      "name": "selection_ring_gold",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_15_selection_ring_gold.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        729,
+        608,
+        1051,
+        970
+      ],
+      "size": [
+        322,
+        362
+      ],
+      "alpha_area": 14331
+    },
+    {
+      "sheet": 3,
+      "index": 16,
+      "name": "tag_chip_small",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_16_tag_chip_small.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        54,
+        621,
+        351,
+        705
+      ],
+      "size": [
+        297,
+        84
+      ],
+      "alpha_area": 14109
+    },
+    {
+      "sheet": 3,
+      "index": 17,
+      "name": "round_chip_red",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_17_round_chip_red.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        370,
+        653,
+        554,
+        867
+      ],
+      "size": [
+        184,
+        214
+      ],
+      "alpha_area": 16328
+    },
+    {
+      "sheet": 3,
+      "index": 18,
+      "name": "oct_chip_blue",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_18_oct_chip_blue.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        558,
+        664,
+        725,
+        865
+      ],
+      "size": [
+        167,
+        201
+      ],
+      "alpha_area": 16484
+    },
+    {
+      "sheet": 3,
+      "index": 19,
+      "name": "tag_chip_gold",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_19_tag_chip_gold.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        54,
+        716,
+        351,
+        800
+      ],
+      "size": [
+        297,
+        84
+      ],
+      "alpha_area": 14310
+    },
+    {
+      "sheet": 3,
+      "index": 20,
+      "name": "tag_chip_dark",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_20_tag_chip_dark.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        77,
+        816,
+        321,
+        890
+      ],
+      "size": [
+        244,
+        74
+      ],
+      "alpha_area": 10196
+    },
+    {
+      "sheet": 3,
+      "index": 21,
+      "name": "button_small_dark",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_03_21_button_small_dark.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_03.png",
+      "bbox": [
+        75,
+        917,
+        336,
+        1005
+      ],
+      "size": [
+        261,
+        88
+      ],
+      "alpha_area": 15060
+    },
+    {
+      "sheet": 4,
+      "index": 0,
+      "name": "gem_card_red_tall",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_00_gem_card_red_tall.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        710,
+        15,
+        935,
+        387
+      ],
+      "size": [
+        225,
+        372
+      ],
+      "alpha_area": 70633
+    },
+    {
+      "sheet": 4,
+      "index": 1,
+      "name": "gem_card_blue_tall",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_01_gem_card_blue_tall.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        942,
+        17,
+        1166,
+        386
+      ],
+      "size": [
+        224,
+        369
+      ],
+      "alpha_area": 68825
+    },
+    {
+      "sheet": 4,
+      "index": 2,
+      "name": "gem_card_purple_tall",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_02_gem_card_purple_tall.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        1173,
+        17,
+        1397,
+        387
+      ],
+      "size": [
+        224,
+        370
+      ],
+      "alpha_area": 69710
+    },
+    {
+      "sheet": 4,
+      "index": 3,
+      "name": "large_gem_badge_group",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_03_large_gem_badge_group.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        261,
+        28,
+        695,
+        304
+      ],
+      "size": [
+        434,
+        276
+      ],
+      "alpha_area": 66907
+    },
+    {
+      "sheet": 4,
+      "index": 4,
+      "name": "gem_badge_gold",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_04_gem_badge_gold.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        46,
+        29,
+        272,
+        303
+      ],
+      "size": [
+        226,
+        274
+      ],
+      "alpha_area": 33357
+    },
+    {
+      "sheet": 4,
+      "index": 5,
+      "name": "gem_badge_blue",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_05_gem_badge_blue.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        70,
+        298,
+        245,
+        604
+      ],
+      "size": [
+        175,
+        306
+      ],
+      "alpha_area": 34728
+    },
+    {
+      "sheet": 4,
+      "index": 6,
+      "name": "gem_badge_purple",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_06_gem_badge_purple.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        286,
+        298,
+        457,
+        604
+      ],
+      "size": [
+        171,
+        306
+      ],
+      "alpha_area": 34025
+    },
+    {
+      "sheet": 4,
+      "index": 7,
+      "name": "gem_plate_white",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_07_gem_plate_white.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        494,
+        298,
+        666,
+        604
+      ],
+      "size": [
+        172,
+        306
+      ],
+      "alpha_area": 34030
+    },
+    {
+      "sheet": 4,
+      "index": 8,
+      "name": "gem_plate_blue",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_08_gem_plate_blue.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        683,
+        386,
+        931,
+        612
+      ],
+      "size": [
+        248,
+        226
+      ],
+      "alpha_area": 43066
+    },
+    {
+      "sheet": 4,
+      "index": 9,
+      "name": "gem_plate_purple",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_09_gem_plate_purple.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        933,
+        394,
+        1168,
+        611
+      ],
+      "size": [
+        235,
+        217
+      ],
+      "alpha_area": 40144
+    },
+    {
+      "sheet": 4,
+      "index": 10,
+      "name": "choice_card_red",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_10_choice_card_red.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        1170,
+        394,
+        1405,
+        612
+      ],
+      "size": [
+        235,
+        218
+      ],
+      "alpha_area": 40188
+    },
+    {
+      "sheet": 4,
+      "index": 11,
+      "name": "choice_card_blue",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_11_choice_card_blue.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        103,
+        601,
+        287,
+        774
+      ],
+      "size": [
+        184,
+        173
+      ],
+      "alpha_area": 16609
+    },
+    {
+      "sheet": 4,
+      "index": 12,
+      "name": "choice_card_purple",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_12_choice_card_purple.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        827,
+        635,
+        1347,
+        755
+      ],
+      "size": [
+        520,
+        120
+      ],
+      "alpha_area": 24033
+    },
+    {
+      "sheet": 4,
+      "index": 13,
+      "name": "socket_row_five",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_13_socket_row_five.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        319,
+        640,
+        775,
+        767
+      ],
+      "size": [
+        456,
+        127
+      ],
+      "alpha_area": 33853
+    },
+    {
+      "sheet": 4,
+      "index": 14,
+      "name": "small_round_slot",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_14_small_round_slot.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        515,
+        775,
+        930,
+        846
+      ],
+      "size": [
+        415,
+        71
+      ],
+      "alpha_area": 3808
+    },
+    {
+      "sheet": 4,
+      "index": 15,
+      "name": "divider_star_grey",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_15_divider_star_grey.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        67,
+        784,
+        447,
+        846
+      ],
+      "size": [
+        380,
+        62
+      ],
+      "alpha_area": 5278
+    },
+    {
+      "sheet": 4,
+      "index": 16,
+      "name": "divider_skull_purple",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_16_divider_skull_purple.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        976,
+        793,
+        1374,
+        839
+      ],
+      "size": [
+        398,
+        46
+      ],
+      "alpha_area": 4193
+    },
+    {
+      "sheet": 4,
+      "index": 17,
+      "name": "divider_skull_gold",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_17_divider_skull_gold.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        56,
+        853,
+        459,
+        917
+      ],
+      "size": [
+        403,
+        64
+      ],
+      "alpha_area": 6242
+    },
+    {
+      "sheet": 4,
+      "index": 18,
+      "name": "divider_red",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_18_divider_red.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        518,
+        854,
+        926,
+        911
+      ],
+      "size": [
+        408,
+        57
+      ],
+      "alpha_area": 5881
+    },
+    {
+      "sheet": 4,
+      "index": 19,
+      "name": "divider_green",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_19_divider_green.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        975,
+        856,
+        1374,
+        915
+      ],
+      "size": [
+        399,
+        59
+      ],
+      "alpha_area": 4724
+    },
+    {
+      "sheet": 4,
+      "index": 20,
+      "name": "divider_red_rough",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_20_divider_red_rough.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        521,
+        917,
+        923,
+        988
+      ],
+      "size": [
+        402,
+        71
+      ],
+      "alpha_area": 4587
+    },
+    {
+      "sheet": 4,
+      "index": 21,
+      "name": "divider_blue",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_21_divider_blue.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        56,
+        920,
+        459,
+        986
+      ],
+      "size": [
+        403,
+        66
+      ],
+      "alpha_area": 5929
+    },
+    {
+      "sheet": 4,
+      "index": 22,
+      "name": "divider_purple",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_22_divider_purple.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        975,
+        924,
+        1375,
+        984
+      ],
+      "size": [
+        400,
+        60
+      ],
+      "alpha_area": 4339
+    },
+    {
+      "sheet": 4,
+      "index": 23,
+      "name": "divider_blue_rough",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_23_divider_blue_rough.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        521,
+        985,
+        922,
+        1063
+      ],
+      "size": [
+        401,
+        78
+      ],
+      "alpha_area": 5921
+    },
+    {
+      "sheet": 4,
+      "index": 24,
+      "name": "divider_purple_center",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_24_divider_purple_center.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        56,
+        989,
+        459,
+        1056
+      ],
+      "size": [
+        403,
+        67
+      ],
+      "alpha_area": 5959
+    },
+    {
+      "sheet": 4,
+      "index": 25,
+      "name": "divider_purple_rough",
+      "file": "assets/ui/skill_gems/patch048/slices/sg_04_25_divider_purple_rough.png",
+      "source": "assets/ui/skill_gems/patch048/source/skill_gems_sheet_04.png",
+      "bbox": [
+        974,
+        994,
+        1375,
+        1056
+      ],
+      "size": [
+        401,
+        62
+      ],
+      "alpha_area": 4493
+    }
+  ]
+}

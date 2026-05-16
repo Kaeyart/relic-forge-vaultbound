@@ -261,6 +261,10 @@ func _refresh_spirit_buttons() -> void:
 		_register_zone(button, {"kind": "target", "target_type": "spirit", "target_index": i})
 
 func _refresh_socket_buttons() -> void:
+	# Scene-authored UI rule:
+	# the socket art lives in SkillGemsPanel.tscn. These Button nodes are only
+	# transparent click/drop targets. Do not assign large PNG icons here, or Godot
+	# will render the raw slice size over the hand-placed scene art.
 	var target: Dictionary = _current_socket_target()
 	var supports: Array = target.get("supports", []) if not target.is_empty() else []
 	var max_sockets: int = int(target.get("max_support_sockets", 0)) if not target.is_empty() else 0
@@ -269,21 +273,19 @@ func _refresh_socket_buttons() -> void:
 		button.visible = true
 		button.disabled = false
 		button.icon = null
+		button.text = ""
+		button.flat = true
+		button.focus_mode = Control.FOCUS_NONE
+		button.mouse_filter = Control.MOUSE_FILTER_STOP
+		button.modulate = Color(1.0, 1.0, 1.0, 0.01)
 		if i < supports.size():
 			var support_id: String = str(supports[i])
 			var data: Dictionary = RVSkillGemDB.support_data(support_id)
-			button.text = str(data.get("name", support_id)).substr(0, 12)
-			button.icon = socket_filled_texture
 			button.tooltip_text = "Socket " + str(i + 1) + ": " + str(data.get("name", support_id)) + "\nRight-click to remove."
 		elif i < max_sockets:
-			button.text = "Empty"
-			button.icon = socket_empty_texture
 			button.tooltip_text = "Empty socket. Drag or right-click an Uncut Support Gem to fill it."
 		else:
-			button.text = "Locked"
-			button.icon = socket_locked_texture
 			button.tooltip_text = "Locked socket. Use socket upgrade material."
-		button.modulate = Color(1.0, 0.86, 0.48) if i == selected_socket_index else Color.WHITE
 		_register_zone(button, {"kind": "socket", "socket_index": i})
 
 func _refresh_choice_panel() -> void:
