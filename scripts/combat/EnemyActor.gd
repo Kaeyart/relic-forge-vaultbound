@@ -65,7 +65,7 @@ func setup(data: Dictionary) -> void:
 	xp_value = float(data.get("xp", 10.0))
 	enemy_color = data.get("color", enemy_color)
 	statuses.clear()
-	_sync_visual_proxy(data)
+	_sync_visual_proxy({"is_elite": is_elite, "is_map_boss": is_map_boss})
 	ai_state = "idle"
 	ai_timer = 0.0
 	cooldown = randf_range(0.05, 0.40)
@@ -75,6 +75,7 @@ func setup(data: Dictionary) -> void:
 
 func _process(delta: float) -> void:
 	_update_statuses(delta)
+	_push_visual_proxy_state()
 	_sync_visual_statuses()
 
 func update_ai(player_pos: Vector2, delta: float) -> void:
@@ -358,3 +359,18 @@ func _sync_visual_statuses() -> void:
 func _visual_hit_flash() -> void:
 	if visual_rig != null and is_instance_valid(visual_rig) and visual_rig.has_method("flash_hit"):
 		visual_rig.call("flash_hit")
+
+func _push_visual_proxy_state() -> void:
+	if visual_rig == null or not is_instance_valid(visual_rig):
+		return
+	var proxy_state: String = "idle"
+	match ai_state:
+		"windup": proxy_state = "windup"
+		"recover": proxy_state = "recover"
+		"special": proxy_state = "special"
+		"idle": proxy_state = "idle"
+		_: proxy_state = "move"
+	if visual_rig.has_method("set_attack_kind"):
+		visual_rig.call("set_attack_kind", attack_kind, attack_dir)
+	if visual_rig.has_method("set_visual_state"):
+		visual_rig.call("set_visual_state", proxy_state, attack_dir)
