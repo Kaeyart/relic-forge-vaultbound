@@ -1,210 +1,924 @@
-[gd_scene load_steps=2 format=3]
-
+[gd_scene load_steps=21 format=3]
 [ext_resource type="Script" path="res://scripts/ui/panels/SkillGemsPanel.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_01_main_window_panel.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_08_list_panel_rows.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_04_detail_panel_tall.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_05_info_panel_wide.png" id="5"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_02_medium_panel_top.png" id="6"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_03_medium_panel_bottom.png" id="7"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_06_header_bar_skull.png" id="8"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_03_02_button_normal.png" id="9"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_03_05_button_hover.png" id="10"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_01_09_socket_row_frame.png" id="11"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_02_01_gem_slot_empty.png" id="12"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_02_03_gem_slot_selected.png" id="13"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_02_05_gem_slot_equipped.png" id="14"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_02_08_spirit_gem_frame_blue.png" id="15"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_02_09_uncut_gem_holder.png" id="16"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_02_10_mini_support_slot.png" id="17"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_04_02_choice_card_red.png" id="18"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_04_14_divider_bar_large.png" id="19"]
+[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch051/slices/sg_04_26_divider_gold.png" id="20"]
 
 [node name="SkillGemsPanel" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
 script = ExtResource("1")
 
-[node name="Backdrop" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-color = Color(0.015, 0.014, 0.018, 0.91)
+[node name="MainWindowArt" type="TextureRect" parent="SkillGemsPanel"]
+offset_left = 20.0
+offset_top = 15.0
+offset_right = 1260.0
+offset_bottom = 705.0
+texture = ExtResource("2")
+expand_mode = 1
+stretch_mode = 0
 
-[node name="MainFrame" type="PanelContainer" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -600.0
-offset_top = -330.0
-offset_right = 600.0
-offset_bottom = 330.0
+[node name="TitleBarArt" type="TextureRect" parent="SkillGemsPanel"]
+offset_left = 430.0
+offset_top = 22.0
+offset_right = 850.0
+offset_bottom = 82.0
+texture = ExtResource("8")
+expand_mode = 1
+stretch_mode = 0
 
-[node name="RootMargin" type="MarginContainer" parent="MainFrame"]
-layout_mode = 2
-theme_override_constants/margin_left = 18
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 18
-theme_override_constants/margin_bottom = 16
+[node name="TitleLabel" type="Label" parent="SkillGemsPanel"]
+offset_left = 485.0
+offset_top = 36.0
+offset_right = 785.0
+offset_bottom = 71.0
+text = "SKILL GEMS"
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(0.95, 0.82, 0.48, 1.0)
+horizontal_alignment = 1
 
-[node name="RootVBox" type="VBoxContainer" parent="MainFrame/RootMargin"]
-layout_mode = 2
-theme_override_constants/separation = 10
+[node name="ActivePanel" type="Control" parent="SkillGemsPanel"]
+offset_left = 58.0
+offset_top = 92.0
+offset_right = 358.0
+offset_bottom = 637.0
 
-[node name="TitleRow" type="HBoxContainer" parent="MainFrame/RootMargin/RootVBox"]
-layout_mode = 2
-theme_override_constants/separation = 12
+[node name="PanelArt" type="TextureRect" parent="SkillGemsPanel/ActivePanel"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 300.0
+offset_bottom = 545.0
+texture = ExtResource("3")
+expand_mode = 1
+stretch_mode = 0
 
-[node name="Title" type="Label" parent="MainFrame/RootMargin/RootVBox/TitleRow"]
-layout_mode = 2
-text = "SKILL GEM FORGE"
-theme_override_font_sizes/font_size = 22
+[node name="ActiveHeader" type="Label" parent="SkillGemsPanel/ActivePanel"]
+offset_left = 18.0
+offset_top = 16.0
+offset_right = 278.0
+offset_bottom = 40.0
+text = "ACTIVE / UNCUT SKILL GEMS"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.95, 0.84, 0.55, 1.0)
+horizontal_alignment = 1
 
-[node name="HelpLabel" type="Label" parent="MainFrame/RootMargin/RootVBox/TitleRow"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Right-click uncut gems to choose what they become. Right-click support gems to socket them."
-horizontal_alignment = 2
+[node name="ActiveGemButton0" type="Button" parent="SkillGemsPanel/ActivePanel"]
+offset_left = 18.0
+offset_top = 54.0
+offset_right = 282.0
+offset_bottom = 97.0
+text = "Active 1"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 12
 
-[node name="MainColumns" type="HBoxContainer" parent="MainFrame/RootMargin/RootVBox"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 12
+[node name="ActiveGemButton1" type="Button" parent="SkillGemsPanel/ActivePanel"]
+offset_left = 18.0
+offset_top = 109.0
+offset_right = 282.0
+offset_bottom = 152.0
+text = "Active 2"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 12
 
-[node name="ActiveColumn" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns"]
-layout_mode = 2
-custom_minimum_size = Vector2(250, 0)
-theme_override_constants/separation = 6
+[node name="ActiveGemButton2" type="Button" parent="SkillGemsPanel/ActivePanel"]
+offset_left = 18.0
+offset_top = 164.0
+offset_right = 282.0
+offset_bottom = 207.0
+text = "Active 3"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 12
 
-[node name="ActiveHeader" type="Label" parent="MainFrame/RootMargin/RootVBox/MainColumns/ActiveColumn"]
-layout_mode = 2
-text = "ACTIVE SKILL GEMS"
-theme_override_font_sizes/font_size = 15
+[node name="ActiveGemButton3" type="Button" parent="SkillGemsPanel/ActivePanel"]
+offset_left = 18.0
+offset_top = 219.0
+offset_right = 282.0
+offset_bottom = 262.0
+text = "Active 4"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 12
 
-[node name="ActiveScroll" type="ScrollContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/ActiveColumn"]
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 0
+[node name="ActiveGemButton4" type="Button" parent="SkillGemsPanel/ActivePanel"]
+offset_left = 18.0
+offset_top = 274.0
+offset_right = 282.0
+offset_bottom = 317.0
+text = "Active 5"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 12
 
-[node name="ActiveGemList" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/ActiveColumn/ActiveScroll"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 4
+[node name="ActiveGemButton5" type="Button" parent="SkillGemsPanel/ActivePanel"]
+offset_left = 18.0
+offset_top = 329.0
+offset_right = 282.0
+offset_bottom = 372.0
+text = "Active 6"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 12
 
-[node name="SupportColumn" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns"]
-layout_mode = 2
-custom_minimum_size = Vector2(250, 0)
-theme_override_constants/separation = 6
+[node name="ActiveGemButton6" type="Button" parent="SkillGemsPanel/ActivePanel"]
+offset_left = 18.0
+offset_top = 384.0
+offset_right = 282.0
+offset_bottom = 427.0
+text = "Active 7"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 12
 
-[node name="SupportHeader" type="Label" parent="MainFrame/RootMargin/RootVBox/MainColumns/SupportColumn"]
-layout_mode = 2
-text = "SUPPORT GEMS"
-theme_override_font_sizes/font_size = 15
+[node name="ActiveGemButton7" type="Button" parent="SkillGemsPanel/ActivePanel"]
+offset_left = 18.0
+offset_top = 439.0
+offset_right = 282.0
+offset_bottom = 482.0
+text = "Active 8"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 12
 
-[node name="SupportScroll" type="ScrollContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/SupportColumn"]
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 0
+[node name="DetailPanel" type="Control" parent="SkillGemsPanel"]
+offset_left = 380.0
+offset_top = 92.0
+offset_right = 870.0
+offset_bottom = 494.0
 
-[node name="SupportGemList" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/SupportColumn/SupportScroll"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 4
+[node name="PanelArt" type="TextureRect" parent="SkillGemsPanel/DetailPanel"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 490.0
+offset_bottom = 402.0
+texture = ExtResource("4")
+expand_mode = 1
+stretch_mode = 0
 
-[node name="SpiritColumn" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns"]
-layout_mode = 2
-custom_minimum_size = Vector2(250, 0)
-theme_override_constants/separation = 6
+[node name="DetailTitleLabel" type="Label" parent="SkillGemsPanel/DetailPanel"]
+offset_left = 40.0
+offset_top = 24.0
+offset_right = 450.0
+offset_bottom = 50.0
+text = "SELECTED GEM"
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.95, 0.82, 0.48, 1.0)
+horizontal_alignment = 1
 
-[node name="SpiritHeader" type="Label" parent="MainFrame/RootMargin/RootVBox/MainColumns/SpiritColumn"]
-layout_mode = 2
-text = "SPIRIT / RESERVATION GEMS"
-theme_override_font_sizes/font_size = 15
+[node name="SelectedContextLabel" type="Label" parent="SkillGemsPanel/DetailPanel"]
+offset_left = 40.0
+offset_top = 54.0
+offset_right = 450.0
+offset_bottom = 76.0
+text = "Selected: none"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.72, 0.68, 0.58, 1.0)
+horizontal_alignment = 1
 
-[node name="SpiritScroll" type="ScrollContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/SpiritColumn"]
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 0
-
-[node name="SpiritGemList" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/SpiritColumn/SpiritScroll"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 4
-
-[node name="DetailColumn" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 8
-
-[node name="GemDetailLabel" type="RichTextLabel" parent="MainFrame/RootMargin/RootVBox/MainColumns/DetailColumn"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+[node name="DetailLabel" type="RichTextLabel" parent="SkillGemsPanel/DetailPanel"]
+offset_left = 42.0
+offset_top = 82.0
+offset_right = 447.0
+offset_bottom = 272.0
 bbcode_enabled = true
-fit_content = false
 scroll_active = true
 text = "Select a gem."
+theme_override_font_sizes/normal_font_size = 13
 
-[node name="ChoicePanel" type="PanelContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/DetailColumn"]
-unique_name_in_owner = true
-layout_mode = 2
-visible = false
-custom_minimum_size = Vector2(0, 220)
+[node name="SocketRowArt" type="TextureRect" parent="SkillGemsPanel/DetailPanel"]
+offset_left = 28.0
+offset_top = 276.0
+offset_right = 460.0
+offset_bottom = 356.0
+texture = ExtResource("11")
+expand_mode = 1
+stretch_mode = 0
 
-[node name="ChoiceMargin" type="MarginContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/DetailColumn/ChoicePanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+[node name="SocketButton0" type="Button" parent="SkillGemsPanel/DetailPanel"]
+offset_left = 45.0
+offset_top = 298.0
+offset_right = 103.0
+offset_bottom = 334.0
+text = "-"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
 
-[node name="ChoiceVBox" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/DetailColumn/ChoicePanel/ChoiceMargin"]
-layout_mode = 2
-theme_override_constants/separation = 6
+[node name="SocketButton1" type="Button" parent="SkillGemsPanel/DetailPanel"]
+offset_left = 113.0
+offset_top = 298.0
+offset_right = 171.0
+offset_bottom = 334.0
+text = "-"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
 
-[node name="ChoiceTitle" type="Label" parent="MainFrame/RootMargin/RootVBox/MainColumns/DetailColumn/ChoicePanel/ChoiceMargin/ChoiceVBox"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Choose"
-theme_override_font_sizes/font_size = 15
+[node name="SocketButton2" type="Button" parent="SkillGemsPanel/DetailPanel"]
+offset_left = 181.0
+offset_top = 298.0
+offset_right = 239.0
+offset_bottom = 334.0
+text = "-"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
 
-[node name="ChoiceScroll" type="ScrollContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/DetailColumn/ChoicePanel/ChoiceMargin/ChoiceVBox"]
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 0
+[node name="SocketButton3" type="Button" parent="SkillGemsPanel/DetailPanel"]
+offset_left = 249.0
+offset_top = 298.0
+offset_right = 307.0
+offset_bottom = 334.0
+text = "-"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
 
-[node name="ChoiceList" type="VBoxContainer" parent="MainFrame/RootMargin/RootVBox/MainColumns/DetailColumn/ChoicePanel/ChoiceMargin/ChoiceVBox/ChoiceScroll"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 4
+[node name="SocketButton4" type="Button" parent="SkillGemsPanel/DetailPanel"]
+offset_left = 317.0
+offset_top = 298.0
+offset_right = 375.0
+offset_bottom = 334.0
+text = "-"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
 
-[node name="ActionRow" type="HBoxContainer" parent="MainFrame/RootMargin/RootVBox"]
-layout_mode = 2
-theme_override_constants/separation = 8
+[node name="SocketButton5" type="Button" parent="SkillGemsPanel/DetailPanel"]
+offset_left = 385.0
+offset_top = 298.0
+offset_right = 443.0
+offset_bottom = 334.0
+text = "-"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
 
-[node name="EquipButton" type="Button" parent="MainFrame/RootMargin/RootVBox/ActionRow"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Equip Skill"
+[node name="SupportPanel" type="Control" parent="SkillGemsPanel"]
+offset_left = 905.0
+offset_top = 92.0
+offset_right = 1220.0
+offset_bottom = 637.0
 
-[node name="EnableSpiritButton" type="Button" parent="MainFrame/RootMargin/RootVBox/ActionRow"]
-unique_name_in_owner = true
-layout_mode = 2
+[node name="PanelArt" type="TextureRect" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 315.0
+offset_bottom = 545.0
+texture = ExtResource("3")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="SupportHeader" type="Label" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 26.0
+offset_top = 16.0
+offset_right = 286.0
+offset_bottom = 40.0
+text = "SUPPORT GEMS"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.95, 0.84, 0.55, 1.0)
+horizontal_alignment = 1
+
+[node name="SupportHintLabel" type="Label" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 20.0
+offset_top = 42.0
+offset_right = 298.0
+offset_bottom = 74.0
+text = "Click to inspect. Drag onto a skill/spirit. RMB uncut supports."
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.72, 0.68, 0.58, 1.0)
+horizontal_alignment = 1
+
+[node name="SupportGemButton0" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 18.0
+offset_top = 84.0
+offset_right = 150.0
+offset_bottom = 126.0
+text = "Support 1"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SupportGemButton1" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 158.0
+offset_top = 84.0
+offset_right = 290.0
+offset_bottom = 126.0
+text = "Support 2"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SupportGemButton2" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 18.0
+offset_top = 135.0
+offset_right = 150.0
+offset_bottom = 177.0
+text = "Support 3"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SupportGemButton3" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 158.0
+offset_top = 135.0
+offset_right = 290.0
+offset_bottom = 177.0
+text = "Support 4"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SupportGemButton4" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 18.0
+offset_top = 186.0
+offset_right = 150.0
+offset_bottom = 228.0
+text = "Support 5"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SupportGemButton5" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 158.0
+offset_top = 186.0
+offset_right = 290.0
+offset_bottom = 228.0
+text = "Support 6"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SupportGemButton6" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 18.0
+offset_top = 237.0
+offset_right = 150.0
+offset_bottom = 279.0
+text = "Support 7"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SupportGemButton7" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 158.0
+offset_top = 237.0
+offset_right = 290.0
+offset_bottom = 279.0
+text = "Support 8"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SupportGemButton8" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 18.0
+offset_top = 288.0
+offset_right = 150.0
+offset_bottom = 330.0
+text = "Support 9"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SupportGemButton9" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 158.0
+offset_top = 288.0
+offset_right = 290.0
+offset_bottom = 330.0
+text = "Support 10"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SupportGemButton10" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 18.0
+offset_top = 339.0
+offset_right = 150.0
+offset_bottom = 381.0
+text = "Support 11"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SupportGemButton11" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 158.0
+offset_top = 339.0
+offset_right = 290.0
+offset_bottom = 381.0
+text = "Support 12"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SupportGemButton12" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 18.0
+offset_top = 390.0
+offset_right = 150.0
+offset_bottom = 432.0
+text = "Support 13"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SupportGemButton13" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 158.0
+offset_top = 390.0
+offset_right = 290.0
+offset_bottom = 432.0
+text = "Support 14"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SupportGemButton14" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 18.0
+offset_top = 441.0
+offset_right = 150.0
+offset_bottom = 483.0
+text = "Support 15"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SupportGemButton15" type="Button" parent="SkillGemsPanel/SupportPanel"]
+offset_left = 158.0
+offset_top = 441.0
+offset_right = 290.0
+offset_bottom = 483.0
+text = "Support 16"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="SpiritPanel" type="Control" parent="SkillGemsPanel"]
+offset_left = 380.0
+offset_top = 510.0
+offset_right = 870.0
+offset_bottom = 625.0
+
+[node name="PanelArt" type="TextureRect" parent="SkillGemsPanel/SpiritPanel"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 490.0
+offset_bottom = 115.0
+texture = ExtResource("5")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="SpiritHeader" type="Label" parent="SkillGemsPanel/SpiritPanel"]
+offset_left = 25.0
+offset_top = 12.0
+offset_right = 285.0
+offset_bottom = 34.0
+text = "SPIRIT GEMS / RESERVED SKILLS"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.95, 0.84, 0.55, 1.0)
+horizontal_alignment = 0
+
+[node name="SpiritMeterLabel" type="Label" parent="SkillGemsPanel/SpiritPanel"]
+offset_left = 298.0
+offset_top = 12.0
+offset_right = 468.0
+offset_bottom = 34.0
+text = "Spirit: 0 / 0"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.78, 0.86, 1.0, 1.0)
+horizontal_alignment = 2
+
+[node name="SpiritGemButton0" type="Button" parent="SkillGemsPanel/SpiritPanel"]
+offset_left = 22.0
+offset_top = 45.0
+offset_right = 90.0
+offset_bottom = 91.0
+text = "Spirit 1"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 9
+
+[node name="SpiritGemButton1" type="Button" parent="SkillGemsPanel/SpiritPanel"]
+offset_left = 97.0
+offset_top = 45.0
+offset_right = 165.0
+offset_bottom = 91.0
+text = "Spirit 2"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 9
+
+[node name="SpiritGemButton2" type="Button" parent="SkillGemsPanel/SpiritPanel"]
+offset_left = 172.0
+offset_top = 45.0
+offset_right = 240.0
+offset_bottom = 91.0
+text = "Spirit 3"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 9
+
+[node name="SpiritGemButton3" type="Button" parent="SkillGemsPanel/SpiritPanel"]
+offset_left = 247.0
+offset_top = 45.0
+offset_right = 315.0
+offset_bottom = 91.0
+text = "Spirit 4"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 9
+
+[node name="SpiritGemButton4" type="Button" parent="SkillGemsPanel/SpiritPanel"]
+offset_left = 322.0
+offset_top = 45.0
+offset_right = 390.0
+offset_bottom = 91.0
+text = "Spirit 5"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 9
+
+[node name="SpiritGemButton5" type="Button" parent="SkillGemsPanel/SpiritPanel"]
+offset_left = 397.0
+offset_top = 45.0
+offset_right = 465.0
+offset_bottom = 91.0
+text = "Spirit 6"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 9
+
+[node name="Actions" type="Control" parent="SkillGemsPanel"]
+offset_left = 72.0
+offset_top = 645.0
+offset_right = 1202.0
+offset_bottom = 691.0
+
+[node name="EquipButtonArt" type="TextureRect" parent="SkillGemsPanel/Actions"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 148.0
+offset_bottom = 42.0
+texture = ExtResource("9")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="EquipButton" type="Button" parent="SkillGemsPanel/Actions"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 148.0
+offset_bottom = 42.0
+text = "Equip / Unequip"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 12
+
+[node name="AddSkillSocketButtonArt" type="TextureRect" parent="SkillGemsPanel/Actions"]
+offset_left = 160.0
+offset_top = 0.0
+offset_right = 292.0
+offset_bottom = 42.0
+texture = ExtResource("9")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="AddSkillSocketButton" type="Button" parent="SkillGemsPanel/Actions"]
+offset_left = 160.0
+offset_top = 0.0
+offset_right = 292.0
+offset_bottom = 42.0
+text = "+ Skill Socket"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 12
+
+[node name="AddSpiritSocketButtonArt" type="TextureRect" parent="SkillGemsPanel/Actions"]
+offset_left = 304.0
+offset_top = 0.0
+offset_right = 442.0
+offset_bottom = 42.0
+texture = ExtResource("9")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="AddSpiritSocketButton" type="Button" parent="SkillGemsPanel/Actions"]
+offset_left = 304.0
+offset_top = 0.0
+offset_right = 442.0
+offset_bottom = 42.0
+text = "+ Spirit Socket"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 12
+
+[node name="EnableSpiritButtonArt" type="TextureRect" parent="SkillGemsPanel/Actions"]
+offset_left = 454.0
+offset_top = 0.0
+offset_right = 580.0
+offset_bottom = 42.0
+texture = ExtResource("9")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="EnableSpiritButton" type="Button" parent="SkillGemsPanel/Actions"]
+offset_left = 454.0
+offset_top = 0.0
+offset_right = 580.0
+offset_bottom = 42.0
 text = "Enable Spirit"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 12
 
-[node name="RemoveSupportButton" type="Button" parent="MainFrame/RootMargin/RootVBox/ActionRow"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Remove Last Support"
+[node name="UnsocketButtonArt" type="TextureRect" parent="SkillGemsPanel/Actions"]
+offset_left = 592.0
+offset_top = 0.0
+offset_right = 718.0
+offset_bottom = 42.0
+texture = ExtResource("9")
+expand_mode = 1
+stretch_mode = 0
 
-[node name="SocketPrismButton" type="Button" parent="MainFrame/RootMargin/RootVBox/ActionRow"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Use Socket Prism"
+[node name="UnsocketButton" type="Button" parent="SkillGemsPanel/Actions"]
+offset_left = 592.0
+offset_top = 0.0
+offset_right = 718.0
+offset_bottom = 42.0
+text = "Unsocket Last"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 12
 
-[node name="Spacer" type="Control" parent="MainFrame/RootMargin/RootVBox/ActionRow"]
-layout_mode = 2
-size_flags_horizontal = 3
+[node name="CloseButtonArt" type="TextureRect" parent="SkillGemsPanel/Actions"]
+offset_left = 1030.0
+offset_top = 0.0
+offset_right = 1130.0
+offset_bottom = 42.0
+texture = ExtResource("9")
+expand_mode = 1
+stretch_mode = 0
 
-[node name="CloseButton" type="Button" parent="MainFrame/RootMargin/RootVBox/ActionRow"]
-unique_name_in_owner = true
-layout_mode = 2
+[node name="CloseButton" type="Button" parent="SkillGemsPanel/Actions"]
+offset_left = 1030.0
+offset_top = 0.0
+offset_right = 1130.0
+offset_bottom = 42.0
 text = "Close"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 12
+
+[node name="ChoicePanel" type="Control" parent="SkillGemsPanel"]
+offset_left = 420.0
+offset_top = 138.0
+offset_right = 870.0
+offset_bottom = 498.0
+visible = false
+
+[node name="PanelArt" type="TextureRect" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 450.0
+offset_bottom = 360.0
+texture = ExtResource("6")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="ChoiceTitleLabel" type="Label" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 38.0
+offset_top = 28.0
+offset_right = 412.0
+offset_bottom = 54.0
+text = "Choose"
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.95, 0.82, 0.48, 1.0)
+horizontal_alignment = 1
+
+[node name="ChoiceButton0" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 42.0
+offset_top = 68.0
+offset_right = 212.0
+offset_bottom = 93.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton1" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 227.0
+offset_top = 68.0
+offset_right = 397.0
+offset_bottom = 93.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton2" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 42.0
+offset_top = 98.0
+offset_right = 212.0
+offset_bottom = 123.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton3" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 227.0
+offset_top = 98.0
+offset_right = 397.0
+offset_bottom = 123.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton4" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 42.0
+offset_top = 128.0
+offset_right = 212.0
+offset_bottom = 153.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton5" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 227.0
+offset_top = 128.0
+offset_right = 397.0
+offset_bottom = 153.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton6" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 42.0
+offset_top = 158.0
+offset_right = 212.0
+offset_bottom = 183.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton7" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 227.0
+offset_top = 158.0
+offset_right = 397.0
+offset_bottom = 183.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton8" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 42.0
+offset_top = 188.0
+offset_right = 212.0
+offset_bottom = 213.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton9" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 227.0
+offset_top = 188.0
+offset_right = 397.0
+offset_bottom = 213.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton10" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 42.0
+offset_top = 218.0
+offset_right = 212.0
+offset_bottom = 243.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton11" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 227.0
+offset_top = 218.0
+offset_right = 397.0
+offset_bottom = 243.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton12" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 42.0
+offset_top = 248.0
+offset_right = 212.0
+offset_bottom = 273.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton13" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 227.0
+offset_top = 248.0
+offset_right = 397.0
+offset_bottom = 273.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton14" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 42.0
+offset_top = 278.0
+offset_right = 212.0
+offset_bottom = 303.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton15" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 227.0
+offset_top = 278.0
+offset_right = 397.0
+offset_bottom = 303.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton16" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 42.0
+offset_top = 308.0
+offset_right = 212.0
+offset_bottom = 333.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceButton17" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 227.0
+offset_top = 308.0
+offset_right = 397.0
+offset_bottom = 333.0
+text = "Choice"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 10
+
+[node name="ChoiceCancelButtonArt" type="TextureRect" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 152.0
+offset_top = 318.0
+offset_right = 297.0
+offset_bottom = 348.0
+texture = ExtResource("9")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="ChoiceCancelButton" type="Button" parent="SkillGemsPanel/ChoicePanel"]
+offset_left = 152.0
+offset_top = 318.0
+offset_right = 297.0
+offset_bottom = 348.0
+text = "Cancel"
+flat = true
+alignment = 0
+theme_override_font_sizes/font_size = 12
+
+[node name="DragPreview" type="Label" parent="SkillGemsPanel"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 180.0
+offset_bottom = 28.0
+visible = false
+text = "Dragging"
+z_index = 200
+theme_override_colors/font_color = Color(1.0, 0.84, 0.45, 1.0)
+theme_override_font_sizes/font_size = 14

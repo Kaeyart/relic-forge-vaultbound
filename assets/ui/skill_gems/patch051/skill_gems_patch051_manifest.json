@@ -1,0 +1,862 @@
+{
+  "source_sheets": [
+    "sg_sheet_01_panels.png",
+    "sg_sheet_02_slots.png",
+    "sg_sheet_03_controls.png",
+    "sg_sheet_04_plates_dividers.png"
+  ],
+  "slices": [
+    {
+      "sheet": 1,
+      "name": "main_window_panel",
+      "file": "sg_01_01_main_window_panel.png",
+      "bbox": [
+        56,
+        18,
+        813,
+        554
+      ],
+      "area": 370394
+    },
+    {
+      "sheet": 1,
+      "name": "medium_panel_top",
+      "file": "sg_01_02_medium_panel_top.png",
+      "bbox": [
+        927,
+        60,
+        416,
+        241
+      ],
+      "area": 86684
+    },
+    {
+      "sheet": 1,
+      "name": "medium_panel_bottom",
+      "file": "sg_01_03_medium_panel_bottom.png",
+      "bbox": [
+        927,
+        312,
+        416,
+        246
+      ],
+      "area": 87614
+    },
+    {
+      "sheet": 1,
+      "name": "detail_panel_tall",
+      "file": "sg_01_04_detail_panel_tall.png",
+      "bbox": [
+        575,
+        567,
+        346,
+        309
+      ],
+      "area": 90540
+    },
+    {
+      "sheet": 1,
+      "name": "info_panel_wide",
+      "file": "sg_01_05_info_panel_wide.png",
+      "bbox": [
+        969,
+        576,
+        381,
+        201
+      ],
+      "area": 64061
+    },
+    {
+      "sheet": 1,
+      "name": "header_bar_skull",
+      "file": "sg_01_06_header_bar_skull.png",
+      "bbox": [
+        61,
+        604,
+        490,
+        83
+      ],
+      "area": 24440
+    },
+    {
+      "sheet": 1,
+      "name": "header_bar_plain",
+      "file": "sg_01_07_header_bar_plain.png",
+      "bbox": [
+        61,
+        716,
+        490,
+        79
+      ],
+      "area": 24309
+    },
+    {
+      "sheet": 1,
+      "name": "list_panel_rows",
+      "file": "sg_01_08_list_panel_rows.png",
+      "bbox": [
+        970,
+        787,
+        380,
+        279
+      ],
+      "area": 92029
+    },
+    {
+      "sheet": 1,
+      "name": "socket_row_frame",
+      "file": "sg_01_09_socket_row_frame.png",
+      "bbox": [
+        56,
+        876,
+        701,
+        157
+      ],
+      "area": 80110
+    },
+    {
+      "sheet": 2,
+      "name": "gem_slot_empty",
+      "file": "sg_02_01_gem_slot_empty.png",
+      "bbox": [
+        273,
+        60,
+        226,
+        290
+      ],
+      "area": 35849
+    },
+    {
+      "sheet": 2,
+      "name": "gem_slot_hover",
+      "file": "sg_02_02_gem_slot_hover.png",
+      "bbox": [
+        504,
+        60,
+        227,
+        291
+      ],
+      "area": 36520
+    },
+    {
+      "sheet": 2,
+      "name": "gem_slot_selected",
+      "file": "sg_02_03_gem_slot_selected.png",
+      "bbox": [
+        39,
+        61,
+        224,
+        288
+      ],
+      "area": 35211
+    },
+    {
+      "sheet": 2,
+      "name": "gem_slot_disabled_a",
+      "file": "sg_02_04_gem_slot_disabled_a.png",
+      "bbox": [
+        1186,
+        61,
+        218,
+        289
+      ],
+      "area": 34303
+    },
+    {
+      "sheet": 2,
+      "name": "gem_slot_equipped",
+      "file": "sg_02_05_gem_slot_equipped.png",
+      "bbox": [
+        734,
+        62,
+        223,
+        289
+      ],
+      "area": 35228
+    },
+    {
+      "sheet": 2,
+      "name": "gem_slot_locked",
+      "file": "sg_02_06_gem_slot_locked.png",
+      "bbox": [
+        955,
+        63,
+        218,
+        287
+      ],
+      "area": 33964
+    },
+    {
+      "sheet": 2,
+      "name": "active_gem_frame_red",
+      "file": "sg_02_07_active_gem_frame_red.png",
+      "bbox": [
+        133,
+        370,
+        271,
+        462
+      ],
+      "area": 82963
+    },
+    {
+      "sheet": 2,
+      "name": "spirit_gem_frame_blue",
+      "file": "sg_02_08_spirit_gem_frame_blue.png",
+      "bbox": [
+        465,
+        371,
+        267,
+        461
+      ],
+      "area": 81469
+    },
+    {
+      "sheet": 2,
+      "name": "uncut_gem_holder",
+      "file": "sg_02_09_uncut_gem_holder.png",
+      "bbox": [
+        837,
+        381,
+        257,
+        427
+      ],
+      "area": 78577
+    },
+    {
+      "sheet": 2,
+      "name": "mini_support_slot",
+      "file": "sg_02_10_mini_support_slot.png",
+      "bbox": [
+        1183,
+        510,
+        182,
+        192
+      ],
+      "area": 16674
+    },
+    {
+      "sheet": 2,
+      "name": "socket_empty_small",
+      "file": "sg_02_11_socket_empty_small.png",
+      "bbox": [
+        311,
+        851,
+        163,
+        160
+      ],
+      "area": 12859
+    },
+    {
+      "sheet": 2,
+      "name": "socket_filled_red_small",
+      "file": "sg_02_12_socket_filled_red_small.png",
+      "bbox": [
+        519,
+        851,
+        166,
+        160
+      ],
+      "area": 12930
+    },
+    {
+      "sheet": 2,
+      "name": "socket_connector_bar",
+      "file": "sg_02_13_socket_connector_bar.png",
+      "bbox": [
+        748,
+        855,
+        572,
+        168
+      ],
+      "area": 36472
+    },
+    {
+      "sheet": 2,
+      "name": "socket_locked_small",
+      "file": "sg_02_14_socket_locked_small.png",
+      "bbox": [
+        103,
+        856,
+        148,
+        149
+      ],
+      "area": 12548
+    },
+    {
+      "sheet": 3,
+      "name": "large_dialog_frame",
+      "file": "sg_03_01_large_dialog_frame.png",
+      "bbox": [
+        723,
+        19,
+        444,
+        317
+      ],
+      "area": 31079
+    },
+    {
+      "sheet": 3,
+      "name": "button_normal",
+      "file": "sg_03_02_button_normal.png",
+      "bbox": [
+        39,
+        35,
+        465,
+        127
+      ],
+      "area": 38688
+    },
+    {
+      "sheet": 3,
+      "name": "small_square_dialog",
+      "file": "sg_03_03_small_square_dialog.png",
+      "bbox": [
+        1185,
+        46,
+        223,
+        281
+      ],
+      "area": 19472
+    },
+    {
+      "sheet": 3,
+      "name": "icon_button_normal",
+      "file": "sg_03_04_icon_button_normal.png",
+      "bbox": [
+        544,
+        57,
+        114,
+        113
+      ],
+      "area": 11071
+    },
+    {
+      "sheet": 3,
+      "name": "button_hover",
+      "file": "sg_03_05_button_hover.png",
+      "bbox": [
+        39,
+        169,
+        465,
+        129
+      ],
+      "area": 38739
+    },
+    {
+      "sheet": 3,
+      "name": "icon_button_hover",
+      "file": "sg_03_06_icon_button_hover.png",
+      "bbox": [
+        544,
+        192,
+        114,
+        113
+      ],
+      "area": 11072
+    },
+    {
+      "sheet": 3,
+      "name": "button_pressed",
+      "file": "sg_03_07_button_pressed.png",
+      "bbox": [
+        39,
+        304,
+        465,
+        127
+      ],
+      "area": 38669
+    },
+    {
+      "sheet": 3,
+      "name": "icon_button_pressed",
+      "file": "sg_03_08_icon_button_pressed.png",
+      "bbox": [
+        544,
+        327,
+        114,
+        114
+      ],
+      "area": 11018
+    },
+    {
+      "sheet": 3,
+      "name": "support_icon_red",
+      "file": "sg_03_09_support_icon_red.png",
+      "bbox": [
+        887,
+        353,
+        164,
+        183
+      ],
+      "area": 13151
+    },
+    {
+      "sheet": 3,
+      "name": "support_icon_blue",
+      "file": "sg_03_10_support_icon_blue.png",
+      "bbox": [
+        1059,
+        353,
+        165,
+        182
+      ],
+      "area": 13164
+    },
+    {
+      "sheet": 3,
+      "name": "support_icon_green",
+      "file": "sg_03_11_support_icon_green.png",
+      "bbox": [
+        1242,
+        353,
+        164,
+        183
+      ],
+      "area": 13148
+    },
+    {
+      "sheet": 3,
+      "name": "support_icon_purple",
+      "file": "sg_03_12_support_icon_purple.png",
+      "bbox": [
+        708,
+        354,
+        165,
+        182
+      ],
+      "area": 13177
+    },
+    {
+      "sheet": 3,
+      "name": "button_disabled",
+      "file": "sg_03_13_button_disabled.png",
+      "bbox": [
+        41,
+        440,
+        461,
+        130
+      ],
+      "area": 40076
+    },
+    {
+      "sheet": 3,
+      "name": "icon_button_disabled",
+      "file": "sg_03_14_icon_button_disabled.png",
+      "bbox": [
+        544,
+        462,
+        114,
+        116
+      ],
+      "area": 11295
+    },
+    {
+      "sheet": 3,
+      "name": "card_frame_large",
+      "file": "sg_03_15_card_frame_large.png",
+      "bbox": [
+        1054,
+        574,
+        355,
+        444
+      ],
+      "area": 48121
+    },
+    {
+      "sheet": 3,
+      "name": "highlight_ring",
+      "file": "sg_03_16_highlight_ring.png",
+      "bbox": [
+        732,
+        610,
+        317,
+        358
+      ],
+      "area": 13972
+    },
+    {
+      "sheet": 3,
+      "name": "chip_frame_wide",
+      "file": "sg_03_17_chip_frame_wide.png",
+      "bbox": [
+        56,
+        623,
+        293,
+        80
+      ],
+      "area": 13932
+    },
+    {
+      "sheet": 3,
+      "name": "badge_round_red",
+      "file": "sg_03_18_badge_round_red.png",
+      "bbox": [
+        372,
+        656,
+        179,
+        208
+      ],
+      "area": 16219
+    },
+    {
+      "sheet": 3,
+      "name": "badge_oct_blue",
+      "file": "sg_03_19_badge_oct_blue.png",
+      "bbox": [
+        560,
+        666,
+        163,
+        197
+      ],
+      "area": 16393
+    },
+    {
+      "sheet": 3,
+      "name": "small_chip_gold",
+      "file": "sg_03_20_small_chip_gold.png",
+      "bbox": [
+        56,
+        718,
+        292,
+        80
+      ],
+      "area": 14146
+    },
+    {
+      "sheet": 3,
+      "name": "small_chip_blue",
+      "file": "sg_03_21_small_chip_blue.png",
+      "bbox": [
+        79,
+        819,
+        240,
+        69
+      ],
+      "area": 10128
+    },
+    {
+      "sheet": 3,
+      "name": "small_chip_purple",
+      "file": "sg_03_22_small_chip_purple.png",
+      "bbox": [
+        77,
+        919,
+        257,
+        84
+      ],
+      "area": 15006
+    },
+    {
+      "sheet": 4,
+      "name": "choice_card_gray",
+      "file": "sg_04_01_choice_card_gray.png",
+      "bbox": [
+        712,
+        17,
+        221,
+        367
+      ],
+      "area": 70216
+    },
+    {
+      "sheet": 4,
+      "name": "choice_card_red",
+      "file": "sg_04_02_choice_card_red.png",
+      "bbox": [
+        1175,
+        19,
+        220,
+        365
+      ],
+      "area": 69450
+    },
+    {
+      "sheet": 4,
+      "name": "choice_card_blue",
+      "file": "sg_04_03_choice_card_blue.png",
+      "bbox": [
+        944,
+        20,
+        220,
+        364
+      ],
+      "area": 68582
+    },
+    {
+      "sheet": 4,
+      "name": "large_window_red",
+      "file": "sg_04_04_large_window_red.png",
+      "bbox": [
+        263,
+        31,
+        430,
+        271
+      ],
+      "area": 66633
+    },
+    {
+      "sheet": 4,
+      "name": "choice_card_purple",
+      "file": "sg_04_05_choice_card_purple.png",
+      "bbox": [
+        48,
+        32,
+        222,
+        269
+      ],
+      "area": 33204
+    },
+    {
+      "sheet": 4,
+      "name": "badge_gray",
+      "file": "sg_04_06_badge_gray.png",
+      "bbox": [
+        288,
+        300,
+        167,
+        301
+      ],
+      "area": 33905
+    },
+    {
+      "sheet": 4,
+      "name": "badge_blue",
+      "file": "sg_04_07_badge_blue.png",
+      "bbox": [
+        73,
+        301,
+        170,
+        301
+      ],
+      "area": 34538
+    },
+    {
+      "sheet": 4,
+      "name": "badge_purple",
+      "file": "sg_04_08_badge_purple.png",
+      "bbox": [
+        496,
+        301,
+        167,
+        300
+      ],
+      "area": 33850
+    },
+    {
+      "sheet": 4,
+      "name": "large_panel_red",
+      "file": "sg_04_09_large_panel_red.png",
+      "bbox": [
+        686,
+        388,
+        243,
+        221
+      ],
+      "area": 42739
+    },
+    {
+      "sheet": 4,
+      "name": "large_panel_blue",
+      "file": "sg_04_10_large_panel_blue.png",
+      "bbox": [
+        935,
+        396,
+        231,
+        212
+      ],
+      "area": 40010
+    },
+    {
+      "sheet": 4,
+      "name": "large_panel_purple",
+      "file": "sg_04_11_large_panel_purple.png",
+      "bbox": [
+        1172,
+        396,
+        231,
+        214
+      ],
+      "area": 40055
+    },
+    {
+      "sheet": 4,
+      "name": "round_badge",
+      "file": "sg_04_12_round_badge.png",
+      "bbox": [
+        105,
+        603,
+        180,
+        169
+      ],
+      "area": 16508
+    },
+    {
+      "sheet": 4,
+      "name": "support_socket_row",
+      "file": "sg_04_13_support_socket_row.png",
+      "bbox": [
+        830,
+        637,
+        515,
+        116
+      ],
+      "area": 23758
+    },
+    {
+      "sheet": 4,
+      "name": "divider_bar_large",
+      "file": "sg_04_14_divider_bar_large.png",
+      "bbox": [
+        321,
+        643,
+        451,
+        122
+      ],
+      "area": 33627
+    },
+    {
+      "sheet": 4,
+      "name": "divider_red_01",
+      "file": "sg_04_15_divider_red_01.png",
+      "bbox": [
+        518,
+        777,
+        409,
+        67
+      ],
+      "area": 3553
+    },
+    {
+      "sheet": 4,
+      "name": "divider_red_02",
+      "file": "sg_04_16_divider_red_02.png",
+      "bbox": [
+        69,
+        787,
+        376,
+        57
+      ],
+      "area": 5179
+    },
+    {
+      "sheet": 4,
+      "name": "divider_red_03",
+      "file": "sg_04_17_divider_red_03.png",
+      "bbox": [
+        978,
+        795,
+        393,
+        42
+      ],
+      "area": 4049
+    },
+    {
+      "sheet": 4,
+      "name": "divider_blue_01",
+      "file": "sg_04_18_divider_blue_01.png",
+      "bbox": [
+        58,
+        855,
+        399,
+        59
+      ],
+      "area": 6097
+    },
+    {
+      "sheet": 4,
+      "name": "divider_blue_02",
+      "file": "sg_04_19_divider_blue_02.png",
+      "bbox": [
+        521,
+        856,
+        402,
+        53
+      ],
+      "area": 5645
+    },
+    {
+      "sheet": 4,
+      "name": "divider_blue_03",
+      "file": "sg_04_20_divider_blue_03.png",
+      "bbox": [
+        977,
+        858,
+        395,
+        54
+      ],
+      "area": 4540
+    },
+    {
+      "sheet": 4,
+      "name": "divider_purple_01",
+      "file": "sg_04_21_divider_purple_01.png",
+      "bbox": [
+        523,
+        919,
+        398,
+        66
+      ],
+      "area": 4362
+    },
+    {
+      "sheet": 4,
+      "name": "divider_purple_02",
+      "file": "sg_04_22_divider_purple_02.png",
+      "bbox": [
+        58,
+        922,
+        399,
+        62
+      ],
+      "area": 5697
+    },
+    {
+      "sheet": 4,
+      "name": "divider_purple_03",
+      "file": "sg_04_23_divider_purple_03.png",
+      "bbox": [
+        977,
+        926,
+        395,
+        56
+      ],
+      "area": 4160
+    },
+    {
+      "sheet": 4,
+      "name": "divider_purple_center",
+      "file": "sg_04_24_divider_purple_center.png",
+      "bbox": [
+        524,
+        988,
+        396,
+        73
+      ],
+      "area": 5746
+    },
+    {
+      "sheet": 4,
+      "name": "divider_gray",
+      "file": "sg_04_25_divider_gray.png",
+      "bbox": [
+        58,
+        991,
+        398,
+        63
+      ],
+      "area": 5822
+    },
+    {
+      "sheet": 4,
+      "name": "divider_gold",
+      "file": "sg_04_26_divider_gold.png",
+      "bbox": [
+        976,
+        996,
+        397,
+        58
+      ],
+      "area": 4318
+    }
+  ]
+}
