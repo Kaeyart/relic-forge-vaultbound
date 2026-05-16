@@ -1,6 +1,8 @@
 class_name RVCombatArena
 extends Node2D
+
 const MapLayoutSystemScript := preload("res://scripts/systems/MapLayoutSystem.gd")
+const MapEncounterDirectorScript := preload("res://scripts/systems/MapEncounterDirector.gd")
 
 signal combat_finished
 signal player_died
@@ -21,7 +23,12 @@ var state_ref: RVGameState = null
 var room_clear: bool = false
 var reward_claimed: bool = false
 var map_layout: Dictionary = {}
+var encounter_plan: Dictionary = {}
 var map_visual_root: Node2D = null
+var enemy_zones: Array[Dictionary] = []
+var map_pack_total: int = 0
+var map_pack_cleared: int = 0
+var map_boss_alive: bool = false
 
 func start_activity(state: RVGameState, new_activity: Dictionary) -> void:
 	state_ref = state
@@ -29,6 +36,7 @@ func start_activity(state: RVGameState, new_activity: Dictionary) -> void:
 	active = true
 	_clear_children(enemies_root)
 	_clear_children(projectiles_root)
+	enemy_zones.clear()
 	state.room_index = max(1, state.room_index)
 	spawn_room(state)
 
@@ -36,12 +44,17 @@ func stop_activity() -> void:
 	active = false
 	_clear_children(enemies_root)
 	_clear_children(projectiles_root)
+	enemy_zones.clear()
 	_set_reward_visible(false)
 	_set_exit_visible(false)
 	_clear_map_layout_art()
 	_set_static_room_visible(true)
 	_set_authored_obstacles_visible(true)
 	map_layout.clear()
+	encounter_plan.clear()
+	map_pack_total = 0
+	map_pack_cleared = 0
+	map_boss_alive = false
 	if state_ref != null:
 		state_ref.room_objective = ""
 		state_ref.prompt_text = ""
@@ -49,6 +62,7 @@ func stop_activity() -> void:
 func spawn_room(state: RVGameState) -> void:
 	_clear_children(enemies_root)
 	_clear_children(projectiles_root)
+	enemy_zones.clear()
 	room_clear = false
 	reward_claimed = false
 	_set_reward_visible(false)
@@ -60,7 +74,11 @@ func spawn_room(state: RVGameState) -> void:
 	if str(activity.get("kind", "")) == "map":
 		_spawn_map_room(state)
 		return
+	_spawn_standard_room(state)
+
+func _spawn_standard_room(state: RVGameState) -> void:
 	map_layout.clear()
+	encounter_plan.clear()
 	_clear_map_layout_art()
 	_set_static_room_visible(true)
 	_set_authored_obstacles_visible(true)
@@ -89,6 +107,7 @@ func spawn_room(state: RVGameState) -> void:
 func _spawn_map_room(state: RVGameState) -> void:
 	_clear_children(enemies_root)
 	_clear_children(projectiles_root)
+	enemy_zones.clear()
 	room_clear = false
 	reward_claimed = false
 	_set_reward_visible(false)
@@ -98,51 +117,59 @@ func _spawn_map_room(state: RVGameState) -> void:
 	state.room_exit_ready = false
 	var map_item: Dictionary = Dictionary(activity.get("map", {}))
 	map_layout = MapLayoutSystemScript.generate_layout(state.rng, map_item)
+	encounter_plan = MapEncounterDirectorScript.build_plan(state.rng, map_item, map_layout)
 	_apply_map_layout_art(map_layout)
 	_set_static_room_visible(false)
 	_set_authored_obstacles_visible(false)
-	state.room_objective = "Clear the map and kill: " + str(map_item.get("boss_name", "Map Boss"))
 	state.player_pos = Vector2(map_layout.get("start_pos", Vector2(640.0, 594.0)))
 	if reward_chest != null:
 		reward_chest.global_position = Vector2(map_layout.get("reward_pos", Vector2(640.0, 178.0)))
 	if exit_portal != null:
 		exit_portal.global_position = Vector2(map_layout.get("exit_pos", Vector2(640.0, 594.0)))
-	var threat: float = float(activity.get("threat", 1.0))
-	var pack_size: float = float(map_item.get("pack_size", 1.0))
-	var enemy_mix: Array = Array(map_item.get("enemy_mix", ["Grunt", "Archer", "Spitter", "Brute"]))
+	_spawn_encounter_plan(state, map_item)
+	_update_map_objective(state)
+	state.add_notice("Map opened: " + str(map_item.get("name", "Map")))
+
+func _spawn_encounter_plan(state: RVGameState, map_item: Dictionary) -> void:
+	map_pack_total = int(encounter_plan.get("objective_total_packs", 0))
+	map_pack_cleared = 0
 	var enemy_index: int = 0
-	for section_value: Variant in Array(map_layout.get("sections", [])):
-		var section: Dictionary = Dictionary(section_value)
-		var kind: String = str(section.get("kind", "pack"))
-		if kind == "start" or kind == "boss":
-			continue
-		var base_count: int = int(section.get("pack_count", 3))
-		var count: int = max(2, int(round(float(base_count) * pack_size)))
-		var center: Vector2 = Vector2(section.get("pos", Vector2.ZERO))
-		var radius: float = float(section.get("radius", 72.0))
-		for i: int in range(count):
-			var angle: float = state.rng.randf_range(0.0, TAU)
-			var dist: float = state.rng.randf_range(10.0, max(12.0, radius - 22.0))
-			var spawn_pos: Vector2 = center + Vector2(cos(angle), sin(angle)) * dist
-			var enemy_type: String = str(enemy_mix[enemy_index % max(1, enemy_mix.size())])
-			var enemy_data: Dictionary = RVEnemyDB.make(enemy_type, spawn_pos, threat, enemy_index)
+	var threat: float = float(activity.get("threat", float(map_item.get("threat", 1.0))))
+	for pack_value: Variant in Array(encounter_plan.get("packs", [])):
+		var pack: Dictionary = Dictionary(pack_value)
+		var pack_id: String = str(pack.get("id", "pack"))
+		var center: Vector2 = Vector2(pack.get("center", Vector2.ZERO))
+		var wake_radius: float = float(pack.get("wake_radius", 220.0))
+		var leash_radius: float = float(pack.get("leash_radius", 280.0))
+		for enemy_value: Variant in Array(pack.get("enemies", [])):
+			var enemy_info: Dictionary = Dictionary(enemy_value)
+			var enemy_type: String = str(enemy_info.get("enemy_type", "Grunt"))
+			var spawn_pos: Vector2 = Vector2(enemy_info.get("pos", center))
+			var enemy_data: Dictionary
+			if bool(enemy_info.get("is_elite", false)):
+				enemy_data = RVEnemyDB.make_elite(enemy_type, spawn_pos, threat, enemy_index, pack_id)
+			else:
+				enemy_data = RVEnemyDB.make(enemy_type, spawn_pos, threat, enemy_index)
+			enemy_data["pack_id"] = pack_id
+			enemy_data["wake_radius"] = wake_radius
+			enemy_data["leash_center"] = center
+			enemy_data["leash_radius"] = leash_radius
 			_spawn_enemy(enemy_data)
 			enemy_index += 1
-	var boss_pos: Vector2 = Vector2(map_layout.get("boss_pos", Vector2(640.0, 152.0)))
-	var boss_data: Dictionary = RVEnemyDB.make("Brute", boss_pos, threat * 2.35, 9999)
-	boss_data["type"] = str(map_item.get("boss_name", "Map Boss"))
-	boss_data["role"] = "brute"
-	boss_data["radius"] = 34.0
-	boss_data["hp"] = float(boss_data.get("hp", 200.0)) * 2.2
-	boss_data["max_hp"] = boss_data["hp"]
-	boss_data["is_map_boss"] = true
+	var boss_info: Dictionary = Dictionary(encounter_plan.get("boss", {}))
+	var boss_pos: Vector2 = Vector2(boss_info.get("pos", map_layout.get("boss_pos", Vector2(640.0, 152.0))))
+	var boss_data: Dictionary = RVEnemyDB.make_boss(map_item, boss_pos, threat * 1.35)
+	boss_data["wake_radius"] = float(boss_info.get("wake_radius", 540.0))
+	boss_data["leash_center"] = Vector2(boss_info.get("leash_center", boss_pos))
+	boss_data["leash_radius"] = float(boss_info.get("leash_radius", 360.0))
+	map_boss_alive = true
 	_spawn_enemy(boss_data)
-	state.add_notice("Map opened: " + str(map_item.get("name", "Map")))
 
 func update_combat(state: RVGameState, player: RVPlayerActor, delta: float) -> void:
 	if not active:
 		return
 	state.prompt_text = ""
+	_update_enemy_zones(state, player, delta)
 	for enemy_node: Node in enemies_root.get_children():
 		if enemy_node is RVEnemyActor:
 			var enemy: RVEnemyActor = enemy_node
@@ -156,6 +183,8 @@ func update_combat(state: RVGameState, player: RVPlayerActor, delta: float) -> v
 					projectile.queue_free()
 			else:
 				_check_projectile_enemy_hits(projectile, state)
+	if str(activity.get("kind", "")) == "map":
+		_update_map_objective(state)
 	if enemies_root.get_child_count() == 0 and not room_clear:
 		_on_room_clear(state)
 	_update_room_interaction_prompt(state)
@@ -244,6 +273,21 @@ func constrain_player_position(pos: Vector2) -> Vector2:
 	var constrained: Vector2 = _nearest_walkable_position(pos)
 	return _push_from_map_obstacles(constrained, 18.0)
 
+func _update_enemy_zones(state: RVGameState, player: RVPlayerActor, delta: float) -> void:
+	for i: int in range(enemy_zones.size() - 1, -1, -1):
+		var zone: Dictionary = enemy_zones[i]
+		zone["time"] = float(zone.get("time", 0.0)) - delta
+		zone["duration"] = float(zone.get("duration", 0.0)) - delta
+		if float(zone.get("time", 0.0)) <= 0.0 and not bool(zone.get("triggered", false)):
+			zone["triggered"] = true
+			if player.global_position.distance_to(Vector2(zone.get("pos", Vector2.ZERO))) <= float(zone.get("radius", 40.0)) + state.player_radius:
+				_damage_player(state, float(zone.get("damage", 1.0)))
+		if float(zone.get("duration", 0.0)) <= -0.05:
+			enemy_zones.remove_at(i)
+		else:
+			enemy_zones[i] = zone
+	queue_redraw()
+
 func _nearest_walkable_position(pos: Vector2) -> Vector2:
 	var best: Vector2 = pos
 	var best_distance: float = INF
@@ -254,9 +298,7 @@ func _nearest_walkable_position(pos: Vector2) -> Vector2:
 		var distance: float = pos.distance_to(center)
 		if distance <= radius:
 			return pos
-		var candidate: Vector2 = center + (pos - center).normalized() * radius
-		if distance < 0.001:
-			candidate = center
+		var candidate: Vector2 = center + (pos - center).normalized() * radius if distance > 0.001 else center
 		var candidate_distance: float = pos.distance_to(candidate)
 		if candidate_distance < best_distance:
 			best_distance = candidate_distance
@@ -334,6 +376,8 @@ func _draw_map_sections(layout: Dictionary) -> void:
 		var kind: String = str(section.get("kind", "pack"))
 		if kind == "boss":
 			poly.color = Color(0.085, 0.030, 0.030, 1.0)
+		elif kind == "elite":
+			poly.color = Color(0.080, 0.052, 0.030, 1.0)
 		elif kind == "side":
 			poly.color = Color(0.038, 0.035, 0.030, 1.0)
 		else:
@@ -398,6 +442,16 @@ func _closed_polygon(points: PackedVector2Array) -> PackedVector2Array:
 		result.append(result[0])
 	return result
 
+func _draw() -> void:
+	for zone: Dictionary in enemy_zones:
+		var pos: Vector2 = Vector2(zone.get("pos", Vector2.ZERO))
+		var radius: float = float(zone.get("radius", 40.0))
+		var color: Color = zone.get("color", Color(1.0, 0.2, 0.05, 0.28))
+		var triggered: bool = bool(zone.get("triggered", false))
+		draw_arc(pos, radius, 0.0, TAU, 40, color if not triggered else Color(color.r, color.g, color.b, 0.62), 3.0)
+		if triggered:
+			draw_circle(pos, radius, Color(color.r, color.g, color.b, 0.10))
+
 func _clear_map_layout_art() -> void:
 	if map_visual_root != null and is_instance_valid(map_visual_root):
 		map_visual_root.queue_free()
@@ -427,9 +481,29 @@ func _on_room_clear(state: RVGameState) -> void:
 	_set_reward_visible(true)
 	_set_exit_visible(false)
 	if str(activity.get("kind", "")) == "map":
-		state.add_notice("Map boss defeated - Reward chest available")
+		state.add_notice("Map cleared - boss reward available")
 	else:
 		state.add_notice("Room clear - Reward chest available")
+
+func _update_map_objective(state: RVGameState) -> void:
+	var alive_by_pack: Dictionary = {}
+	var boss_alive: bool = false
+	for enemy_node: Node in enemies_root.get_children():
+		if enemy_node is RVEnemyActor:
+			var enemy: RVEnemyActor = enemy_node
+			if enemy.is_map_boss:
+				boss_alive = true
+			elif enemy.pack_id != "":
+				alive_by_pack[enemy.pack_id] = true
+	var cleared: int = 0
+	for pack_value: Variant in Array(encounter_plan.get("packs", [])):
+		var pack: Dictionary = Dictionary(pack_value)
+		if not alive_by_pack.has(str(pack.get("id", ""))):
+			cleared += 1
+	map_pack_cleared = cleared
+	map_boss_alive = boss_alive
+	if not room_clear:
+		state.room_objective = "Clear packs " + str(map_pack_cleared) + "/" + str(max(1, map_pack_total)) + " · Kill boss: " + ("alive" if map_boss_alive else "defeated")
 
 func _update_room_interaction_prompt(state: RVGameState) -> void:
 	if state.room_reward_ready and not state.room_reward_claimed:
@@ -460,6 +534,9 @@ func _spawn_enemy(enemy_data: Dictionary) -> void:
 	enemy.setup(enemy_data)
 	enemy.died.connect(_on_enemy_died)
 	enemy.hit_player.connect(_on_enemy_hit_player)
+	enemy.projectile_requested.connect(_on_enemy_projectile_requested)
+	enemy.zone_requested.connect(_on_enemy_zone_requested)
+	enemy.spawn_requested.connect(_on_enemy_spawn_requested)
 
 func _spawn_projectile(pos: Vector2, vel: Vector2, damage: float, radius: float, tags: Array, from_enemy: bool) -> void:
 	if projectile_scene == null:
@@ -556,13 +633,43 @@ func _damage_player(state: RVGameState, amount: float) -> void:
 func _on_enemy_died(enemy: RVEnemyActor) -> void:
 	if state_ref != null:
 		RVProgressionSystem.award_kill(state_ref)
-		if str(activity.get("kind", "")) == "map" and state_ref.rng.randf() < 0.20:
-			RVMapSystem.award_map_enemy_drop(state_ref, max(1, int(activity.get("threat", 1.0))))
+		if str(activity.get("kind", "")) == "map":
+			var depth: int = max(1, int(Dictionary(activity.get("map", {})).get("map_level", state_ref.level)))
+			var drop_chance: float = 0.09 if enemy.is_elite else 0.045
+			if enemy.is_map_boss:
+				map_boss_alive = false
+			elif state_ref.rng.randf() < drop_chance:
+				RVMapSystem.award_map_enemy_drop(state_ref, depth)
 	enemy.queue_free()
 
 func _on_enemy_hit_player(amount: float) -> void:
 	if state_ref != null:
 		_damage_player(state_ref, amount)
+
+func _on_enemy_projectile_requested(pos: Vector2, vel: Vector2, damage: float, radius: float, tags: Array) -> void:
+	_spawn_projectile(pos, vel, damage, radius, tags, true)
+
+func _on_enemy_zone_requested(pos: Vector2, radius: float, delay: float, duration: float, damage: float, tags: Array, color: Color) -> void:
+	enemy_zones.append({
+		"pos": pos,
+		"radius": radius,
+		"time": delay,
+		"duration": delay + duration,
+		"damage": damage,
+		"tags": tags,
+		"color": color,
+		"triggered": false
+	})
+
+func _on_enemy_spawn_requested(enemy_type: String, pos: Vector2, count: int) -> void:
+	if state_ref == null:
+		return
+	for i: int in range(max(1, count)):
+		var offset: Vector2 = Vector2(28.0, 0.0).rotated(float(i) * TAU / float(max(1, count)))
+		var enemy_data: Dictionary = RVEnemyDB.make(enemy_type, pos + offset, float(activity.get("threat", 1.0)), enemies_root.get_child_count() + i)
+		enemy_data["wake_radius"] = 999.0
+		enemy_data["pack_id"] = "summoned"
+		_spawn_enemy(enemy_data)
 
 func _set_reward_visible(value: bool) -> void:
 	if reward_chest != null:

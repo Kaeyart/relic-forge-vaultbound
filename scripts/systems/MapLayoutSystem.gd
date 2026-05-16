@@ -1,6 +1,8 @@
 class_name RVMapLayoutSystem
 extends RefCounted
 
+# Patch 058: map graph layouts now carry encounter intent, side rooms, elite rooms, boss gate rhythm.
+
 const ARENA_MIN: Vector2 = Vector2(72.0, 78.0)
 const ARENA_MAX: Vector2 = Vector2(1210.0, 650.0)
 
@@ -11,6 +13,8 @@ static func generate_layout(rng: RandomNumberGenerator, map_item: Dictionary) ->
 			return _generate_catacomb(rng, map_item)
 		"archive":
 			return _generate_archive(rng, map_item)
+		"foundry":
+			return _generate_foundry(rng, map_item)
 		_:
 			return _generate_cistern(rng, map_item)
 
@@ -21,8 +25,10 @@ static func _layout_style(map_item: Dictionary) -> String:
 	var text: String = (str(map_item.get("id", "")) + " " + str(map_item.get("area_name", "")) + " " + str(map_item.get("name", ""))).to_lower()
 	if text.contains("catacomb") or text.contains("iron"):
 		return "catacomb"
-	if text.contains("archive") or text.contains("bone") or text.contains("crypt"):
+	if text.contains("archive") or text.contains("bone") or text.contains("crypt") or text.contains("chapel"):
 		return "archive"
+	if text.contains("foundry") or text.contains("storm"):
+		return "foundry"
 	return "cistern"
 
 static func _base_layout(map_item: Dictionary, style: String) -> Dictionary:
@@ -48,17 +54,14 @@ static func _generate_cistern(rng: RandomNumberGenerator, map_item: Dictionary) 
 		_section("mid_left", "pack", Vector2(300.0, 365.0), 88.0, 4),
 		_section("mid", "pack", Vector2(590.0, 344.0), 94.0, 5),
 		_section("side_right", "side", Vector2(890.0, 438.0), 82.0, 3),
-		_section("upper_right", "pack", Vector2(970.0, 248.0), 86.0, 4),
-		_section("boss", "boss", Vector2(640.0, 152.0), 112.0, 0)
+		_section("upper_right", "elite", Vector2(970.0, 248.0), 88.0, 4),
+		_section("boss_gate", "elite", Vector2(690.0, 246.0), 84.0, 4),
+		_section("boss", "boss", Vector2(640.0, 152.0), 118.0, 0)
 	]
 	var edges: Array = [
-		["start", "lower_left"],
-		["lower_left", "mid_left"],
-		["mid_left", "mid"],
-		["mid", "side_right"],
-		["side_right", "upper_right"],
-		["mid", "boss"],
-		["upper_right", "boss"]
+		["start", "lower_left"], ["lower_left", "mid_left"], ["mid_left", "mid"],
+		["mid", "side_right"], ["side_right", "upper_right"], ["mid", "boss_gate"],
+		["upper_right", "boss_gate"], ["boss_gate", "boss"]
 	]
 	layout["sections"] = _jitter_sections(rng, sections, 22.0)
 	layout["edges"] = edges
@@ -68,11 +71,7 @@ static func _generate_cistern(rng: RandomNumberGenerator, map_item: Dictionary) 
 		_obstacle(Vector2(855.0, 320.0), 34.0, "ash_idol"),
 		_obstacle(Vector2(535.0, 220.0), 32.0, "collapsed_bridge")
 	]
-	layout["boss_pos"] = _section_pos(layout, "boss")
-	layout["reward_pos"] = _section_pos(layout, "boss") + Vector2(0.0, 46.0)
-	layout["exit_pos"] = _section_pos(layout, "start")
-	layout["start_pos"] = _section_pos(layout, "start")
-	return layout
+	return _finalize(layout)
 
 static func _generate_catacomb(rng: RandomNumberGenerator, map_item: Dictionary) -> Dictionary:
 	var layout: Dictionary = _base_layout(map_item, "catacomb")
@@ -85,16 +84,13 @@ static func _generate_catacomb(rng: RandomNumberGenerator, map_item: Dictionary)
 		_section("hall_2", "pack", Vector2(640.0, 332.0), 86.0, 5),
 		_section("left_crypt", "pack", Vector2(392.0, 250.0), 78.0, 3),
 		_section("right_crypt", "pack", Vector2(888.0, 250.0), 78.0, 3),
-		_section("boss", "boss", Vector2(640.0, 142.0), 116.0, 0)
+		_section("boss_gate", "elite", Vector2(640.0, 238.0), 80.0, 4),
+		_section("boss", "boss", Vector2(640.0, 142.0), 118.0, 0)
 	]
 	var edges: Array = [
-		["start", "hall_1"],
-		["hall_1", "hall_2"],
-		["hall_1", "left_sarc"],
-		["hall_1", "right_sarc"],
-		["hall_2", "left_crypt"],
-		["hall_2", "right_crypt"],
-		["hall_2", "boss"]
+		["start", "hall_1"], ["hall_1", "hall_2"], ["hall_1", "left_sarc"],
+		["hall_1", "right_sarc"], ["hall_2", "left_crypt"], ["hall_2", "right_crypt"],
+		["hall_2", "boss_gate"], ["boss_gate", "boss"]
 	]
 	layout["sections"] = _jitter_sections(rng, sections, 14.0)
 	layout["edges"] = edges
@@ -104,11 +100,7 @@ static func _generate_catacomb(rng: RandomNumberGenerator, map_item: Dictionary)
 		_obstacle(Vector2(510.0, 260.0), 32.0, "iron_pillar"),
 		_obstacle(Vector2(770.0, 260.0), 32.0, "iron_pillar")
 	]
-	layout["boss_pos"] = _section_pos(layout, "boss")
-	layout["reward_pos"] = _section_pos(layout, "boss") + Vector2(0.0, 54.0)
-	layout["exit_pos"] = _section_pos(layout, "start")
-	layout["start_pos"] = _section_pos(layout, "start")
-	return layout
+	return _finalize(layout)
 
 static func _generate_archive(rng: RandomNumberGenerator, map_item: Dictionary) -> Dictionary:
 	var layout: Dictionary = _base_layout(map_item, "archive")
@@ -118,20 +110,14 @@ static func _generate_archive(rng: RandomNumberGenerator, map_item: Dictionary) 
 		_section("lower", "pack", Vector2(640.0, 470.0), 82.0, 4),
 		_section("left", "pack", Vector2(410.0, 372.0), 82.0, 4),
 		_section("right", "pack", Vector2(870.0, 372.0), 82.0, 4),
-		_section("upper", "pack", Vector2(640.0, 262.0), 90.0, 5),
+		_section("upper", "elite", Vector2(640.0, 262.0), 90.0, 5),
 		_section("side_left", "side", Vector2(280.0, 220.0), 74.0, 3),
 		_section("side_right", "side", Vector2(1000.0, 220.0), 74.0, 3),
-		_section("boss", "boss", Vector2(640.0, 132.0), 108.0, 0)
+		_section("boss", "boss", Vector2(640.0, 132.0), 112.0, 0)
 	]
 	var edges: Array = [
-		["start", "lower"],
-		["lower", "left"],
-		["lower", "right"],
-		["left", "upper"],
-		["right", "upper"],
-		["upper", "boss"],
-		["left", "side_left"],
-		["right", "side_right"]
+		["start", "lower"], ["lower", "left"], ["lower", "right"], ["left", "upper"],
+		["right", "upper"], ["upper", "boss"], ["left", "side_left"], ["right", "side_right"]
 	]
 	layout["sections"] = _jitter_sections(rng, sections, 18.0)
 	layout["edges"] = edges
@@ -142,33 +128,54 @@ static func _generate_archive(rng: RandomNumberGenerator, map_item: Dictionary) 
 		_obstacle(Vector2(765.0, 310.0), 34.0, "bone_spire"),
 		_obstacle(Vector2(640.0, 210.0), 30.0, "archive_plinth")
 	]
+	return _finalize(layout)
+
+static func _generate_foundry(rng: RandomNumberGenerator, map_item: Dictionary) -> Dictionary:
+	var layout: Dictionary = _base_layout(map_item, "foundry")
+	layout["corridor_width"] = 78.0
+	var sections: Array = [
+		_section("start", "start", Vector2(640.0, 600.0), 82.0, 0),
+		_section("forge_1", "pack", Vector2(472.0, 500.0), 86.0, 4),
+		_section("forge_2", "pack", Vector2(812.0, 494.0), 86.0, 4),
+		_section("crossing", "pack", Vector2(640.0, 380.0), 100.0, 6),
+		_section("side_furnace", "side", Vector2(1010.0, 356.0), 82.0, 3),
+		_section("elite_bridge", "elite", Vector2(640.0, 250.0), 92.0, 5),
+		_section("boss", "boss", Vector2(640.0, 130.0), 124.0, 0)
+	]
+	var edges: Array = [
+		["start", "forge_1"], ["start", "forge_2"], ["forge_1", "crossing"],
+		["forge_2", "crossing"], ["crossing", "side_furnace"], ["crossing", "elite_bridge"],
+		["elite_bridge", "boss"]
+	]
+	layout["sections"] = _jitter_sections(rng, sections, 16.0)
+	layout["edges"] = edges
+	layout["obstacles"] = [
+		_obstacle(Vector2(560.0, 440.0), 30.0, "forge_anvil"),
+		_obstacle(Vector2(720.0, 440.0), 30.0, "forge_anvil"),
+		_obstacle(Vector2(640.0, 316.0), 38.0, "charged_core"),
+		_obstacle(Vector2(830.0, 260.0), 28.0, "sparking_pillar")
+	]
+	return _finalize(layout)
+
+static func _finalize(layout: Dictionary) -> Dictionary:
 	layout["boss_pos"] = _section_pos(layout, "boss")
-	layout["reward_pos"] = _section_pos(layout, "boss") + Vector2(0.0, 52.0)
+	layout["reward_pos"] = _section_pos(layout, "boss") + Vector2(0.0, 54.0)
 	layout["exit_pos"] = _section_pos(layout, "start")
 	layout["start_pos"] = _section_pos(layout, "start")
 	return layout
 
 static func _section(id: String, kind: String, pos: Vector2, radius: float, pack_count: int) -> Dictionary:
-	return {
-		"id": id,
-		"kind": kind,
-		"pos": pos,
-		"radius": radius,
-		"pack_count": pack_count
-	}
+	return {"id": id, "kind": kind, "pos": pos, "radius": radius, "pack_count": pack_count}
 
 static func _obstacle(pos: Vector2, radius: float, kind: String) -> Dictionary:
-	return {
-		"pos": pos,
-		"radius": radius,
-		"kind": kind
-	}
+	return {"pos": pos, "radius": radius, "kind": kind}
 
 static func _jitter_sections(rng: RandomNumberGenerator, sections: Array, amount: float) -> Array:
 	var result: Array = []
 	for value: Variant in sections:
 		var section: Dictionary = Dictionary(value).duplicate(true)
-		if str(section.get("kind", "")) != "start" and str(section.get("kind", "")) != "boss":
+		var kind: String = str(section.get("kind", ""))
+		if kind != "start" and kind != "boss":
 			var jitter: Vector2 = Vector2(rng.randf_range(-amount, amount), rng.randf_range(-amount, amount))
 			var pos: Vector2 = Vector2(section.get("pos", Vector2.ZERO)) + jitter
 			pos.x = clamp(pos.x, ARENA_MIN.x + 90.0, ARENA_MAX.x - 90.0)
