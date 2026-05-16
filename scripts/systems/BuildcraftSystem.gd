@@ -2,14 +2,19 @@ class_name RVBuildcraftSystem
 extends RefCounted
 
 static func handle_key(state: RVGameState, keycode: int) -> bool:
-	if state.panel_mode == "":
+	if state == null or state.panel_mode == "":
 		return false
 	match state.panel_mode:
-		"inventory": return handle_inventory_key(state, keycode)
-		"crafting": return handle_crafting_key(state, keycode)
-		"passive_atlas": return handle_passive_key(state, keycode)
-		"skill_gems": return handle_skill_gem_key(state, keycode)
-		"stash": return handle_stash_key(state, keycode)
+		"inventory":
+			return handle_inventory_key(state, keycode)
+		"crafting":
+			return handle_crafting_key(state, keycode)
+		"passive_atlas":
+			return handle_passive_key(state, keycode)
+		"skill_gems":
+			return handle_skill_gem_key(state, keycode)
+		"stash":
+			return handle_stash_key(state, keycode)
 	return false
 
 static func handle_inventory_key(state: RVGameState, keycode: int) -> bool:
@@ -44,22 +49,10 @@ static func handle_crafting_key(state: RVGameState, keycode: int) -> bool:
 	return false
 
 static func handle_passive_key(state: RVGameState, keycode: int) -> bool:
-	if keycode == KEY_ENTER:
-		allocate_first_available_passive(state)
-		return true
-	if keycode == KEY_BACKSPACE:
-		refund_first_passive(state)
-		return true
-	return false
+	return RVClassAscendancySystem.handle_panel_key(state, keycode)
 
 static func handle_skill_gem_key(state: RVGameState, keycode: int) -> bool:
-	if keycode >= KEY_1 and keycode <= KEY_6:
-		var index: int = keycode - KEY_1
-		var skills: Array = RVSkillDB.names()
-		if index >= 0 and index < skills.size():
-			RVSkillSystem.toggle_skill_loadout(state, str(skills[index]))
-		return true
-	return false
+	return RVSkillGemSystem.handle_panel_key(state, keycode)
 
 static func handle_stash_key(state: RVGameState, keycode: int) -> bool:
 	if keycode == KEY_E:
@@ -71,28 +64,7 @@ static func handle_stash_key(state: RVGameState, keycode: int) -> bool:
 	return false
 
 static func allocate_first_available_passive(state: RVGameState) -> void:
-	if state.mastery_points <= 0:
-		state.add_notice("No mastery points")
-		return
-	for node_id: String in state.passive_nodes.keys():
-		if not bool(state.passive_nodes[node_id]):
-			state.passive_nodes[node_id] = true
-			state.mastery_points -= 1
-			state.refund_points += 1
-			state.recompute_stats()
-			state.add_notice("Passive allocated")
-			return
-	state.add_notice("All starter passives allocated")
+	RVClassAscendancySystem.allocate_selected_passive(state)
 
 static func refund_first_passive(state: RVGameState) -> void:
-	if state.refund_points <= 0:
-		state.add_notice("No refund points")
-		return
-	for node_id: String in state.passive_nodes.keys():
-		if bool(state.passive_nodes[node_id]):
-			state.passive_nodes[node_id] = false
-			state.refund_points -= 1
-			state.mastery_points += 1
-			state.recompute_stats()
-			state.add_notice("Passive refunded")
-			return
+	RVClassAscendancySystem.refund_last_passive(state)

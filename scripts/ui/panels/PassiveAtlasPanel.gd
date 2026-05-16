@@ -1,27 +1,31 @@
+class_name RVPassiveAtlasPanel
 extends RVUIPanelBase
 
-@onready var content_label: Label = %ContentLabel
+var current_state: RVGameState = null
+var content_label: Label = null
+var detail_label: RichTextLabel = null
+
+func _ready() -> void:
+	super._ready()
+	content_label = get_node_or_null("%ContentLabel") as Label
+	if content_label == null:
+		content_label = Label.new()
+		content_label.name = "ContentLabel"
+		content_label.position = Vector2(24.0, 24.0)
+		content_label.size = Vector2(780.0, 520.0)
+		content_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		add_child(content_label)
 
 func update_from_state(state: RVGameState) -> void:
-	if content_label == null:
+	current_state = state
+	if current_state == null:
 		return
-	content_label.text = _build_text(state)
+	current_state.ensure_defaults()
+	if content_label != null:
+		content_label.text = RVClassAscendancySystem.passive_summary(current_state)
 
-
-func _build_text(state: RVGameState) -> String:
-	match title:
-		"Inventory":
-			return "Backpack Items: %s\nPress E to equip first item.\nPress X to salvage first item." % state.backpack.size()
-		"Crafting":
-			return "Basic Forge\nPress F to craft a basic item.\nMaterials: Embers %s  Shards %s  Runes %s" % [state.materials.get("embers", 0), state.materials.get("shards", 0), state.materials.get("runes", 0)]
-		"Passive Atlas":
-			return "Mastery Points: %s\nRefund Points: %s\nPress Enter to allocate first available node.\nPress Backspace to refund first allocated node." % [state.mastery_points, state.refund_points]
-		"Skill Gems":
-			return "Active Skills:\n%s\n\nPress 1-6 to toggle skills." % "\n".join(state.active_skills)
-		"Character":
-			return "Level %s\nLife %s/%s\nMana %s/%s\nKills %s\nDeaths %s" % [state.level, int(state.player_hp), int(state.max_hp), int(state.player_mana), int(state.max_mana), state.kills, state.deaths]
-		"Stash":
-			return "Stash Items: %s\nPress E to deposit backpack.\nPress X to withdraw first stash item." % state.stash.size()
-		"Activities":
-			return "Activities live in the physical hub.\nWalk to a gate and press E."
-	return ""
+func handle_panel_key(state: RVGameState, keycode: int) -> bool:
+	var handled: bool = RVClassAscendancySystem.handle_panel_key(state, keycode)
+	if handled:
+		update_from_state(state)
+	return handled
