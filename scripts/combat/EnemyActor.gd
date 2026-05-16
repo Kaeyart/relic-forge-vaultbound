@@ -1,5 +1,6 @@
 class_name RVEnemyActor
 extends Node2D
+const EnemyVisualRigScript := preload("res://scripts/visuals/EnemyVisualRig.gd")
 
 signal died(enemy: RVEnemyActor)
 signal hit_player(amount: float)
@@ -19,6 +20,7 @@ var enemy_color: Color = Color(0.75, 0.22, 0.14)
 
 var statuses: Dictionary = {}
 var dot_tick: float = 0.0
+var visual_rig: Node2D = null
 
 var ai_state: String = "idle"
 var ai_timer: float = 0.0
@@ -63,6 +65,7 @@ func setup(data: Dictionary) -> void:
 	xp_value = float(data.get("xp", 10.0))
 	enemy_color = data.get("color", enemy_color)
 	statuses.clear()
+	_sync_visual_proxy(data)
 	ai_state = "idle"
 	ai_timer = 0.0
 	cooldown = randf_range(0.05, 0.40)
@@ -72,6 +75,7 @@ func setup(data: Dictionary) -> void:
 
 func _process(delta: float) -> void:
 	_update_statuses(delta)
+	_sync_visual_statuses()
 
 func update_ai(player_pos: Vector2, delta: float) -> void:
 	if hp <= 0.0:
@@ -236,6 +240,7 @@ func take_damage(amount: float) -> void:
 	if has_status("shock"):
 		final_amount *= 1.08
 	hp -= final_amount
+	_visual_hit_flash()
 	if hp <= 0.0:
 		died.emit(self)
 	queue_redraw()
@@ -310,39 +315,10 @@ func _update_statuses(delta: float) -> void:
 	queue_redraw()
 
 func _draw() -> void:
-	var shadow_radius: float = radius * (1.25 if is_map_boss else 1.12)
-	draw_circle(Vector2(5.0, 9.0), shadow_radius, Color(0.0, 0.0, 0.0, 0.34))
-	if role == "brute" or role == "knight" or role == "boss" or is_elite:
-		var points: PackedVector2Array = PackedVector2Array()
-		var sides: int = 7 if is_map_boss else 6
-		for index: int in range(sides):
-			var angle: float = PI / float(sides) + float(index) * TAU / float(sides)
-			points.append(Vector2(cos(angle), sin(angle)) * radius)
-		draw_polygon(points, PackedColorArray([Color(0.030, 0.032, 0.038)]))
-		var closed: PackedVector2Array = PackedVector2Array(points)
-		closed.append(points[0])
-		draw_polyline(closed, enemy_color, 2.0)
-	else:
-		draw_circle(Vector2.ZERO, radius, Color(0.030, 0.030, 0.036))
-		draw_circle(Vector2.ZERO, radius * 0.68, enemy_color)
-	if ai_state == "windup":
-		_draw_windup()
-	_draw_status_rings()
+	# Patch 059: enemy body is now drawn by EnemyVisualRig. This node only draws health.
 	var pct: float = clamp(hp / max(1.0, max_hp), 0.0, 1.0)
-	var bar_width: float = radius * 2.2
-	draw_rect(Rect2(Vector2(-bar_width * 0.5, -radius - 14.0), Vector2(bar_width, 4.0)), Color(0.08, 0.03, 0.03, 0.80), true)
-	draw_rect(Rect2(Vector2(-bar_width * 0.5, -radius - 14.0), Vector2(bar_width * pct, 4.0)), Color(0.90, 0.18, 0.12), true)
-	if is_elite or is_map_boss:
-		draw_arc(Vector2.ZERO, radius + 7.0, 0.0, TAU, 32, Color(1.0, 0.78, 0.22, 0.72), 2.0)
-
-func _draw_windup() -> void:
-	var tell_color: Color = Color(1.0, 0.64, 0.18, 0.50)
-	match attack_kind:
-		"shot", "zone", "summon": tell_color = Color(0.70, 0.42, 1.0, 0.48)
-		"slam", "boss_cleave", "boss_zone", "boss_charge": tell_color = Color(1.0, 0.26, 0.06, 0.48)
-	draw_arc(Vector2.ZERO, radius + 10.0, 0.0, TAU, 24, tell_color, 3.0)
-	draw_line(Vector2.ZERO, attack_dir * (radius + 28.0), tell_color, 3.0)
-
+	draw_rect(Rect2(Vector2(-radius, -radius - 12.0), Vector2(radius * 2.0, 4.0)), Color(0.08, 0.03, 0.03, 0.80), true)
+	draw_rect(Rect2(Vector2(-radius, -radius - 12.0), Vector2(radius * 2.0 * pct, 4.0)), Color(0.90, 0.18, 0.12), true)
 func _draw_status_rings() -> void:
 	var ring_radius: float = radius + 4.0
 	if has_status("burn"):
@@ -359,3 +335,26 @@ func _draw_status_rings() -> void:
 		ring_radius += 3.0
 	if has_status("shock"):
 		draw_arc(Vector2.ZERO, ring_radius, 0.0, TAU, 24, Color(0.75, 0.95, 1.0, 0.72), 2.0)
+
+func _sync_visual_proxy(data: Dictionary = {}) -> void:
+	_ensure_visual_proxy()
+	if visual_rig != null and visual_rig.has_method("apply_profile"):
+		visual_rig.call("apply_profile", enemy_type, role, radius, enemy_color, data)
+	_sync_visual_statuses()
+
+func _ensure_visual_proxy() -> void:
+	if visual_rig != null and is_instance_valid(visual_rig):
+		return
+	visual_rig = EnemyVisualRigScript.new()
+	visual_rig.name = "EnemyVisualRig"
+	visual_rig.z_index = -1
+	add_child(visual_rig)
+	move_child(visual_rig, 0)
+
+func _sync_visual_statuses() -> void:
+	if visual_rig != null and is_instance_valid(visual_rig) and visual_rig.has_method("update_statuses"):
+		visual_rig.call("update_statuses", statuses)
+
+func _visual_hit_flash() -> void:
+	if visual_rig != null and is_instance_valid(visual_rig) and visual_rig.has_method("flash_hit"):
+		visual_rig.call("flash_hit")

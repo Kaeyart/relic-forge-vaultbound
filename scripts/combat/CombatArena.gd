@@ -1,5 +1,7 @@
 class_name RVCombatArena
 extends Node2D
+const SpellVFXSystemScript := preload("res://scripts/visuals/SpellVFXSystem.gd")
+const MapPropVisualSystemScript := preload("res://scripts/visuals/MapPropVisualSystem.gd")
 
 const MapLayoutSystemScript := preload("res://scripts/systems/MapLayoutSystem.gd")
 const MapEncounterDirectorScript := preload("res://scripts/systems/MapEncounterDirector.gd")
@@ -25,6 +27,7 @@ var reward_claimed: bool = false
 var map_layout: Dictionary = {}
 var encounter_plan: Dictionary = {}
 var map_visual_root: Node2D = null
+var vfx_root: Node2D = null
 var enemy_zones: Array[Dictionary] = []
 var map_pack_total: int = 0
 var map_pack_cleared: int = 0
@@ -36,6 +39,7 @@ func start_activity(state: RVGameState, new_activity: Dictionary) -> void:
 	active = true
 	_clear_children(enemies_root)
 	_clear_children(projectiles_root)
+	_clear_runtime_vfx()
 	enemy_zones.clear()
 	state.room_index = max(1, state.room_index)
 	spawn_room(state)
@@ -240,6 +244,7 @@ func cast_selected_skill(state: RVGameState, aim: Vector2) -> void:
 	for flag_value: Variant in flags:
 		if not tags.has(str(flag_value)):
 			tags.append(str(flag_value))
+	_emit_skill_proxy_vfx(skill_name, state.player_pos, aim, direction, skill_data, tags)
 	match skill_name:
 		"Cleave":
 			var center: Vector2 = state.player_pos + direction * 64.0
@@ -363,6 +368,7 @@ func _apply_map_layout_art(layout: Dictionary) -> void:
 	_draw_map_corridors(layout)
 	_draw_map_sections(layout)
 	_draw_map_obstacles(layout)
+	_decorate_runtime_map_props(layout)
 
 func _draw_map_sections(layout: Dictionary) -> void:
 	if map_visual_root == null:
@@ -712,3 +718,26 @@ func dev_force_reward() -> void:
 	_set_reward_visible(true)
 	_set_exit_visible(false)
 	state_ref.add_notice("Dev: reward chest forced")
+
+func _ensure_vfx_root() -> Node2D:
+	if vfx_root != null and is_instance_valid(vfx_root):
+		return vfx_root
+	vfx_root = Node2D.new()
+	vfx_root.name = "RuntimeSpellVFX"
+	vfx_root.z_index = 50
+	add_child(vfx_root)
+	return vfx_root
+
+func _emit_skill_proxy_vfx(skill_name: String, origin: Vector2, aim: Vector2, direction: Vector2, skill_data: Dictionary, tags: Array) -> void:
+	var root: Node2D = _ensure_vfx_root()
+	SpellVFXSystemScript.emit_skill(self, root, skill_name, origin, aim, direction, skill_data, tags)
+
+func _decorate_runtime_map_props(layout: Dictionary) -> void:
+	if map_visual_root == null:
+		return
+	MapPropVisualSystemScript.decorate(map_visual_root, layout, Dictionary(activity.get("map", {})))
+
+func _clear_runtime_vfx() -> void:
+	if vfx_root != null and is_instance_valid(vfx_root):
+		vfx_root.queue_free()
+	vfx_root = null
