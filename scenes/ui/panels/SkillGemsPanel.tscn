@@ -158,8 +158,9 @@ offset_bottom = 552.0
 unique_name_in_owner = true
 anchors_preset = 0
 offset_left = 78.0
+offset_top = -144.0
 offset_right = 406.0
-offset_bottom = 434.0
+offset_bottom = 290.0
 
 [node name="ActiveColumnFrame" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn" unique_id=741339436]
 unique_name_in_owner = true
@@ -175,9 +176,9 @@ stretch_mode = 5
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 38.0
-offset_top = 15.0
+offset_top = 61.0
 offset_right = 290.0
-offset_bottom = 38.0
+offset_bottom = 84.0
 theme_override_colors/font_color = Color(0.9, 0.78, 0.48, 1)
 theme_override_font_sizes/font_size = 15
 text = "ACTIVE GEMS"
@@ -187,9 +188,9 @@ vertical_alignment = 1
 [node name="ActiveColumnDivider" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn" unique_id=80309658]
 layout_mode = 0
 offset_left = 60.0
-offset_top = 39.0
+offset_top = 85.0
 offset_right = 268.0
-offset_bottom = 54.0
+offset_bottom = 100.0
 mouse_filter = 2
 texture = ExtResource("18")
 expand_mode = 1
@@ -198,10 +199,10 @@ stretch_mode = 5
 [node name="ActiveGemList" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn" unique_id=1667806306]
 unique_name_in_owner = true
 anchors_preset = 0
-offset_left = 26.0
-offset_top = 64.0
-offset_right = 302.0
-offset_bottom = 370.0
+offset_left = 27.0
+offset_top = 132.0
+offset_right = 303.0
+offset_bottom = 313.0
 
 [node name="ActiveGemRow0" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=998188050]
 anchors_preset = 0
@@ -210,8 +211,9 @@ offset_bottom = 34.0
 
 [node name="ActiveGemRowArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow0" unique_id=1002164422]
 layout_mode = 0
-offset_right = 276.0
-offset_bottom = 34.0
+offset_top = 5.0
+offset_right = 98.0
+offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("12")
 expand_mode = 1
@@ -220,9 +222,9 @@ stretch_mode = 5
 [node name="ActiveGemIconArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow0" unique_id=1778934967]
 layout_mode = 0
 offset_left = 4.0
-offset_top = 2.0
+offset_top = 5.0
 offset_right = 34.0
-offset_bottom = 32.0
+offset_bottom = 35.0
 mouse_filter = 2
 texture = ExtResource("22")
 expand_mode = 1
@@ -231,10 +233,11 @@ stretch_mode = 5
 [node name="ActiveGemButton0" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow0" unique_id=1454998382]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 38.0
-offset_top = 2.0
-offset_right = 272.0
-offset_bottom = 32.0
+offset_left = 31.0
+offset_top = 4.0
+offset_right = 84.40895
+offset_bottom = 34.0
+scale = Vector2(0.88000244, 1)
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -245,13 +248,14 @@ clip_text = true
 
 [node name="ActiveGemRow1" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=1050649588]
 anchors_preset = 0
-offset_top = 38.0
+offset_top = 32.0
 offset_right = 276.0
-offset_bottom = 72.0
+offset_bottom = 66.0
 
 [node name="ActiveGemRowArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow1" unique_id=1856185981]
 layout_mode = 0
-offset_right = 276.0
+offset_left = 3.0
+offset_right = 97.0
 offset_bottom = 34.0
 mouse_filter = 2
 texture = ExtResource("12")
@@ -272,9 +276,9 @@ stretch_mode = 5
 [node name="ActiveGemButton1" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow1" unique_id=376535197]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 38.0
+offset_left = 27.0
 offset_top = 2.0
-offset_right = 272.0
+offset_right = 86.0
 offset_bottom = 32.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
@@ -286,14 +290,15 @@ clip_text = true
 
 [node name="ActiveGemRow2" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=179145132]
 anchors_preset = 0
-offset_top = 76.0
-offset_right = 276.0
-offset_bottom = 110.0
+offset_top = 60.0
+offset_right = 226.0
+offset_bottom = 94.0
 
 [node name="ActiveGemRowArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow2" unique_id=1534312480]
 layout_mode = 0
-offset_right = 276.0
-offset_bottom = 34.0
+offset_left = 3.0
+offset_right = 99.0
+offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("12")
 expand_mode = 1
@@ -313,9 +318,9 @@ stretch_mode = 5
 [node name="ActiveGemButton2" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow2" unique_id=1657039975]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 38.0
+offset_left = 34.0
 offset_top = 2.0
-offset_right = 272.0
+offset_right = 76.0
 offset_bottom = 32.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
@@ -327,13 +332,14 @@ clip_text = true
 
 [node name="ActiveGemRow3" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=1044707071]
 anchors_preset = 0
-offset_top = 114.0
+offset_top = 90.0
 offset_right = 276.0
-offset_bottom = 148.0
+offset_bottom = 124.0
 
 [node name="ActiveGemRowArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow3" unique_id=754211793]
 layout_mode = 0
-offset_right = 276.0
+offset_left = -86.0
+offset_right = 190.0
 offset_bottom = 34.0
 mouse_filter = 2
 texture = ExtResource("12")
@@ -354,9 +360,9 @@ stretch_mode = 5
 [node name="ActiveGemButton3" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow3" unique_id=618726793]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 38.0
+offset_left = -61.0
 offset_top = 2.0
-offset_right = 272.0
+offset_right = 173.0
 offset_bottom = 32.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
@@ -368,14 +374,18 @@ clip_text = true
 
 [node name="ActiveGemRow4" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=597281338]
 anchors_preset = 0
-offset_top = 152.0
-offset_right = 276.0
-offset_bottom = 186.0
+offset_left = -1.0
+offset_top = 117.0
+offset_right = 275.0
+offset_bottom = 151.0
 
 [node name="ActiveGemRowArt4" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow4" unique_id=2134692771]
 layout_mode = 0
-offset_right = 276.0
+offset_left = -5.0
+offset_top = 2.0
+offset_right = 104.0
 offset_bottom = 34.0
+scale = Vector2(1.0800012, 0.96)
 mouse_filter = 2
 texture = ExtResource("12")
 expand_mode = 1
@@ -383,9 +393,9 @@ stretch_mode = 5
 
 [node name="ActiveGemIconArt4" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow4" unique_id=1948760912]
 layout_mode = 0
-offset_left = 4.0
+offset_left = 5.0
 offset_top = 2.0
-offset_right = 34.0
+offset_right = 35.0
 offset_bottom = 32.0
 mouse_filter = 2
 texture = ExtResource("22")
@@ -395,10 +405,10 @@ stretch_mode = 5
 [node name="ActiveGemButton4" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow4" unique_id=347782063]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 38.0
-offset_top = 2.0
-offset_right = 272.0
-offset_bottom = 32.0
+offset_left = 31.0
+offset_top = 6.0
+offset_right = 79.0
+offset_bottom = 28.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -409,13 +419,14 @@ clip_text = true
 
 [node name="ActiveGemRow5" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=1290099321]
 anchors_preset = 0
-offset_top = 190.0
+offset_top = 146.0
 offset_right = 276.0
-offset_bottom = 224.0
+offset_bottom = 180.0
 
 [node name="ActiveGemRowArt5" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow5" unique_id=843956868]
 layout_mode = 0
-offset_right = 276.0
+offset_left = 3.0
+offset_right = 104.0
 offset_bottom = 34.0
 mouse_filter = 2
 texture = ExtResource("12")
@@ -436,10 +447,10 @@ stretch_mode = 5
 [node name="ActiveGemButton5" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList/ActiveGemRow5" unique_id=710735412]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 38.0
-offset_top = 2.0
-offset_right = 272.0
-offset_bottom = 32.0
+offset_left = 32.0
+offset_top = 5.0
+offset_right = 87.0
+offset_bottom = 27.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -449,6 +460,7 @@ flat = true
 clip_text = true
 
 [node name="ActiveGemRow6" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=716514177]
+visible = false
 anchors_preset = 0
 offset_top = 228.0
 offset_right = 276.0
@@ -490,6 +502,7 @@ flat = true
 clip_text = true
 
 [node name="ActiveGemRow7" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/ActiveColumn/ActiveGemList" unique_id=891981180]
+visible = false
 anchors_preset = 0
 offset_top = 266.0
 offset_right = 276.0
@@ -564,9 +577,9 @@ vertical_alignment = 1
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 42.0
-offset_top = 64.0
+offset_top = 105.0
 offset_right = 160.0
-offset_bottom = 226.0
+offset_bottom = 267.0
 mouse_filter = 2
 texture = ExtResource("8")
 expand_mode = 1
@@ -575,10 +588,10 @@ stretch_mode = 5
 [node name="FeaturedTags" type="Label" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=279695246]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 170.0
-offset_top = 60.0
-offset_right = 358.0
-offset_bottom = 84.0
+offset_left = 53.0
+offset_top = 271.0
+offset_right = 241.0
+offset_bottom = 295.0
 theme_override_colors/font_color = Color(0.9, 0.78, 0.48, 1)
 theme_override_font_sizes/font_size = 12
 text = "Tags:"
@@ -587,10 +600,10 @@ vertical_alignment = 1
 [node name="DetailLabel" type="RichTextLabel" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=1236972718]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 168.0
-offset_top = 88.0
-offset_right = 364.0
-offset_bottom = 250.0
+offset_left = 151.0
+offset_top = 117.0
+offset_right = 347.0
+offset_bottom = 279.0
 theme_override_colors/default_color = Color(0.86, 0.78, 0.62, 1)
 theme_override_font_sizes/normal_font_size = 12
 bbcode_enabled = true
@@ -598,6 +611,7 @@ text = "Selected gem details."
 
 [node name="SocketHeader" type="Label" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=109767010]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 offset_left = 48.0
 offset_top = 256.0
@@ -631,8 +645,10 @@ offset_bottom = 346.0
 
 [node name="SocketArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=1292644856]
 layout_mode = 0
-offset_right = 38.0
-offset_bottom = 38.0
+offset_left = 9.0
+offset_top = 10.0
+offset_right = 49.0
+offset_bottom = 48.0
 mouse_filter = 2
 texture = ExtResource("22")
 expand_mode = 1
@@ -641,8 +657,10 @@ stretch_mode = 5
 [node name="SocketButton0" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=984131421]
 unique_name_in_owner = true
 layout_mode = 0
-offset_right = 38.0
-offset_bottom = 38.0
+offset_left = 14.0
+offset_top = 14.0
+offset_right = 44.0
+offset_bottom = 47.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -652,9 +670,10 @@ clip_text = true
 
 [node name="SocketArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=18687557]
 layout_mode = 0
-offset_left = 46.0
-offset_right = 84.0
-offset_bottom = 38.0
+offset_left = 47.0
+offset_top = 10.0
+offset_right = 86.0
+offset_bottom = 48.0
 mouse_filter = 2
 texture = ExtResource("22")
 expand_mode = 1
@@ -663,9 +682,10 @@ stretch_mode = 5
 [node name="SocketButton1" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=1599265929]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 46.0
-offset_right = 84.0
-offset_bottom = 38.0
+offset_left = 51.0
+offset_top = 14.0
+offset_right = 81.0
+offset_bottom = 45.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -675,9 +695,10 @@ clip_text = true
 
 [node name="SocketArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=223315308]
 layout_mode = 0
-offset_left = 92.0
-offset_right = 130.0
-offset_bottom = 38.0
+offset_left = 84.0
+offset_top = 10.0
+offset_right = 123.0
+offset_bottom = 48.0
 mouse_filter = 2
 texture = ExtResource("22")
 expand_mode = 1
@@ -686,9 +707,10 @@ stretch_mode = 5
 [node name="SocketButton2" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=1816838457]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 92.0
-offset_right = 130.0
-offset_bottom = 38.0
+offset_left = 90.0
+offset_top = 15.0
+offset_right = 117.0
+offset_bottom = 44.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -698,9 +720,10 @@ clip_text = true
 
 [node name="SocketArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=323433431]
 layout_mode = 0
-offset_left = 138.0
-offset_right = 176.0
-offset_bottom = 38.0
+offset_left = 122.0
+offset_top = 10.0
+offset_right = 160.0
+offset_bottom = 48.0
 mouse_filter = 2
 texture = ExtResource("22")
 expand_mode = 1
@@ -709,9 +732,10 @@ stretch_mode = 5
 [node name="SocketButton3" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=389881797]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 138.0
-offset_right = 176.0
-offset_bottom = 38.0
+offset_left = 127.0
+offset_top = 15.0
+offset_right = 156.0
+offset_bottom = 45.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -721,9 +745,10 @@ clip_text = true
 
 [node name="SocketArt4" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=172746304]
 layout_mode = 0
-offset_left = 184.0
-offset_right = 222.0
-offset_bottom = 38.0
+offset_left = 159.0
+offset_top = 10.0
+offset_right = 197.0
+offset_bottom = 48.0
 mouse_filter = 2
 texture = ExtResource("22")
 expand_mode = 1
@@ -732,9 +757,10 @@ stretch_mode = 5
 [node name="SocketButton4" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=396494948]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 184.0
-offset_right = 222.0
-offset_bottom = 38.0
+offset_left = 164.0
+offset_top = 15.0
+offset_right = 193.0
+offset_bottom = 45.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -744,9 +770,10 @@ clip_text = true
 
 [node name="SocketArt5" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=1322287699]
 layout_mode = 0
-offset_left = 230.0
-offset_right = 268.0
-offset_bottom = 38.0
+offset_left = 196.0
+offset_top = 9.0
+offset_right = 235.0
+offset_bottom = 48.0
 mouse_filter = 2
 texture = ExtResource("22")
 expand_mode = 1
@@ -755,9 +782,35 @@ stretch_mode = 5
 [node name="SocketButton5" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=1436597166]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 230.0
+offset_left = 201.0
+offset_top = 14.0
+offset_right = 230.0
+offset_bottom = 45.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+flat = true
+clip_text = true
+
+[node name="SocketArt6" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=712200643]
+layout_mode = 0
+offset_left = 234.0
+offset_top = 9.0
+offset_right = 273.0
+offset_bottom = 48.0
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SocketButton6" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/SocketGroup" unique_id=43437653]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 239.0
+offset_top = 14.0
 offset_right = 268.0
-offset_bottom = 38.0
+offset_bottom = 45.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -767,10 +820,10 @@ clip_text = true
 
 [node name="DetailActionStrip" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=845870852]
 layout_mode = 0
-offset_left = 30.0
-offset_top = 372.0
-offset_right = 360.0
-offset_bottom = 408.0
+offset_left = 31.0
+offset_top = 393.0
+offset_right = 361.0
+offset_bottom = 429.0
 mouse_filter = 2
 texture = ExtResource("10")
 expand_mode = 1
@@ -779,10 +832,10 @@ stretch_mode = 5
 [node name="EquipSkillButton" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=1086295458]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 38.0
-offset_top = 376.0
-offset_right = 128.0
-offset_bottom = 404.0
+offset_left = 18.0
+offset_top = 401.0
+offset_right = 108.0
+offset_bottom = 429.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -791,13 +844,26 @@ text = "Equip"
 flat = true
 clip_text = true
 
+[node name="CloseBottomButtonArt4" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/EquipSkillButton" unique_id=1170862986]
+show_behind_parent = true
+layout_mode = 0
+offset_left = -29.0
+offset_top = -8.0
+offset_right = 121.0
+offset_bottom = 24.0
+scale = Vector2(1, 1.1199951)
+mouse_filter = 2
+texture = ExtResource("10")
+expand_mode = 1
+stretch_mode = 5
+
 [node name="AddSkillSocketButton" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=1071754407]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 136.0
-offset_top = 376.0
-offset_right = 236.0
-offset_bottom = 404.0
+offset_left = 148.0
+offset_top = 401.0
+offset_right = 248.0
+offset_bottom = 429.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -809,24 +875,39 @@ clip_text = true
 [node name="UnsocketButton" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn" unique_id=2003338473]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 244.0
-offset_top = 376.0
-offset_right = 352.0
-offset_bottom = 404.0
+offset_left = 257.0
+offset_top = 396.0
+offset_right = 365.0
+offset_bottom = 432.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
 theme_override_font_sizes/font_size = 10
-text = "Unsocket"
+text = "            Unsocket
+"
 flat = true
 clip_text = true
+
+[node name="CloseBottomButtonArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/DetailColumn/UnsocketButton" unique_id=1048365268]
+show_behind_parent = true
+layout_mode = 0
+offset_left = -8.0
+offset_top = -3.0
+offset_right = 142.0
+offset_bottom = 29.0
+scale = Vector2(1, 1.1199902)
+mouse_filter = 2
+texture = ExtResource("10")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="SupportColumn" type="Control" parent="PanelRoot/ContentRoot/BodyGroup" unique_id=210622717]
 unique_name_in_owner = true
 anchors_preset = 0
-offset_left = 842.0
-offset_right = 1198.0
-offset_bottom = 434.0
+offset_left = 826.0
+offset_top = -72.0
+offset_right = 1182.0
+offset_bottom = 362.0
 
 [node name="SupportColumnFrame" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn" unique_id=1577350089]
 unique_name_in_owner = true
@@ -853,9 +934,9 @@ vertical_alignment = 1
 
 [node name="SupportColumnDivider" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn" unique_id=302669274]
 layout_mode = 0
-offset_left = 68.0
+offset_left = 67.0
 offset_top = 39.0
-offset_right = 288.0
+offset_right = 287.0
 offset_bottom = 54.0
 mouse_filter = 2
 texture = ExtResource("19")
@@ -864,10 +945,11 @@ stretch_mode = 5
 
 [node name="SupportSearchArt" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn" unique_id=1824441179]
 layout_mode = 0
-offset_left = 30.0
+offset_left = 81.0
 offset_top = 62.0
-offset_right = 222.0
+offset_right = 159.0
 offset_bottom = 88.0
+scale = Vector2(1.1999999, 1.2422523)
 mouse_filter = 2
 texture = ExtResource("12")
 expand_mode = 1
@@ -875,10 +957,10 @@ stretch_mode = 5
 
 [node name="SupportSearchText" type="Label" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn" unique_id=724773765]
 layout_mode = 0
-offset_left = 42.0
-offset_top = 64.0
-offset_right = 214.0
-offset_bottom = 86.0
+offset_left = 110.0
+offset_top = 67.0
+offset_right = 176.0
+offset_bottom = 89.0
 theme_override_colors/font_color = Color(0.58, 0.52, 0.42, 1)
 theme_override_font_sizes/font_size = 10
 text = "Search / filter"
@@ -886,10 +968,11 @@ vertical_alignment = 1
 
 [node name="SupportFilterArt" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn" unique_id=545528582]
 layout_mode = 0
-offset_left = 230.0
-offset_top = 62.0
-offset_right = 326.0
-offset_bottom = 88.0
+offset_left = 213.99994
+offset_top = 65.0
+offset_right = 309.99994
+offset_bottom = 91.0
+scale = Vector2(1.2187679, 0.97220033)
 mouse_filter = 2
 texture = ExtResource("12")
 expand_mode = 1
@@ -897,10 +980,10 @@ stretch_mode = 5
 
 [node name="SupportFilterText" type="Label" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn" unique_id=590884682]
 layout_mode = 0
-offset_left = 238.0
-offset_top = 64.0
-offset_right = 318.0
-offset_bottom = 86.0
+offset_left = 241.0
+offset_top = 66.0
+offset_right = 321.0
+offset_bottom = 88.0
 theme_override_colors/font_color = Color(0.88, 0.76, 0.52, 1)
 theme_override_font_sizes/font_size = 10
 text = "All Tags"
@@ -911,19 +994,26 @@ vertical_alignment = 1
 unique_name_in_owner = true
 anchors_preset = 0
 offset_left = 28.0
-offset_top = 100.0
+offset_top = 119.0
 offset_right = 328.0
-offset_bottom = 388.0
+offset_bottom = 324.0
 
 [node name="SupportGemCard0" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=815263469]
 anchors_preset = 0
-offset_right = 68.0
-offset_bottom = 62.0
+offset_left = 3.0
+offset_top = 12.0
+offset_right = 56.75
+offset_bottom = 72.714294
+scale = Vector2(0.8, 0.56)
 
 [node name="SupportGemCardArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard0" unique_id=231317772]
+visible = false
 layout_mode = 0
-offset_right = 68.0
-offset_bottom = 62.0
+offset_left = -9.75
+offset_top = -3.0
+offset_right = 58.25
+offset_bottom = 59.0
+scale = Vector2(1.4500122, 1)
 mouse_filter = 2
 texture = ExtResource("13")
 expand_mode = 1
@@ -931,10 +1021,11 @@ stretch_mode = 5
 
 [node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard0" unique_id=1365139655]
 layout_mode = 0
-offset_left = 16.0
-offset_top = 2.0
-offset_right = 52.0
-offset_bottom = 38.0
+offset_left = -8.749962
+offset_top = -3.5714073
+offset_right = 59.25004
+offset_bottom = 51.20859
+scale = Vector2(1.1000488, 1.1807132)
 mouse_filter = 2
 texture = ExtResource("22")
 expand_mode = 1
@@ -943,10 +1034,10 @@ stretch_mode = 5
 [node name="SupportGemButton0" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard0" unique_id=1690124200]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 2.0
-offset_top = 38.0
-offset_right = 66.0
-offset_bottom = 62.0
+offset_left = -6.25
+offset_top = 7.142853
+offset_right = 63.75
+offset_bottom = 51.785706
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -957,25 +1048,42 @@ clip_text = true
 
 [node name="SupportGemCard1" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=164176529]
 anchors_preset = 0
-offset_left = 74.0
-offset_right = 142.0
-offset_bottom = 62.0
+offset_left = 68.0
+offset_right = 122.0
+offset_bottom = 43.0
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard1" unique_id=1055465227]
+layout_mode = 0
+offset_left = -7.9999695
+offset_top = 9.000011
+offset_right = 52.833344
+offset_bottom = 39.83334
+scale = Vector2(1.3881563, 1.2)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="SupportGemCardArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard1" unique_id=227580206]
+visible = false
 layout_mode = 0
+offset_top = 12.0
 offset_right = 68.0
-offset_bottom = 62.0
+offset_bottom = 74.0
+scale = Vector2(1, 0.5600049)
 mouse_filter = 2
 texture = ExtResource("13")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="SupportGemBadgeArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard1" unique_id=583797786]
+visible = false
 layout_mode = 0
-offset_left = 16.0
-offset_top = 2.0
-offset_right = 52.0
-offset_bottom = 38.0
+offset_left = 2.0
+offset_top = 17.0
+offset_right = 38.0
+offset_bottom = 53.0
+scale = Vector2(1.7562032, 0.6160863)
 mouse_filter = 2
 texture = ExtResource("23")
 expand_mode = 1
@@ -984,10 +1092,10 @@ stretch_mode = 5
 [node name="SupportGemButton1" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard1" unique_id=162717453]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 2.0
-offset_top = 38.0
-offset_right = 66.0
-offset_bottom = 62.0
+offset_left = 3.0
+offset_top = 15.0
+offset_right = 67.0
+offset_bottom = 39.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -998,11 +1106,24 @@ clip_text = true
 
 [node name="SupportGemCard2" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1991343154]
 anchors_preset = 0
-offset_left = 148.0
-offset_right = 216.0
-offset_bottom = 62.0
+offset_left = 146.0
+offset_right = 199.0
+offset_bottom = 43.0
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard2" unique_id=698820965]
+layout_mode = 0
+offset_left = -7.0
+offset_top = 6.0
+offset_right = 60.951477
+offset_bottom = 40.724777
+scale = Vector2(1.1800488, 1.2207131)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="SupportGemCardArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard2" unique_id=698062616]
+visible = false
 layout_mode = 0
 offset_right = 68.0
 offset_bottom = 62.0
@@ -1012,6 +1133,7 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="SupportGemBadgeArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard2" unique_id=20246778]
+visible = false
 layout_mode = 0
 offset_left = 16.0
 offset_top = 2.0
@@ -1026,9 +1148,9 @@ stretch_mode = 5
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 2.0
-offset_top = 38.0
+offset_top = 15.0
 offset_right = 66.0
-offset_bottom = 62.0
+offset_bottom = 39.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -1044,6 +1166,7 @@ offset_right = 290.0
 offset_bottom = 62.0
 
 [node name="SupportGemCardArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard3" unique_id=1583100705]
+visible = false
 layout_mode = 0
 offset_right = 68.0
 offset_bottom = 62.0
@@ -1054,10 +1177,11 @@ stretch_mode = 5
 
 [node name="SupportGemBadgeArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard3" unique_id=1796071551]
 layout_mode = 0
-offset_left = 16.0
-offset_top = 2.0
-offset_right = 52.0
-offset_bottom = 38.0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 46.0
+offset_bottom = 44.0
+scale = Vector2(1.2, 1.08)
 mouse_filter = 2
 texture = ExtResource("22")
 expand_mode = 1
@@ -1066,10 +1190,1034 @@ stretch_mode = 5
 [node name="SupportGemButton3" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard3" unique_id=1167949199]
 unique_name_in_owner = true
 layout_mode = 0
+offset_top = 16.0
+offset_right = 64.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard16" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=187472167]
+anchors_preset = 0
+offset_left = 3.0
+offset_top = 44.0
+offset_right = 56.75
+offset_bottom = 104.714294
+scale = Vector2(0.864, 0.56)
+
+[node name="SupportGemCardArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard16" unique_id=542825932]
+visible = false
+layout_mode = 0
+offset_left = -9.75
+offset_top = -3.0
+offset_right = 58.25
+offset_bottom = 59.0
+scale = Vector2(1.4500122, 1)
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard16" unique_id=356519503]
+layout_mode = 0
+offset_left = -8.749962
+offset_top = -3.5714073
+offset_right = 59.25004
+offset_bottom = 51.20859
+scale = Vector2(1.1000488, 1.1807132)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton0" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard16" unique_id=1798053884]
+layout_mode = 0
+offset_left = -6.25
+offset_top = 7.142853
+offset_right = 63.75
+offset_bottom = 51.785706
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard17" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=51032762]
+anchors_preset = 0
+offset_left = 68.0
+offset_top = 32.0
+offset_right = 122.0
+offset_bottom = 75.0
+scale = Vector2(1.08, 1)
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard17" unique_id=1420988988]
+layout_mode = 0
+offset_left = -7.9999695
+offset_top = 9.000011
+offset_right = 52.833344
+offset_bottom = 39.83334
+scale = Vector2(1.3881563, 1.2)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemCardArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard17" unique_id=955236723]
+visible = false
+layout_mode = 0
+offset_top = 12.0
+offset_right = 68.0
+offset_bottom = 74.0
+scale = Vector2(1, 0.5600049)
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard17" unique_id=1372684597]
+visible = false
+layout_mode = 0
 offset_left = 2.0
-offset_top = 38.0
-offset_right = 66.0
+offset_top = 17.0
+offset_right = 38.0
+offset_bottom = 53.0
+scale = Vector2(1.7562032, 0.6160863)
+mouse_filter = 2
+texture = ExtResource("23")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton1" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard17" unique_id=1055377468]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 15.0
+offset_right = 67.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard18" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=790085694]
+anchors_preset = 0
+offset_left = 146.0
+offset_top = 32.0
+offset_right = 199.0
+offset_bottom = 75.0
+scale = Vector2(1.08, 1)
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard18" unique_id=1502899318]
+layout_mode = 0
+offset_left = -7.0
+offset_top = 6.0
+offset_right = 60.951477
+offset_bottom = 40.724777
+scale = Vector2(1.1800488, 1.2207131)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemCardArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard18" unique_id=2146609057]
+visible = false
+layout_mode = 0
+offset_right = 68.0
 offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard18" unique_id=1857141940]
+visible = false
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("24")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton2" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard18" unique_id=1390044260]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 15.0
+offset_right = 66.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard19" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1671101135]
+anchors_preset = 0
+offset_left = 222.0
+offset_top = 32.0
+offset_right = 290.0
+offset_bottom = 94.0
+scale = Vector2(1.08, 1)
+
+[node name="SupportGemCardArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard19" unique_id=51706165]
+visible = false
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard19" unique_id=121049239]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 46.0
+offset_bottom = 44.0
+scale = Vector2(1.2, 1.08)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton3" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard19" unique_id=728845046]
+layout_mode = 0
+offset_top = 16.0
+offset_right = 64.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard20" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1604504609]
+anchors_preset = 0
+offset_left = 3.0
+offset_top = 76.0
+offset_right = 56.75
+offset_bottom = 136.7143
+scale = Vector2(0.864, 0.56)
+
+[node name="SupportGemCardArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard20" unique_id=574257157]
+visible = false
+layout_mode = 0
+offset_left = -9.75
+offset_top = -3.0
+offset_right = 58.25
+offset_bottom = 59.0
+scale = Vector2(1.4500122, 1)
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard20" unique_id=167669070]
+layout_mode = 0
+offset_left = -8.749962
+offset_top = -3.5714073
+offset_right = 59.25004
+offset_bottom = 51.20859
+scale = Vector2(1.1000488, 1.1807132)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton0" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard20" unique_id=1149693843]
+layout_mode = 0
+offset_left = -6.25
+offset_top = 7.142853
+offset_right = 63.75
+offset_bottom = 51.785706
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard21" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1011346096]
+anchors_preset = 0
+offset_left = 68.0
+offset_top = 64.0
+offset_right = 122.0
+offset_bottom = 107.0
+scale = Vector2(1.08, 1)
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard21" unique_id=1680624977]
+layout_mode = 0
+offset_left = -7.9999695
+offset_top = 9.000011
+offset_right = 52.833344
+offset_bottom = 39.83334
+scale = Vector2(1.3881563, 1.2)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemCardArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard21" unique_id=1929119665]
+visible = false
+layout_mode = 0
+offset_top = 12.0
+offset_right = 68.0
+offset_bottom = 74.0
+scale = Vector2(1, 0.5600049)
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard21" unique_id=1200560109]
+visible = false
+layout_mode = 0
+offset_left = 2.0
+offset_top = 17.0
+offset_right = 38.0
+offset_bottom = 53.0
+scale = Vector2(1.7562032, 0.6160863)
+mouse_filter = 2
+texture = ExtResource("23")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton1" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard21" unique_id=766083504]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 15.0
+offset_right = 67.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard22" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=425964221]
+anchors_preset = 0
+offset_left = 146.0
+offset_top = 64.0
+offset_right = 199.0
+offset_bottom = 107.0
+scale = Vector2(1.08, 1)
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard22" unique_id=2013492075]
+layout_mode = 0
+offset_left = -7.0
+offset_top = 6.0
+offset_right = 60.951477
+offset_bottom = 40.724777
+scale = Vector2(1.1800488, 1.2207131)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemCardArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard22" unique_id=1219841589]
+visible = false
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard22" unique_id=2096523202]
+visible = false
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("24")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton2" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard22" unique_id=409319154]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 15.0
+offset_right = 66.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard23" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=508894304]
+anchors_preset = 0
+offset_left = 222.0
+offset_top = 64.0
+offset_right = 290.0
+offset_bottom = 126.0
+scale = Vector2(1.08, 1)
+
+[node name="SupportGemCardArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard23" unique_id=281605606]
+visible = false
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard23" unique_id=770556871]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 46.0
+offset_bottom = 44.0
+scale = Vector2(1.2, 1.08)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton3" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard23" unique_id=1444036907]
+layout_mode = 0
+offset_top = 16.0
+offset_right = 64.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard24" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1703148494]
+anchors_preset = 0
+offset_left = 3.0
+offset_top = 108.0
+offset_right = 56.75
+offset_bottom = 168.7143
+scale = Vector2(0.864, 0.56)
+
+[node name="SupportGemCardArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard24" unique_id=2074475299]
+visible = false
+layout_mode = 0
+offset_left = -9.75
+offset_top = -3.0
+offset_right = 58.25
+offset_bottom = 59.0
+scale = Vector2(1.4500122, 1)
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard24" unique_id=2118926873]
+layout_mode = 0
+offset_left = -8.749962
+offset_top = -3.5714073
+offset_right = 59.25004
+offset_bottom = 51.20859
+scale = Vector2(1.1000488, 1.1807132)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton0" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard24" unique_id=784801083]
+layout_mode = 0
+offset_left = -6.25
+offset_top = 7.142853
+offset_right = 63.75
+offset_bottom = 51.785706
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard25" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1443485427]
+anchors_preset = 0
+offset_left = 68.0
+offset_top = 96.0
+offset_right = 122.0
+offset_bottom = 139.0
+scale = Vector2(1.08, 1)
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard25" unique_id=1532529241]
+layout_mode = 0
+offset_left = -7.9999695
+offset_top = 9.000011
+offset_right = 52.833344
+offset_bottom = 39.83334
+scale = Vector2(1.3881563, 1.2)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemCardArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard25" unique_id=869166039]
+visible = false
+layout_mode = 0
+offset_top = 12.0
+offset_right = 68.0
+offset_bottom = 74.0
+scale = Vector2(1, 0.5600049)
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard25" unique_id=306455496]
+visible = false
+layout_mode = 0
+offset_left = 2.0
+offset_top = 17.0
+offset_right = 38.0
+offset_bottom = 53.0
+scale = Vector2(1.7562032, 0.6160863)
+mouse_filter = 2
+texture = ExtResource("23")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton1" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard25" unique_id=2121255498]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 15.0
+offset_right = 67.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard26" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=489385066]
+anchors_preset = 0
+offset_left = 146.0
+offset_top = 96.0
+offset_right = 199.0
+offset_bottom = 139.0
+scale = Vector2(1.08, 1)
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard26" unique_id=1794542641]
+layout_mode = 0
+offset_left = -7.0
+offset_top = 6.0
+offset_right = 60.951477
+offset_bottom = 40.724777
+scale = Vector2(1.1800488, 1.2207131)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemCardArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard26" unique_id=69487886]
+visible = false
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard26" unique_id=1857133904]
+visible = false
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("24")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton2" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard26" unique_id=1964766756]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 15.0
+offset_right = 66.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard27" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=16812182]
+anchors_preset = 0
+offset_left = 222.0
+offset_top = 96.0
+offset_right = 290.0
+offset_bottom = 158.0
+scale = Vector2(1.08, 1)
+
+[node name="SupportGemCardArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard27" unique_id=916822771]
+visible = false
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard27" unique_id=1872616580]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 46.0
+offset_bottom = 44.0
+scale = Vector2(1.2, 1.08)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton3" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard27" unique_id=66892124]
+layout_mode = 0
+offset_top = 16.0
+offset_right = 64.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard28" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1291758503]
+anchors_preset = 0
+offset_left = 2.0
+offset_top = 138.0
+offset_right = 55.75
+offset_bottom = 198.7143
+scale = Vector2(0.864, 0.56)
+
+[node name="SupportGemCardArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard28" unique_id=860516595]
+visible = false
+layout_mode = 0
+offset_left = -9.75
+offset_top = -3.0
+offset_right = 58.25
+offset_bottom = 59.0
+scale = Vector2(1.4500122, 1)
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard28" unique_id=1154952906]
+layout_mode = 0
+offset_left = -8.749962
+offset_top = -3.5714073
+offset_right = 59.25004
+offset_bottom = 51.20859
+scale = Vector2(1.1000488, 1.1807132)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton0" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard28" unique_id=184886734]
+layout_mode = 0
+offset_left = -6.25
+offset_top = 7.142853
+offset_right = 63.75
+offset_bottom = 51.785706
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard29" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1052802707]
+anchors_preset = 0
+offset_left = 67.0
+offset_top = 126.0
+offset_right = 121.0
+offset_bottom = 169.0
+scale = Vector2(1.08, 1)
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard29" unique_id=1795170905]
+layout_mode = 0
+offset_left = -7.9999695
+offset_top = 9.000011
+offset_right = 52.833344
+offset_bottom = 39.83334
+scale = Vector2(1.3881563, 1.2)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemCardArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard29" unique_id=802361282]
+visible = false
+layout_mode = 0
+offset_top = 12.0
+offset_right = 68.0
+offset_bottom = 74.0
+scale = Vector2(1, 0.5600049)
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard29" unique_id=1997575374]
+visible = false
+layout_mode = 0
+offset_left = 2.0
+offset_top = 17.0
+offset_right = 38.0
+offset_bottom = 53.0
+scale = Vector2(1.7562032, 0.6160863)
+mouse_filter = 2
+texture = ExtResource("23")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton1" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard29" unique_id=94055271]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 15.0
+offset_right = 67.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard30" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=705393702]
+anchors_preset = 0
+offset_left = 145.0
+offset_top = 126.0
+offset_right = 198.0
+offset_bottom = 169.0
+scale = Vector2(1.08, 1)
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard30" unique_id=2100993181]
+layout_mode = 0
+offset_left = -7.0
+offset_top = 6.0
+offset_right = 60.951477
+offset_bottom = 40.724777
+scale = Vector2(1.1800488, 1.2207131)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemCardArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard30" unique_id=293345631]
+visible = false
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard30" unique_id=101103941]
+visible = false
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("24")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton2" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard30" unique_id=1865911074]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 15.0
+offset_right = 66.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard31" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=910887442]
+anchors_preset = 0
+offset_left = 221.0
+offset_top = 126.0
+offset_right = 289.0
+offset_bottom = 188.0
+scale = Vector2(1.08, 1)
+
+[node name="SupportGemCardArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard31" unique_id=1302395621]
+visible = false
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard31" unique_id=948095785]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 46.0
+offset_bottom = 44.0
+scale = Vector2(1.2, 1.08)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton3" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard31" unique_id=1348796996]
+layout_mode = 0
+offset_top = 16.0
+offset_right = 64.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard32" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=52259807]
+anchors_preset = 0
+offset_left = 2.0
+offset_top = 170.0
+offset_right = 55.75
+offset_bottom = 230.7143
+scale = Vector2(0.864, 0.56)
+
+[node name="SupportGemCardArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard32" unique_id=385071117]
+visible = false
+layout_mode = 0
+offset_left = -9.75
+offset_top = -3.0
+offset_right = 58.25
+offset_bottom = 59.0
+scale = Vector2(1.4500122, 1)
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard32" unique_id=848905855]
+layout_mode = 0
+offset_left = -8.749962
+offset_top = -3.5714073
+offset_right = 59.25004
+offset_bottom = 51.20859
+scale = Vector2(1.1000488, 1.1807132)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton0" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard32" unique_id=244516127]
+layout_mode = 0
+offset_left = -6.25
+offset_top = 7.142853
+offset_right = 63.75
+offset_bottom = 51.785706
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard33" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=377246706]
+anchors_preset = 0
+offset_left = 67.0
+offset_top = 158.0
+offset_right = 121.0
+offset_bottom = 201.0
+scale = Vector2(1.08, 1)
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard33" unique_id=793601178]
+layout_mode = 0
+offset_left = -7.9999695
+offset_top = 9.000011
+offset_right = 52.833344
+offset_bottom = 39.83334
+scale = Vector2(1.3881563, 1.2)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemCardArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard33" unique_id=718998447]
+visible = false
+layout_mode = 0
+offset_top = 12.0
+offset_right = 68.0
+offset_bottom = 74.0
+scale = Vector2(1, 0.5600049)
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt1" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard33" unique_id=2130450752]
+visible = false
+layout_mode = 0
+offset_left = 2.0
+offset_top = 17.0
+offset_right = 38.0
+offset_bottom = 53.0
+scale = Vector2(1.7562032, 0.6160863)
+mouse_filter = 2
+texture = ExtResource("23")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton1" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard33" unique_id=1557676692]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 15.0
+offset_right = 67.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard34" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=935081615]
+anchors_preset = 0
+offset_left = 145.0
+offset_top = 158.0
+offset_right = 198.0
+offset_bottom = 201.0
+scale = Vector2(1.08, 1)
+
+[node name="SupportGemBadgeArt0" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard34" unique_id=443927724]
+layout_mode = 0
+offset_left = -7.0
+offset_top = 6.0
+offset_right = 60.951477
+offset_bottom = 40.724777
+scale = Vector2(1.1800488, 1.2207131)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemCardArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard34" unique_id=1443881909]
+visible = false
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard34" unique_id=914490390]
+visible = false
+layout_mode = 0
+offset_left = 16.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("24")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton2" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard34" unique_id=886688981]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 15.0
+offset_right = 66.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
+theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
+theme_override_font_sizes/font_size = 8
+text = "Support"
+flat = true
+clip_text = true
+
+[node name="SupportGemCard35" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=276040831]
+anchors_preset = 0
+offset_left = 221.0
+offset_top = 158.0
+offset_right = 289.0
+offset_bottom = 220.0
+scale = Vector2(1.08, 1)
+
+[node name="SupportGemCardArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard35" unique_id=2081763273]
+visible = false
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 62.0
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemBadgeArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard35" unique_id=31927634]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 46.0
+offset_bottom = 44.0
+scale = Vector2(1.2, 1.08)
+mouse_filter = 2
+texture = ExtResource("22")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SupportGemButton3" type="Button" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList/SupportGemCard35" unique_id=1757090639]
+layout_mode = 0
+offset_top = 16.0
+offset_right = 64.0
+offset_bottom = 40.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -1079,6 +2227,7 @@ flat = true
 clip_text = true
 
 [node name="SupportGemCard4" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=495342809]
+visible = false
 anchors_preset = 0
 offset_top = 68.0
 offset_right = 68.0
@@ -1120,6 +2269,7 @@ flat = true
 clip_text = true
 
 [node name="SupportGemCard5" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=305507445]
+visible = false
 anchors_preset = 0
 offset_left = 74.0
 offset_top = 68.0
@@ -1162,6 +2312,7 @@ flat = true
 clip_text = true
 
 [node name="SupportGemCard6" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1489421439]
+visible = false
 anchors_preset = 0
 offset_left = 148.0
 offset_top = 68.0
@@ -1204,6 +2355,7 @@ flat = true
 clip_text = true
 
 [node name="SupportGemCard7" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1209455897]
+visible = false
 anchors_preset = 0
 offset_left = 222.0
 offset_top = 68.0
@@ -1246,6 +2398,7 @@ flat = true
 clip_text = true
 
 [node name="SupportGemCard8" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=578660596]
+visible = false
 anchors_preset = 0
 offset_top = 136.0
 offset_right = 68.0
@@ -1287,6 +2440,7 @@ flat = true
 clip_text = true
 
 [node name="SupportGemCard9" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1930074370]
+visible = false
 anchors_preset = 0
 offset_left = 74.0
 offset_top = 136.0
@@ -1329,6 +2483,7 @@ flat = true
 clip_text = true
 
 [node name="SupportGemCard10" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1845199998]
+visible = false
 anchors_preset = 0
 offset_left = 148.0
 offset_top = 136.0
@@ -1371,6 +2526,7 @@ flat = true
 clip_text = true
 
 [node name="SupportGemCard11" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1340914277]
+visible = false
 anchors_preset = 0
 offset_left = 222.0
 offset_top = 136.0
@@ -1413,6 +2569,7 @@ flat = true
 clip_text = true
 
 [node name="SupportGemCard12" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1761782620]
+visible = false
 anchors_preset = 0
 offset_top = 204.0
 offset_right = 68.0
@@ -1454,6 +2611,7 @@ flat = true
 clip_text = true
 
 [node name="SupportGemCard13" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=2113031184]
+visible = false
 anchors_preset = 0
 offset_left = 74.0
 offset_top = 204.0
@@ -1496,6 +2654,7 @@ flat = true
 clip_text = true
 
 [node name="SupportGemCard14" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=1830130073]
+visible = false
 anchors_preset = 0
 offset_left = 148.0
 offset_top = 204.0
@@ -1538,6 +2697,7 @@ flat = true
 clip_text = true
 
 [node name="SupportGemCard15" type="Control" parent="PanelRoot/ContentRoot/BodyGroup/SupportColumn/SupportGemList" unique_id=2098618954]
+visible = false
 anchors_preset = 0
 offset_left = 222.0
 offset_top = 204.0
@@ -1592,12 +2752,16 @@ unique_name_in_owner = true
 anchors_preset = 0
 offset_right = 760.0
 offset_bottom = 98.0
+scale = Vector2(0.91999996, 1)
 
 [node name="SpiritPanelFrame" type="TextureRect" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection" unique_id=1490354474]
 unique_name_in_owner = true
 layout_mode = 0
-offset_right = 760.0
-offset_bottom = 98.0
+offset_left = -967.39105
+offset_top = -5.0
+offset_right = 84.98663
+offset_bottom = 134.0
+scale = Vector2(2.3599997, 0.58089554)
 mouse_filter = 2
 texture = ExtResource("5")
 expand_mode = 1
@@ -1606,35 +2770,60 @@ stretch_mode = 5
 [node name="SpiritHeader" type="Label" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection" unique_id=1844802914]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 24.0
-offset_top = 8.0
-offset_right = 230.0
-offset_bottom = 32.0
+offset_left = -19.47826
+offset_top = -27.0
+offset_right = 186.52174
+offset_bottom = -3.0
 theme_override_colors/font_color = Color(0.9, 0.78, 0.48, 1)
 theme_override_font_sizes/font_size = 15
 text = "SPIRIT GEMS"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="AddSpiritSocketButtonArt3" type="TextureRect" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritHeader" unique_id=1378972936]
+show_behind_parent = true
+layout_mode = 0
+offset_left = 28.173912
+offset_top = -7.0
+offset_right = 178.17392
+offset_bottom = 25.0
+mouse_filter = 2
+texture = ExtResource("10")
+expand_mode = 1
+stretch_mode = 5
+
 [node name="SpiritMeterLabel" type="Label" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection" unique_id=334187508]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 24.0
-offset_top = 34.0
-offset_right = 230.0
-offset_bottom = 58.0
+offset_left = -10.782608
+offset_top = 82.0
+offset_right = 195.21742
+offset_bottom = 106.0
 theme_override_colors/font_color = Color(0.78, 0.9, 1, 1)
 theme_override_font_sizes/font_size = 12
 text = "Spirit: 0 / 0 reserved"
 vertical_alignment = 1
 
+[node name="AddSpiritSocketButtonArt2" type="TextureRect" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritMeterLabel" unique_id=252845223]
+show_behind_parent = true
+layout_mode = 0
+offset_left = -44.65219
+offset_top = -8.0
+offset_right = 105.34781
+offset_bottom = 24.0
+scale = Vector2(1.3562849, 1.0631602)
+mouse_filter = 2
+texture = ExtResource("10")
+expand_mode = 1
+stretch_mode = 5
+
 [node name="SpiritGemList" type="Control" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection" unique_id=208993650]
 unique_name_in_owner = true
 anchors_preset = 0
-offset_left = 242.0
-offset_top = 12.0
-offset_right = 742.0
-offset_bottom = 84.0
+offset_left = 30.434792
+offset_top = 4.0
+offset_right = 530.4349
+offset_bottom = 76.0
 
 [node name="SpiritGemCard0" type="Control" parent="PanelRoot/ContentRoot/BottomGroup/SpiritSection/SpiritGemList" unique_id=1011036059]
 anchors_preset = 0
@@ -1818,15 +3007,18 @@ clip_text = true
 [node name="ChoiceSection" type="Control" parent="PanelRoot/ContentRoot/BottomGroup" unique_id=1393940315]
 unique_name_in_owner = true
 anchors_preset = 0
-offset_left = 770.0
-offset_right = 1128.0
-offset_bottom = 98.0
+offset_left = 762.0
+offset_top = -40.0
+offset_right = 1120.0
+offset_bottom = 58.0
 
 [node name="ChoicePanelFrame" type="TextureRect" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection" unique_id=634040451]
 unique_name_in_owner = true
 layout_mode = 0
-offset_right = 358.0
-offset_bottom = 98.0
+offset_left = -18.0
+offset_top = -68.0
+offset_right = 322.0
+offset_bottom = 109.0
 mouse_filter = 2
 texture = ExtResource("5")
 expand_mode = 1
@@ -1835,22 +3027,23 @@ stretch_mode = 5
 [node name="ChoiceTitle" type="Label" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection" unique_id=1788431401]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 12.0
-offset_top = 8.0
-offset_right = 346.0
-offset_bottom = 28.0
+offset_left = 36.0
+offset_top = -32.0
+offset_right = 224.0
+offset_bottom = -12.0
 theme_override_colors/font_color = Color(0.9, 0.78, 0.48, 1)
 theme_override_font_sizes/font_size = 11
-text = "No choice pending."
+text = "                           No choice pending."
 vertical_alignment = 1
 
 [node name="ChoiceButtonGrid" type="Control" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection" unique_id=1184698268]
 unique_name_in_owner = true
 anchors_preset = 0
-offset_left = 12.0
-offset_top = 34.0
-offset_right = 346.0
-offset_bottom = 88.0
+offset_left = 11.0
+offset_top = -12.000015
+offset_right = 296.0
+offset_bottom = 61.529404
+scale = Vector2(1, 1.36)
 
 [node name="ChoiceButton0" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=1659372506]
 unique_name_in_owner = true
@@ -1923,6 +3116,7 @@ clip_text = true
 
 [node name="ChoiceButton5" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=451721129]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 offset_left = 280.0
 offset_right = 332.0
@@ -2011,6 +3205,7 @@ clip_text = true
 
 [node name="ChoiceButton11" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=1721488345]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 offset_left = 280.0
 offset_top = 18.0
@@ -2100,6 +3295,7 @@ clip_text = true
 
 [node name="ChoiceButton17" type="Button" parent="PanelRoot/ContentRoot/BottomGroup/ChoiceSection/ChoiceButtonGrid" unique_id=95232019]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 offset_left = 280.0
 offset_top = 36.0
@@ -2116,15 +3312,16 @@ clip_text = true
 [node name="ActionSection" type="Control" parent="PanelRoot/ContentRoot" unique_id=1066472695]
 unique_name_in_owner = true
 anchors_preset = 0
-offset_left = 278.0
-offset_top = 666.0
-offset_right = 1002.0
-offset_bottom = 712.0
+offset_left = 282.0
+offset_top = 641.0
+offset_right = 1006.0
+offset_bottom = 687.0
 
 [node name="AddSpiritSocketButtonArt" type="TextureRect" parent="PanelRoot/ContentRoot/ActionSection" unique_id=1957522558]
 layout_mode = 0
+offset_left = -32.0
 offset_top = 4.0
-offset_right = 150.0
+offset_right = 118.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("10")
@@ -2134,10 +3331,10 @@ stretch_mode = 5
 [node name="AddSpiritSocketButton" type="Button" parent="PanelRoot/ContentRoot/ActionSection" unique_id=1838632303]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 142.0
-offset_bottom = 34.0
+offset_left = -24.0
+offset_top = 11.0
+offset_right = 110.0
+offset_bottom = 37.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -2148,9 +3345,9 @@ clip_text = true
 
 [node name="EnableSpiritButtonArt" type="TextureRect" parent="PanelRoot/ContentRoot/ActionSection" unique_id=5310800]
 layout_mode = 0
-offset_left = 164.0
+offset_left = 132.0
 offset_top = 4.0
-offset_right = 314.0
+offset_right = 282.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("10")
@@ -2160,10 +3357,10 @@ stretch_mode = 5
 [node name="EnableSpiritButton" type="Button" parent="PanelRoot/ContentRoot/ActionSection" unique_id=1171071784]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 172.0
-offset_top = 8.0
-offset_right = 306.0
-offset_bottom = 34.0
+offset_left = 138.0
+offset_top = 11.0
+offset_right = 272.0
+offset_bottom = 37.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -2172,24 +3369,13 @@ text = "Enable Spirit"
 flat = true
 clip_text = true
 
-[node name="CloseBottomButtonArt" type="TextureRect" parent="PanelRoot/ContentRoot/ActionSection" unique_id=2047055360]
-layout_mode = 0
-offset_left = 520.0
-offset_top = 4.0
-offset_right = 670.0
-offset_bottom = 36.0
-mouse_filter = 2
-texture = ExtResource("10")
-expand_mode = 1
-stretch_mode = 5
-
 [node name="CloseBottomButton" type="Button" parent="PanelRoot/ContentRoot/ActionSection" unique_id=1209686020]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 528.0
-offset_top = 8.0
-offset_right = 662.0
-offset_bottom = 34.0
+offset_left = 664.0
+offset_top = 11.0
+offset_right = 798.0
+offset_bottom = 37.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -2198,12 +3384,24 @@ text = "Close"
 flat = true
 clip_text = true
 
+[node name="CloseBottomButtonArt" type="TextureRect" parent="PanelRoot/ContentRoot/ActionSection/CloseBottomButton" unique_id=2047055360]
+show_behind_parent = true
+layout_mode = 0
+offset_left = -8.0
+offset_top = -7.0
+offset_right = 142.0
+offset_bottom = 25.0
+mouse_filter = 2
+texture = ExtResource("10")
+expand_mode = 1
+stretch_mode = 5
+
 [node name="SwapDummyButton" type="Button" parent="PanelRoot/ContentRoot/ActionSection" unique_id=1354877613]
 layout_mode = 0
-offset_left = 338.0
-offset_top = 8.0
-offset_right = 488.0
-offset_bottom = 34.0
+offset_left = 488.0
+offset_top = 10.0
+offset_right = 638.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(0.92, 0.84, 0.64, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.58, 0.28, 1)
 theme_override_colors/font_hover_color = Color(1, 0.86, 0.46, 1)
@@ -2212,9 +3410,22 @@ text = "Swap"
 flat = true
 clip_text = true
 
+[node name="CloseBottomButtonArt2" type="TextureRect" parent="PanelRoot/ContentRoot/ActionSection/SwapDummyButton" unique_id=2041207682]
+show_behind_parent = true
+layout_mode = 0
+offset_top = -6.0
+offset_right = 150.0
+offset_bottom = 26.0
+mouse_filter = 2
+texture = ExtResource("10")
+expand_mode = 1
+stretch_mode = 5
+
 [node name="DragLayer" type="Control" parent="PanelRoot/ContentRoot" unique_id=985185747]
 unique_name_in_owner = true
 anchors_preset = 0
-offset_right = 1280.0
-offset_bottom = 720.0
+offset_left = -11.0
+offset_top = 21.0
+offset_right = 1269.0
+offset_bottom = 741.0
 mouse_filter = 2
