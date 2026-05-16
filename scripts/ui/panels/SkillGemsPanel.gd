@@ -1,14 +1,9 @@
 class_name RVSkillGemsPanel
 extends RVUIPanelBase
 
-# Patch 054: clean scene-authored Skill Gems panel. Layout lives in SkillGemsPanel.tscn; script only binds named nodes.
-# The scene owns layout. This script only binds existing nodes, updates text/states,
-# and routes mouse/right-click/drag interactions into RVSkillGemSystem.
-
-const ART_ROOT := "res://assets/ui/skill_gems/patch054/slices/"
-const SOCKET_EMPTY_PATH := ART_ROOT + "sg_02_10_socket_empty_small.png"
-const SOCKET_FILLED_PATH := ART_ROOT + "sg_02_11_socket_filled_red_small.png"
-const SOCKET_LOCKED_PATH := ART_ROOT + "sg_02_12_socket_locked_small.png"
+# Patch 056: scene-authored Skill Gems panel bindings.
+# The scene owns layout/art. This script only updates existing named nodes,
+# handles click/right-click/drag, and displays deeper gem preview information.
 
 var current_state: RVGameState = null
 var last_signature: String = ""
@@ -52,17 +47,14 @@ var drag_started: bool = false
 @onready var close_button: Button = %CloseButton
 @onready var close_bottom_button: Button = get_node_or_null("%CloseBottomButton") as Button
 
-var socket_empty_texture: Texture2D = null
-var socket_filled_texture: Texture2D = null
-var socket_locked_texture: Texture2D = null
-
 func _ready() -> void:
 	super._ready()
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	_load_runtime_textures()
 	_bind_scene_nodes()
 	_connect_static_buttons()
 	set_process(true)
+	if detail_label != null:
+		detail_label.bbcode_enabled = true
 
 func update_from_state(state: RVGameState) -> void:
 	current_state = state
@@ -98,11 +90,6 @@ func _input(event: InputEvent) -> void:
 			if drag_started or not potential_drag.is_empty():
 				_cancel_drag()
 				accept_event()
-
-func _load_runtime_textures() -> void:
-	socket_empty_texture = ResourceLoader.load(SOCKET_EMPTY_PATH) as Texture2D
-	socket_filled_texture = ResourceLoader.load(SOCKET_FILLED_PATH) as Texture2D
-	socket_locked_texture = ResourceLoader.load(SOCKET_LOCKED_PATH) as Texture2D
 
 func _bind_scene_nodes() -> void:
 	active_buttons.clear()
@@ -224,7 +211,7 @@ func _refresh_active_buttons() -> void:
 		button.disabled = false
 		button.text = _button_label(gem, i == current_state.skill_gem_cursor, "active")
 		button.tooltip_text = _tooltip_for_gem(gem)
-		button.modulate = Color(1.0, 0.86, 0.48) if i == current_state.skill_gem_cursor else Color.WHITE
+		button.modulate = _target_button_color("active", i)
 		_register_zone(button, {"kind": "target", "target_type": "active", "target_index": i})
 
 func _refresh_support_buttons() -> void:
@@ -257,14 +244,10 @@ func _refresh_spirit_buttons() -> void:
 		button.disabled = false
 		button.text = _button_label(gem, i == current_state.spirit_gem_cursor, "spirit")
 		button.tooltip_text = _tooltip_for_gem(gem)
-		button.modulate = Color(1.0, 0.86, 0.48) if i == current_state.spirit_gem_cursor else Color.WHITE
+		button.modulate = _target_button_color("spirit", i)
 		_register_zone(button, {"kind": "target", "target_type": "spirit", "target_index": i})
 
 func _refresh_socket_buttons() -> void:
-	# Scene-authored UI rule:
-	# the socket art lives in SkillGemsPanel.tscn. These Button nodes are only
-	# transparent click/drop targets. Do not assign large PNG icons here, or Godot
-	# will render the raw slice size over the hand-placed scene art.
 	var target: Dictionary = _current_socket_target()
 	var supports: Array = target.get("supports", []) if not target.is_empty() else []
 	var max_sockets: int = int(target.get("max_support_sockets", 0)) if not target.is_empty() else 0
@@ -273,11 +256,8 @@ func _refresh_socket_buttons() -> void:
 		button.visible = true
 		button.disabled = false
 		button.icon = null
-		button.text = ""
 		button.flat = true
-		button.focus_mode = Control.FOCUS_NONE
-		button.mouse_filter = Control.MOUSE_FILTER_STOP
-		button.modulate = Color(1.0, 1.0, 1.0, 0.01)
+		button.text = ""
 		if i < supports.size():
 			var support_id: String = str(supports[i])
 			var data: Dictionary = RVSkillGemDB.support_data(support_id)
@@ -285,7 +265,8 @@ func _refresh_socket_buttons() -> void:
 		elif i < max_sockets:
 			button.tooltip_text = "Empty socket. Drag or right-click an Uncut Support Gem to fill it."
 		else:
-			button.tooltip_text = "Locked socket. Use socket upgrade material."
+			button.tooltip_text = "Locked socket. Use Socket Prism."
+		button.modulate = Color(1.0, 0.86, 0.48) if i == selected_socket_index else Color(1, 1, 1, 0.72)
 		_register_zone(button, {"kind": "socket", "socket_index": i})
 
 func _refresh_choice_panel() -> void:
@@ -335,9 +316,7 @@ func _refresh_choice_panel() -> void:
 		button.visible = true
 		button.disabled = false
 		button.text = str(info.get("label", "Choice"))
-		if button.pressed.get_connections().size() > 0:
-			for connection: Dictionary in button.pressed.get_connections():
-				button.pressed.disconnect(connection["callable"])
+		_disconnect_pressed(button)
 		button.pressed.connect(func() -> void:
 			_apply_choice(info)
 		)
@@ -352,11 +331,13 @@ func _refresh_detail() -> void:
 		title = str(target.get("name", "Gem"))
 	featured_title.text = title
 	featured_tags.text = _tags_for_display(target)
-	var text: String = "[b]Selected[/b]\n"
-	text += _gem_detail(target, selected_socket_target_type) + "\n"
+	var text: String = "[b]Selected Gem[/b]\n"
+	text += RVSkillGemSystem.gem_detail_text(current_state, target, selected_socket_target_type) + "\n"
 	if current_state.support_gem_inventory.size() > 0:
-		var support: Dictionary = Dictionary(current_state.support_gem_inventory[clamp(current_state.support_gem_cursor, 0, current_state.support_gem_inventory.size() - 1)])
-		text += "\n[b]Selected Support[/b]\n" + _gem_detail(support, "support")
+		var support_index: int = clamp(current_state.support_gem_cursor, 0, current_state.support_gem_inventory.size() - 1)
+		var support: Dictionary = Dictionary(current_state.support_gem_inventory[support_index])
+		text += "\n[b]Selected Support[/b]\n" + RVSkillGemSystem.gem_detail_text(current_state, support, "support")
+		text += "\n[b]Socket Preview[/b]\n" + RVSkillGemSystem.support_preview_text(current_state, support, selected_socket_target_type, selected_socket_target_index)
 	text += "\n[b]Equipped Skill Bar[/b]\n"
 	for skill_name: String in current_state.active_skills:
 		text += RVSkillSystem.skill_summary(current_state, skill_name) + "\n"
@@ -367,13 +348,22 @@ func _refresh_detail() -> void:
 
 func _refresh_action_states() -> void:
 	var has_active: bool = current_state != null and not current_state.skill_gem_inventory.is_empty()
-	var has_support: bool = current_state != null and not current_state.support_gem_inventory.is_empty()
 	var has_spirit: bool = current_state != null and not current_state.spirit_gem_inventory.is_empty()
 	equip_button.disabled = not has_active
 	add_skill_socket_button.disabled = not has_active
 	add_spirit_socket_button.disabled = not has_spirit
 	enable_spirit_button.disabled = not has_spirit
 	unsocket_button.disabled = _current_socket_target().is_empty()
+	if has_active and current_state.skill_gem_cursor < current_state.skill_gem_inventory.size():
+		var active: Dictionary = Dictionary(current_state.skill_gem_inventory[current_state.skill_gem_cursor])
+		equip_button.text = "Unequip" if bool(active.get("equipped", false)) else "Equip"
+	else:
+		equip_button.text = "Equip"
+	if has_spirit and current_state.spirit_gem_cursor < current_state.spirit_gem_inventory.size():
+		var spirit: Dictionary = Dictionary(current_state.spirit_gem_inventory[current_state.spirit_gem_cursor])
+		enable_spirit_button.text = "Disable Spirit" if bool(spirit.get("enabled", false)) else "Enable Spirit"
+	else:
+		enable_spirit_button.text = "Enable Spirit"
 
 func _configure_empty_button(button: Button, label: String) -> void:
 	button.visible = true
@@ -532,17 +522,7 @@ func _apply_drop(zone: Dictionary) -> bool:
 		pending_target_index = target_index
 		choice_mode = "support_effect"
 		return true
-	if target_type == "active":
-		current_state.support_gem_cursor = support_index
-		current_state.skill_gem_cursor = target_index
-		RVSkillGemSystem.socket_selected_support_to_active(current_state)
-		return true
-	if target_type == "spirit":
-		current_state.support_gem_cursor = support_index
-		current_state.spirit_gem_cursor = target_index
-		RVSkillGemSystem.socket_selected_support_to_spirit(current_state)
-		return true
-	return false
+	return RVSkillGemSystem.socket_support_index_to_target(current_state, support_index, target_type, target_index)
 
 func _register_zone(node: Control, data: Dictionary) -> void:
 	var zone: Dictionary = data.duplicate(true)
@@ -553,8 +533,7 @@ func _unsocket_selected() -> void:
 	if current_state == null:
 		return
 	if selected_socket_target_type == "spirit":
-		# Compatibility: current system exposes remove-last for active only in older patches.
-		current_state.add_notice("Spirit socket removal uses last support removal later")
+		RVSkillGemSystem.remove_last_support_from_spirit(current_state)
 	else:
 		RVSkillGemSystem.remove_last_support_from_active(current_state)
 	selected_socket_index = -1
@@ -599,7 +578,7 @@ func _button_label(gem: Dictionary, selected: bool, family: String) -> String:
 	return line
 
 func _tooltip_for_gem(gem: Dictionary) -> String:
-	return str(gem.get("name", "Gem")) + "\n" + str(gem.get("description", ""))
+	return RVSkillGemSystem.gem_detail_text(current_state, gem, str(gem.get("type", "")))
 
 func _drag_label(data: Dictionary) -> String:
 	if current_state == null:
@@ -609,43 +588,6 @@ func _drag_label(data: Dictionary) -> String:
 		if index >= 0 and index < current_state.support_gem_inventory.size():
 			return str(Dictionary(current_state.support_gem_inventory[index]).get("name", "Support"))
 	return "Gem"
-
-func _gem_detail(gem: Dictionary, family: String) -> String:
-	if gem.is_empty():
-		return "None."
-	var result: String = str(gem.get("name", "Gem")) + " Lv " + str(int(gem.get("level", 1))) + "\n"
-	var gem_type: String = str(gem.get("type", family))
-	if gem_type.begins_with("uncut"):
-		result += str(gem.get("description", "Right-click to choose what this becomes.")) + "\n"
-		return result
-	if gem_type == "active":
-		var data: Dictionary = RVSkillGemDB.active_data(str(gem.get("gem_id", "")))
-		result += str(data.get("description", "")) + "\n"
-		result += "Sockets: " + str(Array(gem.get("supports", [])).size()) + "/" + str(int(gem.get("max_support_sockets", 2))) + "\n"
-		result += "Equipped: " + ("yes" if bool(gem.get("equipped", false)) else "no") + "\n"
-		result += _support_line(gem)
-	elif gem_type == "support":
-		var support_data: Dictionary = RVSkillGemDB.support_data(str(gem.get("gem_id", "")))
-		result += str(support_data.get("description", "")) + "\n"
-		result += "Compatible: " + ", ".join(PackedStringArray(_string_array(support_data.get("compatible_tags", [])))) + "\n"
-	elif gem_type == "spirit":
-		var spirit_data: Dictionary = RVSkillGemDB.spirit_data(str(gem.get("gem_id", "")))
-		result += str(spirit_data.get("description", "")) + "\n"
-		result += "Reservation: " + str(RVSkillGemSystem.spirit_reservation(gem)) + " Spirit\n"
-		result += "Sockets: " + str(Array(gem.get("supports", [])).size()) + "/" + str(int(gem.get("max_support_sockets", 2))) + "\n"
-		result += "Enabled: " + ("yes" if bool(gem.get("enabled", false)) else "no") + "\n"
-		result += _support_line(gem)
-	return result
-
-func _support_line(gem: Dictionary) -> String:
-	var supports: Array = gem.get("supports", [])
-	if supports.is_empty():
-		return "Supports: none\n"
-	var names: Array[String] = []
-	for support_id_value: Variant in supports:
-		var support_data: Dictionary = RVSkillGemDB.support_data(str(support_id_value))
-		names.append(str(support_data.get("name", support_id_value)))
-	return "Supports: " + ", ".join(PackedStringArray(names)) + "\n"
 
 func _tags_for_display(gem: Dictionary) -> String:
 	if gem.is_empty():
@@ -658,6 +600,28 @@ func _tags_for_display(gem: Dictionary) -> String:
 		var sdata: Dictionary = RVSkillGemDB.spirit_data(str(gem.get("gem_id", "")))
 		tags = _string_array(sdata.get("tags", []))
 	return "Tags: " + ", ".join(PackedStringArray(tags))
+
+func _target_button_color(target_type: String, target_index: int) -> Color:
+	if current_state == null:
+		return Color.WHITE
+	var selected_match: bool = (target_type == "active" and target_index == current_state.skill_gem_cursor) or (target_type == "spirit" and target_index == current_state.spirit_gem_cursor)
+	if current_state.support_gem_inventory.is_empty():
+		return Color(1.0, 0.86, 0.48) if selected_match else Color.WHITE
+	var support_index: int = clamp(current_state.support_gem_cursor, 0, current_state.support_gem_inventory.size() - 1)
+	var support: Dictionary = Dictionary(current_state.support_gem_inventory[support_index])
+	if RVSkillGemSystem.is_uncut_support_gem(support):
+		return Color(1.0, 0.86, 0.48) if selected_match else Color.WHITE
+	var result: Dictionary = RVSkillGemSystem.can_socket_support_to_target(current_state, support, target_type, target_index)
+	if bool(result.get("ok", false)):
+		return Color(0.70, 1.0, 0.70) if selected_match else Color(0.86, 1.0, 0.86)
+	return Color(1.0, 0.55, 0.55) if selected_match else Color.WHITE
+
+func _disconnect_pressed(button: Button) -> void:
+	var connections: Array = button.pressed.get_connections()
+	for connection: Dictionary in connections:
+		var callable: Callable = connection.get("callable", Callable())
+		if callable.is_valid():
+			button.pressed.disconnect(callable)
 
 func _state_signature(state: RVGameState) -> String:
 	if state == null:
@@ -676,7 +640,7 @@ func _gem_sig(gems: Array) -> String:
 		if typeof(gem_variant) != TYPE_DICTIONARY:
 			continue
 		var gem: Dictionary = Dictionary(gem_variant)
-		values.append(str(gem.get("uid", "")) + ":" + str(gem.get("type", "")) + ":" + str(gem.get("gem_id", "")) + ":" + str(gem.get("supports", [])) + ":" + str(gem.get("equipped", gem.get("enabled", false))))
+		values.append(str(gem.get("uid", "")) + ":" + str(gem.get("type", "")) + ":" + str(gem.get("gem_id", "")) + ":" + str(gem.get("level", 1)) + ":" + str(gem.get("xp", 0.0)) + ":" + str(gem.get("supports", [])) + ":" + str(gem.get("equipped", gem.get("enabled", false))))
 	return ";".join(PackedStringArray(values))
 
 func _string_array(values: Array) -> Array[String]:

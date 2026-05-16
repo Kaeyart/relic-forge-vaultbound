@@ -1,13 +1,14 @@
 class_name RVProgressionSystem
 extends RefCounted
 
-# Patch 043: gem drops are intentionally more visible while the gem system is being tested.
+# Patch 056: progression awards now also feed equipped/enabled skill gems.
 
 static func award_kill(state: RVGameState) -> void:
 	state.kills += 1
 	state.gold += 2 + state.room_index
 	state.materials["embers"] = int(state.materials.get("embers", 0)) + 1
 	state.add_xp(12.0 + float(state.room_index) * 2.0)
+	RVSkillGemSystem.award_gem_xp(state, 8.0 + float(state.room_index) * 1.5, "kill")
 	if str(state.current_activity.get("kind", "")) == "map":
 		RVMapSystem.award_map_enemy_drop(state, max(1, state.level + state.room_index))
 
@@ -16,10 +17,13 @@ static func award_room(state: RVGameState) -> void:
 	state.gold += 15 + state.room_index * 3
 	state.materials["shards"] = int(state.materials.get("shards", 0)) + 2
 	state.add_xp(55.0 + float(state.room_index) * 8.0)
+	RVSkillGemSystem.award_gem_xp(state, 60.0 + float(state.room_index) * 7.0, "room")
+
 	var drop: Dictionary = RVItemDB.generate_drop(state, max(1, state.room_index))
 	state.backpack.append(drop)
 	if state.rng.randf() < 0.30:
 		RVMapSystem.add_random_map_drop(state, max(1, state.level + state.room_index), "room")
+
 	var notice: String = "Room Complete - Item Added"
 	# Higher chance until the skill gem loop is proven in real play.
 	if state.rng.randf() < 0.78:
