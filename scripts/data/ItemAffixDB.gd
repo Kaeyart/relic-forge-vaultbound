@@ -192,3 +192,160 @@ static func _round_amount(amount: float) -> float:
 	if abs(amount) >= 2.0:
 		return float(int(round(amount)))
 	return snappedf(amount, 0.001)
+
+# Patch 080B repair: compatibility helpers for legacy forgecraft and new crafting verbs.
+static func max_tier_for_affix(def: Dictionary, item_level: int) -> int:
+	var tiers: Array = Array(def.get("tiers", []))
+	if tiers.is_empty():
+		return clampi(int(def.get("max_tier", 5)), 1, 5)
+	var best: int = 1
+	for tier_value: Variant in tiers:
+		if typeof(tier_value) != TYPE_DICTIONARY:
+			continue
+		var tier_data: Dictionary = Dictionary(tier_value)
+		var tier_num: int = int(tier_data.get("tier", 1))
+		var min_level: int = int(tier_data.get("min_item_level", tier_data.get("min_level", tier_data.get("level", 1))))
+		if item_level >= min_level:
+			best = max(best, tier_num)
+	return clampi(best, 1, 5)
+
+static func next_tier_affix(affix: Dictionary, rng: RandomNumberGenerator, item_level: int) -> Dictionary:
+	var out: Dictionary = affix.duplicate(true)
+	var def: Dictionary = affix_def_by_id(str(out.get("id", "")))
+	if def.is_empty():
+		def = out.duplicate(true)
+	var current_tier: int = clampi(int(out.get("tier", 1)), 1, 5)
+	var next_tier: int = min(current_tier + 1, max_tier_for_affix(def, item_level))
+	out["tier"] = next_tier
+	out["stats"] = _compat_roll_stats_for_tier(def, next_tier, rng, Dictionary(out.get("stats", {})))
+	out["name"] = str(def.get("name", out.get("name", "Affix")))
+	out["type"] = str(def.get("type", out.get("type", "prefix")))
+	out["family"] = str(def.get("family", out.get("family", out.get("id", "affix"))))
+	out["tags"] = Array(def.get("tags", out.get("tags", [])))
+	return out
+
+static func roll_affix(rng: RandomNumberGenerator, affix_type: String, base: Dictionary, item_level: int, blocked_families: Array[String] = [], wanted_tags: Array = []) -> Dictionary:
+	var candidates: Array = []
+	for def_value: Variant in _compat_fallback_affix_defs():
+		if typeof(def_value) != TYPE_DICTIONARY:
+			continue
+		var def: Dictionary = Dictionary(def_value)
+		if str(def.get("type", "")) != affix_type:
+			continue
+		var family: String = str(def.get("family", def.get("id", "")))
+		if blocked_families.has(family):
+			continue
+		if not _compat_def_allows_base(def, base):
+			continue
+		candidates.append(def)
+	if candidates.is_empty():
+		return {}
+	var weighted: Array = []
+	for candidate_value: Variant in candidates:
+		var candidate: Dictionary = Dictionary(candidate_value)
+		var weight: int = int(candidate.get("weight", 100))
+		var tags: Array = Array(candidate.get("tags", []))
+		for wanted_value: Variant in wanted_tags:
+			if tags.has(str(wanted_value)) or tags.has(wanted_value):
+				weight += 40
+		for _i: int in range(max(1, weight / 20)):
+			weighted.append(candidate)
+	var picked: Dictionary = Dictionary(weighted[rng.randi_range(0, weighted.size() - 1)] if weighted.size() > 0 else candidates[0])
+	var max_tier: int = max_tier_for_affix(picked, item_level)
+	var tier: int = _compat_roll_tier(rng, max_tier)
+	return _compat_make_rolled_affix(picked, tier, rng)
+
+static func _compat_make_rolled_affix(def: Dictionary, tier: int, rng: RandomNumberGenerator) -> Dictionary:
+	return {
+		"id": str(def.get("id", "affix")),
+		"name": str(def.get("name", "Affix")),
+		"type": str(def.get("type", "prefix")),
+		"family": str(def.get("family", def.get("id", "affix"))),
+		"tier": clampi(tier, 1, 5),
+		"tags": Array(def.get("tags", [])),
+		"stats": _compat_roll_stats_for_tier(def, tier, rng),
+	}
+
+static func _compat_roll_tier(rng: RandomNumberGenerator, max_tier: int) -> int:
+	max_tier = clampi(max_tier, 1, 5)
+	var roll: float = rng.randf()
+	if max_tier >= 5 and roll < 0.08:
+		return 5
+	if max_tier >= 4 and roll < 0.20:
+		return 4
+	if max_tier >= 3 and roll < 0.42:
+		return 3
+	if max_tier >= 2 and roll < 0.70:
+		return 2
+	return 1
+
+static func _compat_roll_stats_for_tier(def: Dictionary, tier: int, rng: RandomNumberGenerator, fallback_stats: Dictionary = {}) -> Dictionary:
+	var stats: Dictionary = {}
+	var tier_data: Dictionary = _compat_tier_data(def, tier)
+	var stat_ranges: Dictionary = Dictionary(tier_data.get("stats", def.get("stats", {})))
+	if stat_ranges.is_empty() and not fallback_stats.is_empty():
+		var scale: float = 1.0 + 0.18 * float(max(0, tier - 1))
+		for key_value: Variant in fallback_stats.keys():
+			stats[str(key_value)] = _compat_number_round(float(fallback_stats[key_value]) * scale)
+		return stats
+	for stat_key_value: Variant in stat_ranges.keys():
+		var stat_key: String = str(stat_key_value)
+		var range_value: Variant = stat_ranges[stat_key_value]
+		if typeof(range_value) == TYPE_ARRAY:
+			var arr: Array = Array(range_value)
+			if arr.size() >= 2:
+				stats[stat_key] = rng.randi_range(int(arr[0]), int(arr[1]))
+			elif arr.size() == 1:
+				stats[stat_key] = arr[0]
+		elif typeof(range_value) == TYPE_DICTIONARY:
+			var r: Dictionary = Dictionary(range_value)
+			stats[stat_key] = rng.randi_range(int(r.get("min", 1)), int(r.get("max", 1)))
+		else:
+			stats[stat_key] = range_value
+	return stats
+
+static func _compat_tier_data(def: Dictionary, tier: int) -> Dictionary:
+	var tiers: Array = Array(def.get("tiers", []))
+	var best: Dictionary = {}
+	for tier_value: Variant in tiers:
+		if typeof(tier_value) != TYPE_DICTIONARY:
+			continue
+		var data: Dictionary = Dictionary(tier_value)
+		if int(data.get("tier", 1)) == tier:
+			return data
+		if best.is_empty() or int(data.get("tier", 1)) < tier:
+			best = data
+	return best
+
+static func _compat_number_round(value: float) -> Variant:
+	if abs(value - round(value)) < 0.001:
+		return int(round(value))
+	return snappedf(value, 0.01)
+
+static func _compat_def_allows_base(def: Dictionary, base: Dictionary) -> bool:
+	var slots: Array = Array(def.get("slots", []))
+	if not slots.is_empty() and not slots.has(str(base.get("slot", ""))):
+		return false
+	var base_tags: Array = Array(base.get("tags", []))
+	var required_tags: Array = Array(def.get("requires_any_tag", []))
+	if required_tags.is_empty():
+		return true
+	for tag_value: Variant in required_tags:
+		if base_tags.has(str(tag_value)) or base_tags.has(tag_value):
+			return true
+	return false
+
+static func _compat_fallback_affix_defs() -> Array:
+	return [
+		{"id": "prefix_maximum_life", "name": "Vital", "type": "prefix", "family": "maximum_life", "tags": ["Life", "Defense"], "weight": 120, "tiers": [{"tier": 1, "min_item_level": 1, "stats": {"Maximum Life": [8, 15]}}, {"tier": 2, "min_item_level": 8, "stats": {"Maximum Life": [16, 28]}}, {"tier": 3, "min_item_level": 18, "stats": {"Maximum Life": [29, 45]}}, {"tier": 4, "min_item_level": 35, "stats": {"Maximum Life": [46, 70]}}, {"tier": 5, "min_item_level": 55, "stats": {"Maximum Life": [71, 105]}}]},
+		{"id": "prefix_maximum_mana", "name": "Lucid", "type": "prefix", "family": "maximum_mana", "tags": ["Mana", "Resource"], "weight": 100, "tiers": [{"tier": 1, "min_item_level": 1, "stats": {"Maximum Mana": [6, 12]}}, {"tier": 2, "min_item_level": 8, "stats": {"Maximum Mana": [13, 24]}}, {"tier": 3, "min_item_level": 18, "stats": {"Maximum Mana": [25, 39]}}, {"tier": 4, "min_item_level": 35, "stats": {"Maximum Mana": [40, 62]}}, {"tier": 5, "min_item_level": 55, "stats": {"Maximum Mana": [63, 95]}}]},
+		{"id": "prefix_spell_damage", "name": "Runic", "type": "prefix", "family": "spell_damage", "tags": ["Spell", "Damage"], "requires_any_tag": ["Spell", "Caster", "Wand", "Staff"], "slots": ["weapon", "offhand", "amulet", "relic"], "weight": 100, "tiers": [{"tier": 1, "min_item_level": 1, "stats": {"Spell Damage %": [5, 9]}}, {"tier": 2, "min_item_level": 10, "stats": {"Spell Damage %": [10, 17]}}, {"tier": 3, "min_item_level": 24, "stats": {"Spell Damage %": [18, 28]}}, {"tier": 4, "min_item_level": 42, "stats": {"Spell Damage %": [29, 43]}}, {"tier": 5, "min_item_level": 62, "stats": {"Spell Damage %": [44, 65]}}]},
+		{"id": "prefix_attack_damage", "name": "Tempered", "type": "prefix", "family": "attack_damage", "tags": ["Attack", "Physical", "Damage"], "slots": ["weapon"], "weight": 110, "tiers": [{"tier": 1, "min_item_level": 1, "stats": {"Attack Damage %": [6, 12]}}, {"tier": 2, "min_item_level": 10, "stats": {"Attack Damage %": [13, 22]}}, {"tier": 3, "min_item_level": 24, "stats": {"Attack Damage %": [23, 36]}}, {"tier": 4, "min_item_level": 42, "stats": {"Attack Damage %": [37, 55]}}, {"tier": 5, "min_item_level": 62, "stats": {"Attack Damage %": [56, 82]}}]},
+		{"id": "prefix_armor", "name": "Plated", "type": "prefix", "family": "armor", "tags": ["Armor", "Defense"], "slots": ["head", "chest", "gloves", "boots"], "weight": 100, "tiers": [{"tier": 1, "min_item_level": 1, "stats": {"Armor": [8, 18]}}, {"tier": 2, "min_item_level": 10, "stats": {"Armor": [19, 35]}}, {"tier": 3, "min_item_level": 24, "stats": {"Armor": [36, 60]}}, {"tier": 4, "min_item_level": 42, "stats": {"Armor": [61, 95]}}, {"tier": 5, "min_item_level": 62, "stats": {"Armor": [96, 145]}}]},
+		{"id": "suffix_fire_resistance", "name": "of Ash", "type": "suffix", "family": "fire_resistance", "tags": ["Fire", "Resistance", "Defense"], "weight": 100, "tiers": [{"tier": 1, "min_item_level": 1, "stats": {"Fire Resistance %": [6, 12]}}, {"tier": 2, "min_item_level": 12, "stats": {"Fire Resistance %": [13, 22]}}, {"tier": 3, "min_item_level": 28, "stats": {"Fire Resistance %": [23, 34]}}, {"tier": 4, "min_item_level": 48, "stats": {"Fire Resistance %": [35, 48]}}, {"tier": 5, "min_item_level": 68, "stats": {"Fire Resistance %": [49, 65]}}]},
+		{"id": "suffix_cold_resistance", "name": "of Rime", "type": "suffix", "family": "cold_resistance", "tags": ["Cold", "Resistance", "Defense"], "weight": 100, "tiers": [{"tier": 1, "min_item_level": 1, "stats": {"Cold Resistance %": [6, 12]}}, {"tier": 2, "min_item_level": 12, "stats": {"Cold Resistance %": [13, 22]}}, {"tier": 3, "min_item_level": 28, "stats": {"Cold Resistance %": [23, 34]}}, {"tier": 4, "min_item_level": 48, "stats": {"Cold Resistance %": [35, 48]}}, {"tier": 5, "min_item_level": 68, "stats": {"Cold Resistance %": [49, 65]}}]},
+		{"id": "suffix_lightning_resistance", "name": "of Storms", "type": "suffix", "family": "lightning_resistance", "tags": ["Lightning", "Resistance", "Defense"], "weight": 100, "tiers": [{"tier": 1, "min_item_level": 1, "stats": {"Lightning Resistance %": [6, 12]}}, {"tier": 2, "min_item_level": 12, "stats": {"Lightning Resistance %": [13, 22]}}, {"tier": 3, "min_item_level": 28, "stats": {"Lightning Resistance %": [23, 34]}}, {"tier": 4, "min_item_level": 48, "stats": {"Lightning Resistance %": [35, 48]}}, {"tier": 5, "min_item_level": 68, "stats": {"Lightning Resistance %": [49, 65]}}]},
+		{"id": "suffix_attack_speed", "name": "of Haste", "type": "suffix", "family": "attack_speed", "tags": ["Attack", "Speed"], "requires_any_tag": ["Attack", "Melee", "Bow"], "slots": ["weapon", "gloves", "ring1", "ring2", "amulet"], "weight": 80, "tiers": [{"tier": 1, "min_item_level": 1, "stats": {"Attack Speed %": [3, 5]}}, {"tier": 2, "min_item_level": 16, "stats": {"Attack Speed %": [6, 8]}}, {"tier": 3, "min_item_level": 36, "stats": {"Attack Speed %": [9, 12]}}, {"tier": 4, "min_item_level": 56, "stats": {"Attack Speed %": [13, 16]}}, {"tier": 5, "min_item_level": 72, "stats": {"Attack Speed %": [17, 22]}}]},
+		{"id": "suffix_cast_speed", "name": "of Invocation", "type": "suffix", "family": "cast_speed", "tags": ["Spell", "Speed"], "requires_any_tag": ["Spell", "Caster", "Wand", "Staff"], "slots": ["weapon", "offhand", "gloves", "ring1", "ring2", "amulet", "relic"], "weight": 80, "tiers": [{"tier": 1, "min_item_level": 1, "stats": {"Cast Speed %": [3, 5]}}, {"tier": 2, "min_item_level": 16, "stats": {"Cast Speed %": [6, 8]}}, {"tier": 3, "min_item_level": 36, "stats": {"Cast Speed %": [9, 12]}}, {"tier": 4, "min_item_level": 56, "stats": {"Cast Speed %": [13, 16]}}, {"tier": 5, "min_item_level": 72, "stats": {"Cast Speed %": [17, 22]}}]},
+	]
+

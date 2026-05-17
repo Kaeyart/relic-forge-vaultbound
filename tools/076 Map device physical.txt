@@ -4,3 +4,37 @@
 079 — Map gameplay structure / room graph maps
 080 — Itemization pass
 081 — Classes + ascendancy + passive foundation
+
+
+080A — Itemization Core Rebuild
+- Add ItemBaseDB
+- Add AffixDB
+- Add item rarity rules
+- Add prefix/suffix split
+- Add item level gating
+- Add forge potential to all equipment
+- Update item generation
+- Update item detail text
+
+080B — Crafting Currency Verbs
+- Add currency-like crafting materials
+- Add transmute/alchemy/regal/chaos/exalt/scour/essence actions
+- Hook into crafting panel lightly
+- Consume forge potential
+
+080C — Loot Filter V1
+- Filter by rarity
+- Filter by item type
+- Filter by map/gem/unique
+- Filter by affix tags
+- Filter by affix tier
+- Filter by forge potential
+- Presets: Show All / Starter / Strict / Crafting / Maps / Build Filter
+
+080D — Unique Items V1
+- 20 build-changing uniques
+- no boring +stats-only uniques
+- each unique enables a mechanic
+
+080E — Map Reward Bias
+- map layouts/themes bias base types, affix tags, gems, materials, and uniques

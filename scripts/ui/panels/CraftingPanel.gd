@@ -37,3 +37,7 @@ func _build_crafting_text(state: RVGameState) -> String:
 	lines.append("Backspace/Delete: remove affix")
 	lines.append("L: seal affix  |  X: shatter selected item")
 	return "\n".join(lines)
+
+
+func _crafting_currency_hint_text(state: Object) -> String:
+	return RVCraftingCurrencySystem.crafting_hint_text(state)

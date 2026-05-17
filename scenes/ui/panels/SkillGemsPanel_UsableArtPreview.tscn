@@ -1,19 +1,15 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene format=3 uid="uid://8y8ctdhovu54"]
 
-[ext_resource type="Script" path="res://scripts/ui/panels/SkillGemsPanel.gd" id="1"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch049/slices/sg_01_00_main_window_panel.png" id="2"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch049/slices/sg_01_06_header_bar_skull.png" id="3"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch049/slices/sg_01_03_center_detail_panel.png" id="4"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch049/slices/sg_01_07_list_panel.png" id="5"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch049/slices/sg_01_04_wide_detail_panel.png" id="6"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch049/slices/sg_01_08_socket_row_frame.png" id="7"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch049/slices/sg_03_00_wide_frame_open.png" id="8"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch049/slices/sg_03_04_button_hover_red.png" id="9"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch049/slices/sg_04_13_socket_row_five.png" id="10"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch049/slices/sg_04_17_divider_skull_gold.png" id="11"]
-[ext_resource type="Texture2D" path="res://assets/ui/skill_gems/patch049/slices/sg_03_14_card_frame_red.png" id="12"]
+[ext_resource type="Script" uid="uid://c1cssjkqv1f1g" path="res://scripts/ui/panels/SkillGemsPanel.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://bsdsmf2o1wjia" path="res://assets/ui/skill_gems/patch049/slices/sg_01_00_main_window_panel.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://k344fn35he77" path="res://assets/ui/skill_gems/patch049/slices/sg_01_06_header_bar_skull.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://c5g3366iue73g" path="res://assets/ui/skill_gems/patch049/slices/sg_01_03_center_detail_panel.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://cd6nygmtk2vn2" path="res://assets/ui/skill_gems/patch049/slices/sg_01_07_list_panel.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://5337eikl2325" path="res://assets/ui/skill_gems/patch049/slices/sg_01_04_wide_detail_panel.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://dq4h23r8kju00" path="res://assets/ui/skill_gems/patch049/slices/sg_01_08_socket_row_frame.png" id="7"]
+[ext_resource type="Texture2D" uid="uid://b276idnie2tdy" path="res://assets/ui/skill_gems/patch049/slices/sg_03_14_card_frame_red.png" id="12"]
 
-[node name="SkillGemsPanel" type="Control"]
+[node name="SkillGemsPanel" type="Control" unique_id=1459535885]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,7 +19,7 @@ grow_vertical = 2
 script = ExtResource("1")
 title = "Skill Gems"
 
-[node name="Dim" type="ColorRect" parent="."]
+[node name="Dim" type="ColorRect" parent="." unique_id=2101110096]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,25 +28,23 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.58)
 
-[node name="PanelRoot" type="Control" parent="."]
-layout_mode = 0
+[node name="PanelRoot" type="Control" parent="." unique_id=235949979]
+anchors_preset = 0
 offset_left = 20.0
 offset_top = 24.0
 offset_right = 1260.0
 offset_bottom = 704.0
 
-[node name="MainFrame" type="TextureRect" parent="PanelRoot"]
+[node name="MainFrame" type="TextureRect" parent="PanelRoot" unique_id=443792845]
 layout_mode = 0
-offset_left = 0.0
 offset_top = 18.0
 offset_right = 1240.0
 offset_bottom = 630.0
 mouse_filter = 2
 texture = ExtResource("2")
 expand_mode = 1
-stretch_mode = 0
 
-[node name="TitleFrame" type="TextureRect" parent="PanelRoot"]
+[node name="TitleFrame" type="TextureRect" parent="PanelRoot" unique_id=1032611936]
 layout_mode = 0
 offset_left = 370.0
 offset_top = -2.0
@@ -59,9 +53,8 @@ offset_bottom = 82.0
 mouse_filter = 2
 texture = ExtResource("3")
 expand_mode = 1
-stretch_mode = 0
 
-[node name="TitleLabel" type="Label" parent="PanelRoot"]
+[node name="TitleLabel" type="Label" parent="PanelRoot" unique_id=634045638]
 layout_mode = 0
 offset_left = 450.0
 offset_top = 16.0
@@ -73,7 +66,7 @@ text = "SKILL GEMS"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CloseButton" type="Button" parent="PanelRoot"]
+[node name="CloseButton" type="Button" parent="PanelRoot" unique_id=47089673]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 1110.0
@@ -82,7 +75,7 @@ offset_right = 1216.0
 offset_bottom = 86.0
 text = "Close"
 
-[node name="SummaryLabel" type="Label" parent="PanelRoot"]
+[node name="SummaryLabel" type="Label" parent="PanelRoot" unique_id=1304356479]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 70.0
@@ -91,9 +84,8 @@ offset_right = 1080.0
 offset_bottom = 103.0
 theme_override_colors/font_color = Color(0.75, 0.68, 0.52, 1)
 theme_override_font_sizes/font_size = 13
-text = ""
 
-[node name="ActivePanelArt" type="TextureRect" parent="PanelRoot"]
+[node name="ActivePanelArt" type="TextureRect" parent="PanelRoot" unique_id=2057590315]
 layout_mode = 0
 offset_left = 30.0
 offset_top = 96.0
@@ -102,9 +94,8 @@ offset_bottom = 512.0
 mouse_filter = 2
 texture = ExtResource("5")
 expand_mode = 1
-stretch_mode = 0
 
-[node name="ActiveTitle" type="Label" parent="PanelRoot"]
+[node name="ActiveTitle" type="Label" parent="PanelRoot" unique_id=1653764371]
 layout_mode = 0
 offset_left = 75.0
 offset_top = 106.0
@@ -115,7 +106,7 @@ theme_override_font_sizes/font_size = 18
 text = "ACTIVE GEMS"
 horizontal_alignment = 1
 
-[node name="ActiveScroll" type="ScrollContainer" parent="PanelRoot"]
+[node name="ActiveScroll" type="ScrollContainer" parent="PanelRoot" unique_id=214311767]
 layout_mode = 0
 offset_left = 56.0
 offset_top = 146.0
@@ -123,14 +114,14 @@ offset_right = 344.0
 offset_bottom = 466.0
 horizontal_scroll_mode = 0
 
-[node name="ActiveGemList" type="VBoxContainer" parent="PanelRoot/ActiveScroll"]
+[node name="ActiveGemList" type="VBoxContainer" parent="PanelRoot/ActiveScroll" unique_id=1345160175]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 6
 
-[node name="CenterPanelArt" type="TextureRect" parent="PanelRoot"]
+[node name="CenterPanelArt" type="TextureRect" parent="PanelRoot" unique_id=240929264]
 layout_mode = 0
 offset_left = 392.0
 offset_top = 96.0
@@ -139,9 +130,8 @@ offset_bottom = 512.0
 mouse_filter = 2
 texture = ExtResource("4")
 expand_mode = 1
-stretch_mode = 0
 
-[node name="SelectedGemHeader" type="Label" parent="PanelRoot"]
+[node name="SelectedGemHeader" type="Label" parent="PanelRoot" unique_id=501202654]
 layout_mode = 0
 offset_left = 442.0
 offset_top = 112.0
@@ -152,7 +142,7 @@ theme_override_font_sizes/font_size = 18
 text = "SELECTED GEM"
 horizontal_alignment = 1
 
-[node name="DetailLabel" type="RichTextLabel" parent="PanelRoot"]
+[node name="DetailLabel" type="RichTextLabel" parent="PanelRoot" unique_id=1013854553]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 428.0
@@ -161,10 +151,8 @@ offset_right = 815.0
 offset_bottom = 338.0
 mouse_filter = 1
 bbcode_enabled = true
-scroll_active = true
-text = ""
 
-[node name="SocketPanelArt" type="TextureRect" parent="PanelRoot"]
+[node name="SocketPanelArt" type="TextureRect" parent="PanelRoot" unique_id=271871460]
 layout_mode = 0
 offset_left = 407.0
 offset_top = 344.0
@@ -173,9 +161,8 @@ offset_bottom = 476.0
 mouse_filter = 2
 texture = ExtResource("7")
 expand_mode = 1
-stretch_mode = 0
 
-[node name="SocketTitle" type="Label" parent="PanelRoot"]
+[node name="SocketTitle" type="Label" parent="PanelRoot" unique_id=1020220838]
 layout_mode = 0
 offset_left = 500.0
 offset_top = 348.0
@@ -186,7 +173,7 @@ theme_override_font_sizes/font_size = 16
 text = "SUPPORT SOCKETS"
 horizontal_alignment = 1
 
-[node name="SocketRow" type="HBoxContainer" parent="PanelRoot"]
+[node name="SocketRow" type="HBoxContainer" parent="PanelRoot" unique_id=171376344]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 448.0
@@ -196,7 +183,7 @@ offset_bottom = 460.0
 theme_override_constants/separation = 4
 alignment = 1
 
-[node name="SupportPanelArt" type="TextureRect" parent="PanelRoot"]
+[node name="SupportPanelArt" type="TextureRect" parent="PanelRoot" unique_id=871937856]
 layout_mode = 0
 offset_left = 870.0
 offset_top = 96.0
@@ -205,9 +192,8 @@ offset_bottom = 512.0
 mouse_filter = 2
 texture = ExtResource("5")
 expand_mode = 1
-stretch_mode = 0
 
-[node name="SupportTitle" type="Label" parent="PanelRoot"]
+[node name="SupportTitle" type="Label" parent="PanelRoot" unique_id=249733339]
 layout_mode = 0
 offset_left = 905.0
 offset_top = 106.0
@@ -218,7 +204,7 @@ theme_override_font_sizes/font_size = 18
 text = "SUPPORT GEMS"
 horizontal_alignment = 1
 
-[node name="SearchFake" type="LineEdit" parent="PanelRoot"]
+[node name="SearchFake" type="LineEdit" parent="PanelRoot" unique_id=1681559742]
 layout_mode = 0
 offset_left = 894.0
 offset_top = 140.0
@@ -227,7 +213,7 @@ offset_bottom = 170.0
 placeholder_text = "Search / filter placeholder"
 editable = false
 
-[node name="SupportScroll" type="ScrollContainer" parent="PanelRoot"]
+[node name="SupportScroll" type="ScrollContainer" parent="PanelRoot" unique_id=1807200746]
 layout_mode = 0
 offset_left = 894.0
 offset_top = 178.0
@@ -235,16 +221,16 @@ offset_right = 1186.0
 offset_bottom = 468.0
 horizontal_scroll_mode = 0
 
-[node name="SupportGemList" type="GridContainer" parent="PanelRoot/SupportScroll"]
+[node name="SupportGemList" type="GridContainer" parent="PanelRoot/SupportScroll" unique_id=568056985]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-columns = 2
 theme_override_constants/h_separation = 6
 theme_override_constants/v_separation = 6
+columns = 2
 
-[node name="SpiritPanelArt" type="TextureRect" parent="PanelRoot"]
+[node name="SpiritPanelArt" type="TextureRect" parent="PanelRoot" unique_id=961306723]
 layout_mode = 0
 offset_left = 30.0
 offset_top = 520.0
@@ -253,9 +239,8 @@ offset_bottom = 622.0
 mouse_filter = 2
 texture = ExtResource("6")
 expand_mode = 1
-stretch_mode = 0
 
-[node name="SpiritTitle" type="Label" parent="PanelRoot"]
+[node name="SpiritTitle" type="Label" parent="PanelRoot" unique_id=602908300]
 layout_mode = 0
 offset_left = 65.0
 offset_top = 528.0
@@ -265,7 +250,7 @@ theme_override_colors/font_color = Color(0.89, 0.73, 0.43, 1)
 theme_override_font_sizes/font_size = 18
 text = "SPIRIT GEMS"
 
-[node name="SpiritLabel" type="Label" parent="PanelRoot"]
+[node name="SpiritLabel" type="Label" parent="PanelRoot" unique_id=1952316983]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 62.0
@@ -276,7 +261,7 @@ theme_override_colors/font_color = Color(0.5, 0.78, 1, 1)
 theme_override_font_sizes/font_size = 14
 text = "Spirit Reserved"
 
-[node name="SpiritGemList" type="HBoxContainer" parent="PanelRoot"]
+[node name="SpiritGemList" type="HBoxContainer" parent="PanelRoot" unique_id=1452930377]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 345.0
@@ -285,16 +270,16 @@ offset_right = 1150.0
 offset_bottom = 604.0
 theme_override_constants/separation = 8
 
-[node name="ChoicePanel" type="Control" parent="PanelRoot"]
+[node name="ChoicePanel" type="Control" parent="PanelRoot" unique_id=2055306251]
 unique_name_in_owner = true
 visible = false
-layout_mode = 0
+anchors_preset = 0
 offset_left = 235.0
 offset_top = 160.0
 offset_right = 1045.0
 offset_bottom = 504.0
 
-[node name="ChoiceArt" type="TextureRect" parent="PanelRoot/ChoicePanel"]
+[node name="ChoiceArt" type="TextureRect" parent="PanelRoot/ChoicePanel" unique_id=759027905]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -304,9 +289,8 @@ grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("12")
 expand_mode = 1
-stretch_mode = 0
 
-[node name="ChoiceTitle" type="Label" parent="PanelRoot/ChoicePanel"]
+[node name="ChoiceTitle" type="Label" parent="PanelRoot/ChoicePanel" unique_id=8753362]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 32.0
@@ -318,18 +302,18 @@ theme_override_font_sizes/font_size = 20
 text = "Choose"
 horizontal_alignment = 1
 
-[node name="ChoiceBox" type="GridContainer" parent="PanelRoot/ChoicePanel"]
+[node name="ChoiceBox" type="GridContainer" parent="PanelRoot/ChoicePanel" unique_id=1556331806]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 48.0
 offset_top = 80.0
 offset_right = 760.0
 offset_bottom = 296.0
-columns = 3
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
+columns = 3
 
-[node name="Actions" type="HBoxContainer" parent="PanelRoot"]
+[node name="Actions" type="HBoxContainer" parent="PanelRoot" unique_id=1677075180]
 layout_mode = 0
 offset_left = 210.0
 offset_top = 636.0
@@ -338,38 +322,38 @@ offset_bottom = 680.0
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="EquipButton" type="Button" parent="PanelRoot/Actions"]
+[node name="EquipButton" type="Button" parent="PanelRoot/Actions" unique_id=1212886016]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(120, 36)
+layout_mode = 2
 text = "Equip"
 
-[node name="SocketButton" type="Button" parent="PanelRoot/Actions"]
+[node name="SocketButton" type="Button" parent="PanelRoot/Actions" unique_id=1155173852]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(125, 36)
+layout_mode = 2
 text = "Socket"
 
-[node name="SocketSpiritButton" type="Button" parent="PanelRoot/Actions"]
+[node name="SocketSpiritButton" type="Button" parent="PanelRoot/Actions" unique_id=226430918]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(135, 36)
+layout_mode = 2
 text = "Socket Spirit"
 
-[node name="RemoveSupportButton" type="Button" parent="PanelRoot/Actions"]
+[node name="RemoveSupportButton" type="Button" parent="PanelRoot/Actions" unique_id=1208868678]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(130, 36)
+layout_mode = 2
 text = "Unsocket"
 
-[node name="AddSocketButton" type="Button" parent="PanelRoot/Actions"]
+[node name="AddSocketButton" type="Button" parent="PanelRoot/Actions" unique_id=774760091]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(120, 36)
+layout_mode = 2
 text = "+ Socket"
 
-[node name="ToggleSpiritButton" type="Button" parent="PanelRoot/Actions"]
+[node name="ToggleSpiritButton" type="Button" parent="PanelRoot/Actions" unique_id=1212648569]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(130, 36)
+layout_mode = 2
 text = "Toggle Spirit"

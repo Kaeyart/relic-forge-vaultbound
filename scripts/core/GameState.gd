@@ -170,6 +170,7 @@ func init_new() -> void:
 	full_restore()
 
 func ensure_defaults() -> void:
+	RVCraftingCurrencySystem.ensure_defaults(self)
 	RVLootPickupAssistSystem.ensure_defaults(self)
 	for skill_name: String in unlocked_skills:
 		if not skill_cooldowns.has(skill_name):

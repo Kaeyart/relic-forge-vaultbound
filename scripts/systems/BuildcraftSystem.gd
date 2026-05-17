@@ -27,6 +27,8 @@ static func handle_inventory_key(state: RVGameState, keycode: int) -> bool:
 	return false
 
 static func handle_crafting_key(state: RVGameState, keycode: int) -> bool:
+	if RVCraftingCurrencySystem.handle_crafting_key(state, keycode):
+		return true
 	match keycode:
 		KEY_F:
 			state.backpack.append(RVItemDB.craft_basic_item(state))
