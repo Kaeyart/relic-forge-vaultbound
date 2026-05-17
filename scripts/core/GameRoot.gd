@@ -10,6 +10,7 @@ extends Node2D
 var state: RVGameState = RVGameState.new()
 var autosave_timer: float = 0.0
 var dev_tools_panel: Node = null
+var loot_pickup_pet: Node2D = null
 
 func _ready() -> void:
 	state.init_new()
@@ -25,6 +26,7 @@ func _ready() -> void:
 	set_process(true)
 	set_process_unhandled_input(true)
 	_install_dev_tools()
+	_install_loot_pickup_pet()
 
 func _process(delta: float) -> void:
 	if not state.pending_start_activity.is_empty():
@@ -41,6 +43,9 @@ func _process(delta: float) -> void:
 		hub.update_focus(state)
 	else:
 		combat.update_combat(state, player, delta)
+		RVLootPickupAssistSystem.update(state, combat, player, delta)
+		if loot_pickup_pet != null and loot_pickup_pet.has_method("sync_from_state"):
+			loot_pickup_pet.call("sync_from_state", state, player)
 
 	if state.notice_time > 0.0:
 		state.notice_time = max(0.0, state.notice_time - delta)
@@ -198,9 +203,24 @@ func _install_dev_tools() -> void:
 	if dev_tools_panel.has_method("bind"):
 		dev_tools_panel.call("bind", self, state, combat, hub, player, hud, panels)
 
+
+func _install_loot_pickup_pet() -> void:
+	if loot_pickup_pet != null:
+		return
+	var scene_path: String = "res://scenes/prefabs/player/LootPickupPet.tscn"
+	if not ResourceLoader.exists(scene_path):
+		push_warning("Loot pickup pet scene missing: " + scene_path)
+		return
+	var packed: PackedScene = load(scene_path)
+	loot_pickup_pet = packed.instantiate() as Node2D
+	add_child(loot_pickup_pet)
+	if loot_pickup_pet != null and loot_pickup_pet.has_method("sync_from_state"):
+		loot_pickup_pet.call("sync_from_state", state, player)
+
 func _toggle_dev_tools() -> void:
 	if dev_tools_panel == null:
 		_install_dev_tools()
+	_install_loot_pickup_pet()
 	if dev_tools_panel != null and dev_tools_panel.has_method("toggle_panel"):
 		dev_tools_panel.call("toggle_panel")
 

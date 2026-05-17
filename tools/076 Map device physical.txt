@@ -1,0 +1,6 @@
+076 — Map device + physical map item foundation
+077 — Loot pickup, loot filter, and loot flow
+078 — Stash tabs, affinities, and stash economy
+079 — Map gameplay structure / room graph maps
+080 — Itemization pass
+081 — Classes + ascendancy + passive foundation

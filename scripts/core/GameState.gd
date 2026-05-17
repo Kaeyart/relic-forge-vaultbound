@@ -117,6 +117,24 @@ var pending_start_activity: Dictionary = {}
 var inventory_cursor: int = 0
 var stash_cursor: int = 0
 var stash_tab_mode: String = "items"
+var loot_pet_enabled: bool = true
+var loot_pet_radius: float = 210.0
+var loot_pet_collect_radius: float = 54.0
+var loot_pet_attract_radius: float = 310.0
+var loot_filter_preset: String = "Starter"
+var loot_filter_settings: Dictionary = {
+	"auto_pickup_gold": true,
+	"auto_pickup_shards": true,
+	"auto_pickup_embers": true,
+	"auto_pickup_materials": true,
+	"auto_pickup_currency": true,
+	"auto_pickup_maps": false,
+	"auto_pickup_gems": false,
+	"manual_pickup_gear": true,
+	"manual_pickup_uniques": true,
+	"show_hidden_auto_pickup_notice": false,
+}
+var loot_pickup_stats: Dictionary = {}
 var equipment_cursor: int = 0
 
 var current_activity: Dictionary = {}
@@ -138,6 +156,7 @@ func init_new() -> void:
 	full_restore()
 
 func ensure_defaults() -> void:
+	RVLootPickupAssistSystem.ensure_defaults(self)
 	for skill_name: String in unlocked_skills:
 		if not skill_cooldowns.has(skill_name):
 			skill_cooldowns[skill_name] = 0.0

@@ -114,3 +114,22 @@ func rarity_color() -> Color:
 		"gold":
 			return Color(1.0, 0.74, 0.22)
 	return Color(0.88, 0.86, 0.78)
+
+
+func get_auto_pickup_data() -> Dictionary:
+	var data: Dictionary = {}
+	for key: String in ["loot_data", "drop_data", "item_data", "payload", "item", "map_item"]:
+		var value: Variant = get(key)
+		if typeof(value) == TYPE_DICTIONARY:
+			data = Dictionary(value).duplicate(true)
+			break
+	for key: String in ["kind", "loot_kind", "item_type", "category", "currency", "material", "material_id", "amount", "quantity", "gold", "shards", "embers", "tier", "map_level", "boss_name"]:
+		var value: Variant = get(key)
+		if value != null:
+			data[key] = value
+	return data
+
+func collect_auto_pickup(state: RVGameState) -> bool:
+	if has_method("collect_into_state"):
+		return bool(call("collect_into_state", state))
+	return false
