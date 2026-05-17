@@ -1,175 +1,233 @@
 class_name RVClassAscendancySystem
 extends RefCounted
 
-static func ensure_defaults(state: RVGameState) -> void:
-	if not RVClassDB.has_class(state.class_id):
-		state.class_id = RVClassDB.default_id()
-	if state.passive_atlas_allocated.is_empty():
-		state.passive_atlas_allocated.append("center")
-	if not state.passive_atlas_allocated.has("center"):
-		state.passive_atlas_allocated.insert(0, "center")
-	if state.ascendancy_id != "":
-		var legal: Array[String] = RVAscendancyDB.ids_for_class(state.class_id)
-		if not legal.has(state.ascendancy_id):
-			state.ascendancy_id = ""
-			state.ascendancy_allocated.clear()
-			state.ascendancy_refund_stack.clear()
+static func ensure_defaults(state: Object) -> void:
+	if str(state.get("character_slot_id")) == "":
+		state.set("character_slot_id", "slot_0")
+	if str(state.get("character_name")) == "":
+		state.set("character_name", "Character 1")
+	if str(state.get("character_class_id")) == "":
+		state.set("character_class_id", "sorceress")
+	if not RVClassDB.has_class(str(state.get("character_class_id"))):
+		state.set("character_class_id", "sorceress")
+	if state.get("passive_atlas_allocated") == null:
+		state.set("passive_atlas_allocated", [])
+	if state.get("passive_atlas_refund_stack") == null:
+		state.set("passive_atlas_refund_stack", [])
+	if state.get("ascendancy_allocated") == null:
+		state.set("ascendancy_allocated", [])
+	var allocated: Array = Array(state.get("passive_atlas_allocated"))
+	if not allocated.has("center"):
+		allocated.append("center")
+	var start_node: String = RVClassDB.start_node(str(state.get("character_class_id")))
+	if bool(state.get("character_class_locked")) and not allocated.has(start_node):
+		allocated.append(start_node)
+	state.set("passive_atlas_allocated", allocated)
+	state.set("ascendancy_points", available_ascendancy_points(state))
 
-static func handle_panel_key(state: RVGameState, keycode: int) -> bool:
+static func class_name(state: Object) -> String:
+	return RVClassDB.name_for(str(state.get("character_class_id")))
+
+static func ascendancy_name(state: Object) -> String:
+	return RVAscendancyDB.name_for(str(state.get("ascendancy_id")))
+
+static func can_change_class(state: Object) -> bool:
+	return not bool(state.get("character_class_locked")) and int(state.get("level")) <= 1
+
+static func cycle_class(state: Object) -> bool:
+	ensure_defaults(state)
+	if not can_change_class(state):
+		if state.has_method("add_notice"):
+			state.call("add_notice", "Class is locked to this character")
+		return false
+	state.set("character_class_id", RVClassDB.next_class_id(str(state.get("character_class_id"))))
+	state.set("ascendancy_id", "")
+	state.set("ascendancy_allocated", [])
+	state.set("passive_atlas_allocated", ["center"])
+	ensure_defaults(state)
+	if state.has_method("recompute_stats"):
+		state.call("recompute_stats")
+	return true
+
+static func lock_class(state: Object) -> bool:
+	ensure_defaults(state)
+	if bool(state.get("character_class_locked")):
+		return false
+	state.set("character_class_locked", true)
+	ensure_defaults(state)
+	if state.has_method("add_notice"):
+		state.call("add_notice", "Class chosen: " + class_name(state))
+	return true
+
+static func earned_ascendancy_points(state: Object) -> int:
+	return RVAscendancyDB.earned_points_for_level(int(state.get("level")))
+
+static func used_ascendancy_points(state: Object) -> int:
+	return Array(state.get("ascendancy_allocated")).size()
+
+static func available_ascendancy_points(state: Object) -> int:
+	return max(0, earned_ascendancy_points(state) - used_ascendancy_points(state))
+
+static func choose_or_cycle_ascendancy(state: Object) -> bool:
+	ensure_defaults(state)
+	if int(state.get("level")) < 20:
+		if state.has_method("add_notice"):
+			state.call("add_notice", "Ascendancy unlocks at level 20")
+		return false
+	var allocated: Array = Array(state.get("ascendancy_allocated"))
+	if not allocated.is_empty():
+		if state.has_method("add_notice"):
+			state.call("add_notice", "Ascendancy is locked after allocating points")
+		return false
+	var class_id: String = str(state.get("character_class_id"))
+	var current_id: String = str(state.get("ascendancy_id"))
+	state.set("ascendancy_id", RVAscendancyDB.next_for_class(class_id, current_id))
+	if state.has_method("add_notice"):
+		state.call("add_notice", "Ascendancy: " + ascendancy_name(state))
+	if state.has_method("recompute_stats"):
+		state.call("recompute_stats")
+	return true
+
+static func allocate_selected_passive(state: Object) -> bool:
+	ensure_defaults(state)
+	if int(state.get("mastery_points")) <= 0:
+		state.call("add_notice", "No passive points")
+		return false
+	var ids: Array[String] = RVPassiveAtlasDB.ordered_ids_for_class(str(state.get("character_class_id")))
+	if ids.is_empty():
+		return false
+	var cursor: int = clamp(int(state.get("passive_atlas_cursor")), 0, ids.size() - 1)
+	var node_id: String = ids[cursor]
+	var allocated: Array = Array(state.get("passive_atlas_allocated"))
+	if not RVPassiveAtlasDB.can_allocate(node_id, allocated, str(state.get("character_class_id"))):
+		state.call("add_notice", "Passive unavailable")
+		return false
+	allocated.append(node_id)
+	var refund_stack: Array = Array(state.get("passive_atlas_refund_stack"))
+	refund_stack.append(node_id)
+	state.set("passive_atlas_allocated", allocated)
+	state.set("passive_atlas_refund_stack", refund_stack)
+	state.set("mastery_points", int(state.get("mastery_points")) - 1)
+	state.set("refund_points", int(state.get("refund_points")) + 1)
+	state.call("add_notice", "Passive allocated: " + str(RVPassiveAtlasDB.node(node_id).get("name", node_id)))
+	state.call("recompute_stats")
+	return true
+
+static func refund_last_passive(state: Object) -> bool:
+	ensure_defaults(state)
+	var refund_stack: Array = Array(state.get("passive_atlas_refund_stack"))
+	if refund_stack.is_empty() or int(state.get("refund_points")) <= 0:
+		state.call("add_notice", "No passive refund available")
+		return false
+	var node_id: String = str(refund_stack.pop_back())
+	var allocated: Array = Array(state.get("passive_atlas_allocated"))
+	allocated.erase(node_id)
+	state.set("passive_atlas_allocated", allocated)
+	state.set("passive_atlas_refund_stack", refund_stack)
+	state.set("refund_points", int(state.get("refund_points")) - 1)
+	state.set("mastery_points", int(state.get("mastery_points")) + 1)
+	state.call("add_notice", "Passive refunded")
+	state.call("recompute_stats")
+	return true
+
+static func move_cursor(state: Object, delta: int) -> bool:
+	ensure_defaults(state)
+	var ids: Array[String] = RVPassiveAtlasDB.ordered_ids_for_class(str(state.get("character_class_id")))
+	if ids.is_empty():
+		return false
+	state.set("passive_atlas_cursor", wrapi(int(state.get("passive_atlas_cursor")) + delta, 0, ids.size()))
+	return true
+
+static func allocate_ascendancy_node(state: Object) -> bool:
+	ensure_defaults(state)
+	if str(state.get("ascendancy_id")) == "":
+		if not choose_or_cycle_ascendancy(state):
+			return false
+	if available_ascendancy_points(state) <= 0:
+		state.call("add_notice", "No ascendancy points")
+		return false
+	var nodes: Array[String] = RVAscendancyDB.nodes_for(str(state.get("ascendancy_id")))
+	var allocated: Array = Array(state.get("ascendancy_allocated"))
+	for node_id: String in nodes:
+		if not allocated.has(node_id):
+			allocated.append(node_id)
+			state.set("ascendancy_allocated", allocated)
+			state.set("ascendancy_points", available_ascendancy_points(state))
+			state.call("add_notice", "Ascendancy allocated: " + str(RVPassiveAtlasDB.node(node_id).get("name", node_id)))
+			state.call("recompute_stats")
+			return true
+	state.call("add_notice", "Ascendancy complete")
+	return false
+
+static func handle_panel_key(state: Object, keycode: int) -> bool:
 	match keycode:
 		KEY_A:
-			cycle_passive_cursor(state, -1)
-			return true
+			return move_cursor(state, -1)
 		KEY_D:
-			cycle_passive_cursor(state, 1)
-			return true
+			return move_cursor(state, 1)
 		KEY_ENTER:
+			if not bool(state.get("character_class_locked")):
+				return lock_class(state)
 			return allocate_selected_passive(state)
 		KEY_BACKSPACE, KEY_DELETE:
 			return refund_last_passive(state)
 		KEY_C:
-			cycle_class(state)
-			return true
+			return cycle_class(state)
 		KEY_V:
-			cycle_ascendancy(state)
-			return true
+			return choose_or_cycle_ascendancy(state)
 		KEY_G:
-			return allocate_first_available_ascendancy(state)
+			return allocate_ascendancy_node(state)
 	return false
 
-static func cycle_class(state: RVGameState) -> void:
-	state.class_id = RVClassDB.next_id(state.class_id)
-	state.ascendancy_id = ""
-	state.ascendancy_allocated.clear()
-	state.ascendancy_refund_stack.clear()
-	state.passive_atlas_cursor = 0
-	state.add_notice("Class: " + RVClassDB.display_name(state.class_id))
-	state.recompute_stats()
-
-static func cycle_ascendancy(state: RVGameState) -> void:
-	if state.level < 10:
-		state.add_notice("Ascendancy unlocks at level 10")
-		return
-	state.ascendancy_id = RVAscendancyDB.next_for_class(state.class_id, state.ascendancy_id)
-	state.ascendancy_allocated.clear()
-	state.ascendancy_refund_stack.clear()
-	state.ascendancy_cursor = 0
-	state.add_notice("Ascendancy: " + RVAscendancyDB.display_name(state.ascendancy_id))
-	state.recompute_stats()
-
-static func cycle_passive_cursor(state: RVGameState, direction: int) -> void:
-	var ids_for_tree: Array[String] = RVPassiveAtlasDB.node_ids_for_class(state.class_id)
-	if ids_for_tree.is_empty():
-		return
-	state.passive_atlas_cursor = wrapi(state.passive_atlas_cursor + direction, 0, ids_for_tree.size())
-
-static func allocate_selected_passive(state: RVGameState) -> bool:
-	var node_id: String = RVPassiveAtlasDB.selected_node_id(state)
-	if node_id == "center":
-		state.add_notice("Center is already allocated")
-		return true
-	if state.mastery_points <= 0:
-		state.add_notice("No mastery points")
-		return true
-	if not RVPassiveAtlasDB.can_allocate(state, node_id):
-		state.add_notice("Passive requires a connected node")
-		return true
-	state.passive_atlas_allocated.append(node_id)
-	state.passive_atlas_refund_stack.append(node_id)
-	state.mastery_points -= 1
-	state.refund_points += 1
-	state.recompute_stats()
-	state.add_notice("Allocated: " + str(RVPassiveAtlasDB.node_data(node_id).get("name", node_id)))
-	return true
-
-static func refund_last_passive(state: RVGameState) -> bool:
-	if state.passive_atlas_refund_stack.is_empty():
-		state.add_notice("No passive to refund")
-		return true
-	if state.refund_points <= 0:
-		state.add_notice("No refund points")
-		return true
-	var node_id: String = state.passive_atlas_refund_stack.pop_back()
-	state.passive_atlas_allocated.erase(node_id)
-	state.refund_points -= 1
-	state.mastery_points += 1
-	state.recompute_stats()
-	state.add_notice("Refunded passive")
-	return true
-
-static func allocate_first_available_ascendancy(state: RVGameState) -> bool:
-	if state.ascendancy_id == "":
-		cycle_ascendancy(state)
-		if state.ascendancy_id == "":
-			return true
-	if state.ascendancy_points <= 0:
-		state.add_notice("No ascendancy points")
-		return true
-	for node_id: String in RVAscendancyDB.node_ids(state.ascendancy_id):
-		if state.ascendancy_allocated.has(node_id):
-			continue
-		var data: Dictionary = RVAscendancyDB.node_data(node_id)
-		var cost: int = int(data.get("cost", 1))
-		if state.ascendancy_points < cost:
-			continue
-		state.ascendancy_allocated.append(node_id)
-		state.ascendancy_refund_stack.append(node_id)
-		state.ascendancy_points -= cost
-		state.recompute_stats()
-		state.add_notice("Ascendancy node allocated")
-		return true
-	state.add_notice("No available ascendancy node")
-	return true
-
-static func collect_stats(state: RVGameState) -> Dictionary:
-	var result: Dictionary = {}
-	_add_stats(result, RVClassDB.class_stats(state.class_id))
-	for node_id: String in state.passive_atlas_allocated:
-		var node: Dictionary = RVPassiveAtlasDB.node_data(node_id)
-		_add_stats(result, Dictionary(node.get("stats", {})))
-	if state.ascendancy_id != "":
-		_add_stats(result, Dictionary(RVAscendancyDB.data(state.ascendancy_id).get("stats", {})))
-	for asc_node_id: String in state.ascendancy_allocated:
-		var asc_node: Dictionary = RVAscendancyDB.node_data(asc_node_id)
-		_add_stats(result, Dictionary(asc_node.get("stats", {})))
+static func collect_stats(state: Object) -> Dictionary:
+	ensure_defaults(state)
+	var result: Dictionary = {"stats": {}, "flags": []}
+	_add_stats_and_flags(result, RVClassDB.data(str(state.get("character_class_id"))))
+	var allocated: Array = Array(state.get("passive_atlas_allocated"))
+	for node_id_value: Variant in allocated:
+		_add_stats_and_flags(result, RVPassiveAtlasDB.node(str(node_id_value)))
+	var asc_allocated: Array = Array(state.get("ascendancy_allocated"))
+	for asc_node_value: Variant in asc_allocated:
+		_add_stats_and_flags(result, RVPassiveAtlasDB.node(str(asc_node_value)))
 	return result
 
-static func collect_flags(state: RVGameState) -> Array[String]:
-	var result: Array[String] = []
-	_add_flags(result, RVClassDB.class_flags(state.class_id))
-	for node_id: String in state.passive_atlas_allocated:
-		var node: Dictionary = RVPassiveAtlasDB.node_data(node_id)
-		_add_flags(result, Array(node.get("flags", [])))
-	if state.ascendancy_id != "":
-		_add_flags(result, Array(RVAscendancyDB.data(state.ascendancy_id).get("flags", [])))
-	for asc_node_id: String in state.ascendancy_allocated:
-		var asc_node: Dictionary = RVAscendancyDB.node_data(asc_node_id)
-		_add_flags(result, Array(asc_node.get("flags", [])))
-	return result
+static func _add_stats_and_flags(result: Dictionary, data: Dictionary) -> void:
+	var stats: Dictionary = result.get("stats", {})
+	var source_stats: Dictionary = data.get("stats", {})
+	for key: Variant in source_stats.keys():
+		var stat_name: String = str(key)
+		stats[stat_name] = float(stats.get(stat_name, 0.0)) + float(source_stats[key])
+	result["stats"] = stats
+	var flags: Array = result.get("flags", [])
+	for flag_value: Variant in data.get("flags", []):
+		var flag: String = str(flag_value)
+		if not flags.has(flag):
+			flags.append(flag)
+	result["flags"] = flags
 
-static func _add_stats(target: Dictionary, source: Dictionary) -> void:
-	for key: Variant in source.keys():
-		var name: String = str(key)
-		target[name] = float(target.get(name, 0.0)) + float(source[key])
-
-static func _add_flags(target: Array[String], source: Array) -> void:
-	for value: Variant in source:
-		var flag: String = str(value)
-		if flag != "" and not target.has(flag):
-			target.append(flag)
-
-static func passive_summary(state: RVGameState) -> String:
-	var selected_id: String = RVPassiveAtlasDB.selected_node_id(state)
-	var selected: Dictionary = RVPassiveAtlasDB.node_data(selected_id)
-	var text: String = "Class: " + RVClassDB.display_name(state.class_id) + "\n"
-	text += "Ascendancy: " + RVAscendancyDB.display_name(state.ascendancy_id) + "\n"
-	text += "Mastery Points: " + str(state.mastery_points) + "   Refund: " + str(state.refund_points) + "\n"
-	text += "Ascendancy Points: " + str(state.ascendancy_points) + "\n\n"
-	text += "Selected Passive: " + str(selected.get("name", selected_id)) + "\n"
-	text += str(selected.get("type", "Passive")) + " — " + str(selected.get("description", "")) + "\n"
-	text += "Allocated: " + ("yes" if state.passive_atlas_allocated.has(selected_id) else "no") + "\n\n"
-	text += "Allocated Passives:\n"
-	for node_id: String in state.passive_atlas_allocated:
-		text += "- " + str(RVPassiveAtlasDB.node_data(node_id).get("name", node_id)) + "\n"
-	text += "\nControls: A/D select · Enter allocate · Backspace refund · C class · V ascendancy · G ascendancy node"
+static func panel_text(state: Object) -> String:
+	ensure_defaults(state)
+	var text: String = "CLASS / PASSIVE ATLAS\n"
+	text += "Character: " + str(state.get("character_name")) + "  Slot: " + str(state.get("character_slot_id")) + "\n"
+	text += "Class: " + class_name(state) + ("  LOCKED" if bool(state.get("character_class_locked")) else "  NOT LOCKED") + "\n"
+	text += "Ascendancy: " + ascendancy_name(state) + "\n"
+	text += "Passive Points: " + str(int(state.get("mastery_points"))) + "  Refund: " + str(int(state.get("refund_points"))) + "\n"
+	text += "Ascendancy Points: " + str(available_ascendancy_points(state)) + " / " + str(earned_ascendancy_points(state)) + " earned at Lv20/30/40/50\n\n"
+	text += "Controls: C class before lock | Enter lock/allocate | A/D select | Backspace refund | V ascendancy | G asc node\n\n"
+	var ids: Array[String] = RVPassiveAtlasDB.ordered_ids_for_class(str(state.get("character_class_id")))
+	var cursor: int = clamp(int(state.get("passive_atlas_cursor")), 0, max(0, ids.size() - 1))
+	for i: int in range(ids.size()):
+		var node_id: String = ids[i]
+		var data: Dictionary = RVPassiveAtlasDB.node(node_id)
+		var marker: String = "> " if i == cursor else "  "
+		var allocated: String = "[x]" if Array(state.get("passive_atlas_allocated")).has(node_id) else "[ ]"
+		text += marker + allocated + " " + str(data.get("name", node_id)) + " - " + str(data.get("kind", "")) + "\n"
+		if i == cursor:
+			text += "      " + str(data.get("description", "")) + "\n"
+	if str(state.get("ascendancy_id")) != "":
+		text += "\nASCENDANCY TRACK\n"
+		for asc_node: String in RVAscendancyDB.nodes_for(str(state.get("ascendancy_id"))):
+			var asc_data: Dictionary = RVPassiveAtlasDB.node(asc_node)
+			var asc_marker: String = "[x]" if Array(state.get("ascendancy_allocated")).has(asc_node) else "[ ]"
+			text += asc_marker + " " + str(asc_data.get("name", asc_node)) + "\n"
 	return text

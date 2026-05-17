@@ -1,31 +1,20 @@
 class_name RVPassiveAtlasPanel
 extends RVUIPanelBase
 
-var current_state: RVGameState = null
-var content_label: Label = null
-var detail_label: RichTextLabel = null
-
-func _ready() -> void:
-	super._ready()
-	content_label = get_node_or_null("%ContentLabel") as Label
-	if content_label == null:
-		content_label = Label.new()
-		content_label.name = "ContentLabel"
-		content_label.position = Vector2(24.0, 24.0)
-		content_label.size = Vector2(780.0, 520.0)
-		content_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		add_child(content_label)
+@onready var content_label: Label = get_node_or_null("%ContentLabel") as Label
+@onready var title_label: Label = get_node_or_null("%TitleLabel") as Label
 
 func update_from_state(state: RVGameState) -> void:
-	current_state = state
-	if current_state == null:
+	if content_label == null:
 		return
-	current_state.ensure_defaults()
-	if content_label != null:
-		content_label.text = RVClassAscendancySystem.passive_summary(current_state)
+	if title_label != null:
+		title_label.text = "Passive Atlas"
+	content_label.text = _build_text(state)
 
-func handle_panel_key(state: RVGameState, keycode: int) -> bool:
-	var handled: bool = RVClassAscendancySystem.handle_panel_key(state, keycode)
-	if handled:
-		update_from_state(state)
-	return handled
+func _build_text(state: RVGameState) -> String:
+	RVClassAscendancySystem.ensure_defaults(state)
+	var text: String = RVSaveSystem.roster_summary()
+	text += "\n" + RVClassAscendancySystem.panel_text(state)
+	text += "\nCharacter slots: press 1-9 or 0 while this panel is open. Current slot auto-saves before switching.\n"
+	text += "Class is chosen per character save. Press C before locking, then Enter to lock.\n"
+	return text

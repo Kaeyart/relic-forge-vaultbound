@@ -946,42 +946,46 @@ flat = true
 [node name="EquipButton" type="Button" parent="Root" unique_id=1853598580]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 568.0
-offset_top = 606.0
-offset_right = 661.0
-offset_bottom = 640.0
+offset_left = 589.0
+offset_top = 609.0
+offset_right = 639.0
+offset_bottom = 643.0
 focus_mode = 0
-text = "Equip"
+text = "E"
+flat = true
 
 [node name="StashButton" type="Button" parent="Root" unique_id=515080514]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 803.0
-offset_top = 606.0
-offset_right = 867.0
+offset_left = 822.0
+offset_top = 609.0
+offset_right = 849.0
 offset_bottom = 640.0
 focus_mode = 0
-text = "Stash"
+text = "S"
+flat = true
 
 [node name="SalvageButton" type="Button" parent="Root" unique_id=1385448297]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 901.0
-offset_top = 607.0
-offset_right = 968.0
+offset_left = 918.0
+offset_top = 610.0
+offset_right = 945.0
 offset_bottom = 641.0
 focus_mode = 0
-text = "Salvage"
+text = "D"
+flat = true
 
 [node name="UnequipButton" type="Button" parent="Root" unique_id=146613997]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 692.0
+offset_left = 716.0
 offset_top = 609.0
-offset_right = 773.0
+offset_right = 751.0
 offset_bottom = 643.0
 focus_mode = 0
-text = "Unequip"
+text = "U"
+flat = true
 
 [node name="CloseButton" type="Button" parent="Root" unique_id=974499203]
 unique_name_in_owner = true

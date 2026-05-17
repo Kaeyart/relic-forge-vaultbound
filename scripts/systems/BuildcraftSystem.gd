@@ -2,7 +2,7 @@ class_name RVBuildcraftSystem
 extends RefCounted
 
 static func handle_key(state: RVGameState, keycode: int) -> bool:
-	if state == null or state.panel_mode == "":
+	if state.panel_mode == "":
 		return false
 	match state.panel_mode:
 		"inventory":
@@ -49,6 +49,12 @@ static func handle_crafting_key(state: RVGameState, keycode: int) -> bool:
 	return false
 
 static func handle_passive_key(state: RVGameState, keycode: int) -> bool:
+	if keycode >= KEY_0 and keycode <= KEY_9:
+		var slot_index: int = 9 if keycode == KEY_0 else keycode - KEY_1
+		RVSaveSystem.save(state)
+		RVSaveSystem.select_slot_and_load(state, slot_index)
+		state.add_notice("Loaded character slot " + str(slot_index + 1))
+		return true
 	return RVClassAscendancySystem.handle_panel_key(state, keycode)
 
 static func handle_skill_gem_key(state: RVGameState, keycode: int) -> bool:
@@ -62,9 +68,3 @@ static func handle_stash_key(state: RVGameState, keycode: int) -> bool:
 		RVInventorySystem.withdraw_selected_stash_item(state)
 		return true
 	return false
-
-static func allocate_first_available_passive(state: RVGameState) -> void:
-	RVClassAscendancySystem.allocate_selected_passive(state)
-
-static func refund_first_passive(state: RVGameState) -> void:
-	RVClassAscendancySystem.refund_last_passive(state)

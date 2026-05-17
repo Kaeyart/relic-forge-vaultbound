@@ -1,8 +1,13 @@
 class_name RVEnemyActor
 extends Node2D
 
+# Patch 068-071D: combat role/AI compatibility fields.
+var windup: float = 0.35
+var ai_timer: float = 0.0
+
 signal died(enemy: RVEnemyActor)
 signal damaged(enemy: RVEnemyActor, amount: float, tags: Array)
+signal phase_changed(enemy: RVEnemyActor, phase: int)
 signal hit_player(amount: float)
 signal enemy_projectile_requested(pos: Vector2, velocity: Vector2, damage: float, radius: float, tags: Array)
 signal enemy_zone_requested(pos: Vector2, radius: float, delay: float, duration: float, damage: float, tags: Array)
@@ -29,6 +34,11 @@ var damage: float = 8.0
 var radius: float = 15.0
 var cooldown: float = 0.0
 var enemy_color: Color = Color(0.75, 0.22, 0.14)
+var max_poise: float = 40.0
+var poise: float = 40.0
+var stagger_timer: float = 0.0
+var hit_flash_timer: float = 0.0
+var last_damage_tags: Array = []
 var statuses: Dictionary = {}
 var dot_tick: float = 0.0
 
@@ -43,6 +53,11 @@ var is_map_boss: bool = false
 var is_elite: bool = false
 
 var visual_rig: RVEnemyVisualRig = null
+
+
+var aggro_range: float = 360.0
+var attack_range: float = 72.0
+var recovery: float = 0.75
 
 func _ready() -> void:
 	_ensure_visual_rig()
@@ -127,6 +142,7 @@ func _apply_combat_role_tuning() -> void:
 
 func _process(delta: float) -> void:
 	_update_statuses(delta)
+	_rf_update_combat_juice_timers(delta)
 	state_time += delta
 	if visual_rig != null:
 		visual_rig.set_hp_ratio(hp / max(1.0, max_hp))
@@ -135,6 +151,9 @@ func _process(delta: float) -> void:
 
 func update_ai(player_pos: Vector2, delta: float) -> void:
 	if hp <= 0.0:
+		return
+	if is_staggered():
+		queue_redraw()
 		return
 	cooldown = max(0.0, cooldown - delta)
 	windup_time = max(0.0, windup_time - delta)
@@ -251,7 +270,7 @@ func _resolve_attack_after_windup(_delay: float) -> void:
 	if visual_rig != null:
 		visual_rig.set_visual_state("attack", attack_direction)
 
-func take_damage(amount: float) -> void:
+func take_damage(amount: float, tags: Array = [], source_skill: String = "") -> void:
 	if hp <= 0.0:
 		return
 	var final_amount: float = amount
@@ -260,7 +279,13 @@ func take_damage(amount: float) -> void:
 	if has_status("shock"):
 		final_amount *= 1.08
 	hp -= final_amount
-	if visual_rig != null:
+	last_damage_tags = tags.duplicate(true)
+	flash_hit()
+	apply_stagger(final_amount, tags)
+	if has_signal("damaged"):
+		damaged.emit(self, final_amount, tags)
+		if visual_rig != null:
+			pass # PATCH_068_071A: parser guard for previously empty generated block
 		visual_rig.pulse_hit()
 	if hp <= 0.0:
 		_die_once()
@@ -340,6 +365,68 @@ func _ensure_visual_rig() -> void:
 	visual_rig.name = "VisualRig"
 	visual_rig.z_index = -1
 	add_child(visual_rig)
+
+
+func _rf_apply_combat_juice_profile(data: Dictionary = {}) -> void:
+	max_poise = float(data.get("poise", _rf_default_poise()))
+	if is_elite:
+		max_poise *= 1.45
+	if is_map_boss or role == "boss":
+		max_poise *= 3.00
+	poise = max_poise
+	stagger_timer = 0.0
+	hit_flash_timer = 0.0
+
+func _rf_default_poise() -> float:
+	match role:
+		"hound", "lunger": return 28.0
+		"shooter", "caster", "binder", "caller": return 34.0
+		"knight": return 56.0
+		"brute": return 88.0
+		"boss": return 160.0
+	return 42.0
+
+func _rf_update_combat_juice_timers(delta: float) -> void:
+	if stagger_timer > 0.0:
+		stagger_timer = max(0.0, stagger_timer - delta)
+		if stagger_timer <= 0.0 and ai_state == "stagger":
+			ai_state = "aggro"
+	if hit_flash_timer > 0.0:
+		hit_flash_timer = max(0.0, hit_flash_timer - delta)
+	if poise < max_poise:
+		poise = min(max_poise, poise + max_poise * 0.28 * delta)
+
+func is_staggered() -> bool:
+	return stagger_timer > 0.0 or ai_state == "stagger"
+
+func apply_stagger(amount: float, tags: Array = []) -> void:
+	var poise_damage: float = amount
+	if tags.has("Heavy") or tags.has("Slam") or tags.has("Explosion"):
+		poise_damage *= 1.35
+	if tags.has("Storm") or tags.has("Lightning"):
+		poise_damage *= 1.10
+	if is_map_boss:
+		poise_damage *= 0.22
+	elif is_elite:
+		poise_damage *= 0.58
+	poise -= poise_damage
+	if poise <= 0.0:
+		poise = max_poise
+		stagger_timer = 0.16
+		if is_elite:
+			stagger_timer = 0.12
+		if is_map_boss:
+			stagger_timer = 0.08
+		ai_state = "stagger"
+		ai_timer = stagger_timer
+		queue_redraw()
+
+func flash_hit() -> void:
+	hit_flash_timer = 0.12
+	modulate = Color(1.55, 1.35, 1.10, 1.0)
+	if is_inside_tree():
+		var tween: Tween = create_tween()
+		tween.tween_property(self, "modulate", Color.WHITE, 0.12)
 
 func _draw() -> void:
 	_draw_status_rings()

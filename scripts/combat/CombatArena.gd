@@ -1,11 +1,19 @@
 class_name RVCombatArena
 extends Node2D
+
+const RVLootDropActorScript := preload("res://scripts/combat/LootDropActor.gd")
+const RVFloatingCombatTextSystemScript := preload("res://scripts/systems/FloatingCombatTextSystem.gd")
+const RVLootDropSystemScript := preload("res://scripts/systems/LootDropSystem.gd")
 const SpellVFXSystemScript := preload("res://scripts/visuals/SpellVFXSystem.gd")
 const CombatFeedbackSystemScript := preload("res://scripts/systems/CombatFeedbackSystem.gd")
 const MapPropVisualSystemScript := preload("res://scripts/visuals/MapPropVisualSystem.gd")
 
 const MapLayoutSystemScript := preload("res://scripts/systems/MapLayoutSystem.gd")
 const MapEncounterDirectorScript := preload("res://scripts/systems/MapEncounterDirector.gd")
+const CombatJuiceSystemScript := preload("res://scripts/systems/CombatJuiceSystem.gd")
+const CombatStatusComboSystemScript := preload("res://scripts/systems/CombatStatusComboSystem.gd")
+const CombatPackAISystemScript := preload("res://scripts/systems/CombatPackAISystem.gd")
+const BossPhaseDirectorScript := preload("res://scripts/systems/BossPhaseDirector.gd")
 
 signal combat_finished
 signal player_died
@@ -33,6 +41,22 @@ var enemy_zones: Array[Dictionary] = []
 var map_pack_total: int = 0
 var map_pack_cleared: int = 0
 var map_boss_alive: bool = false
+
+
+func _rf_feedback_root() -> Node2D:
+	if has_method("_ensure_vfx_root"):
+		var value: Variant = call("_ensure_vfx_root")
+		if value is Node2D:
+			return value as Node2D
+	return self
+
+func _rf_enemy_last_tags(enemy: Node) -> Array:
+	if enemy == null:
+		return []
+	var value: Variant = enemy.get("last_damage_tags")
+	if typeof(value) == TYPE_ARRAY:
+		return Array(value)
+	return []
 
 func start_activity(state: RVGameState, new_activity: Dictionary) -> void:
 	state_ref = state
@@ -171,6 +195,8 @@ func _spawn_encounter_plan(state: RVGameState, map_item: Dictionary) -> void:
 	_spawn_enemy(boss_data)
 
 func update_combat(state: RVGameState, player: RVPlayerActor, delta: float) -> void:
+	_rf_ensure_combat_layers()
+	_rf_update_ground_loot()
 	if not active:
 		return
 	state.prompt_text = ""
@@ -178,6 +204,7 @@ func update_combat(state: RVGameState, player: RVPlayerActor, delta: float) -> v
 	for enemy_node: Node in enemies_root.get_children():
 		if enemy_node is RVEnemyActor:
 			var enemy: RVEnemyActor = enemy_node
+			CombatPackAISystemScript.apply_context(enemy, enemies_root, player.global_position, delta)
 			enemy.update_ai(player.global_position, delta)
 	for projectile_node: Node in projectiles_root.get_children():
 		if projectile_node is RVProjectileActor:
@@ -247,6 +274,8 @@ func cast_selected_skill(state: RVGameState, aim: Vector2) -> void:
 			tags.append(str(flag_value))
 	_emit_skill_proxy_vfx(skill_name, state.player_pos, aim, direction, skill_data, tags)
 	RVSpellVFXSystem.spawn_skill_cast(self, skill_name, state.player_pos, aim, tags)
+	tags = CombatStatusComboSystemScript.augment_skill_tags(skill_name, tags)
+	CombatJuiceSystemScript.skill_cast_feedback(self, _rf_feedback_root(), skill_name, state.player_pos, tags)
 	match skill_name:
 		"Cleave":
 			var center: Vector2 = state.player_pos + direction * 64.0
@@ -539,6 +568,7 @@ func _spawn_enemy(enemy_data: Dictionary) -> void:
 		return
 	var enemy: RVEnemyActor = enemy_scene.instantiate()
 	enemies_root.add_child(enemy)
+	_rf_prepare_enemy_visual_layer(enemy)
 	enemy.setup(enemy_data)
 	enemy.died.connect(_on_enemy_died)
 	enemy.hit_player.connect(_on_enemy_hit_player)
@@ -564,8 +594,10 @@ func _check_projectile_enemy_hits(projectile: RVProjectileActor, state: RVGameSt
 		if enemy_node is RVEnemyActor:
 			var enemy: RVEnemyActor = enemy_node
 			if projectile.global_position.distance_to(enemy.global_position) <= projectile.radius + enemy.radius:
-				enemy.take_damage(projectile.damage)
-				_apply_skill_statuses(enemy, projectile.tags, projectile.damage)
+				var projectile_damage: float = CombatStatusComboSystemScript.modify_damage_for_enemy(enemy, projectile.tags, projectile.damage)
+				enemy.take_damage(projectile_damage, projectile.tags, "projectile")
+				_rf_spawn_damage_number(enemy.global_position, projectile_damage, projectile.tags)
+				_apply_skill_statuses(enemy, projectile.tags, projectile_damage)
 				if projectile.tags.has("fireball_explodes"):
 					_damage_enemies_in_radius(projectile.global_position, 48.0, projectile.damage * 0.42, state, projectile.tags, enemy)
 				if projectile.tags.has("lightning_chains") or projectile.tags.has("chain_plus"):
@@ -585,7 +617,9 @@ func _damage_enemies_in_radius(center: Vector2, radius: float, damage: float, st
 				var final_damage: float = damage
 				if tags.has("close_combat_bonus") and center.distance_to(enemy.global_position) <= radius * 0.50:
 					final_damage *= 1.18
-				enemy.take_damage(final_damage)
+				final_damage = CombatStatusComboSystemScript.modify_damage_for_enemy(enemy, tags, final_damage)
+				enemy.take_damage(final_damage, tags, "area")
+				_rf_spawn_damage_number(enemy.global_position, final_damage, tags)
 				_apply_skill_statuses(enemy, tags, final_damage)
 				if tags.has("rift_pull"):
 					enemy.pull_toward(center, 34.0)
@@ -610,29 +644,7 @@ func _apply_skill_statuses(enemy: RVEnemyActor, tags: Array, damage: float) -> v
 		enemy.apply_status("curse", 5.0, status_power)
 	if tags.has("shock_pressure") or tags.has("shock_burst"):
 		enemy.apply_status("shock", 3.0, status_power)
-
-func _chain_lightning(source: RVEnemyActor, damage: float, count: int, tags: Array) -> void:
-	var chained: Array[RVEnemyActor] = [source]
-	var current: RVEnemyActor = source
-	for i: int in range(max(0, count)):
-		var best: RVEnemyActor = null
-		var best_dist: float = 999999.0
-		for enemy_node: Node in enemies_root.get_children():
-			if enemy_node is RVEnemyActor:
-				var enemy: RVEnemyActor = enemy_node
-				if chained.has(enemy):
-					continue
-				var dist: float = current.global_position.distance_to(enemy.global_position)
-				if dist < best_dist and dist <= 220.0:
-					best = enemy
-					best_dist = dist
-		if best == null:
-			return
-		best.take_damage(damage)
-		best.apply_status("shock", 2.5, 1.0)
-		chained.append(best)
-		current = best
-		damage *= 0.72
+	CombatStatusComboSystemScript.apply_statuses_and_combos(self, state_ref, enemy, tags, damage)
 
 func _damage_player(state: RVGameState, amount: float) -> void:
 	if state.invuln > 0.0:
@@ -640,6 +652,7 @@ func _damage_player(state: RVGameState, amount: float) -> void:
 	state.player_hp -= amount
 	state.invuln = 0.45
 	state.add_notice("-" + str(int(amount)) + " HP")
+	CombatJuiceSystemScript.player_damage_feedback(self, _rf_feedback_root(), state.player_pos, amount)
 	if state.player_hp <= 0.0:
 		player_died.emit()
 
@@ -655,6 +668,9 @@ func _on_enemy_died(enemy: RVEnemyActor) -> void:
 				map_boss_alive = false
 			elif state_ref.rng.randf() < drop_chance:
 				RVMapSystem.award_map_enemy_drop(state_ref, depth)
+		CombatJuiceSystemScript.enemy_kill_feedback(self, _rf_feedback_root(), enemy.global_position, _rf_enemy_last_tags(enemy))
+	CombatStatusComboSystemScript.on_enemy_killed(self, state_ref, enemy, _rf_enemy_last_tags(enemy))
+	_rf_drop_enemy_loot(enemy)
 	enemy.queue_free()
 
 func _on_enemy_hit_player(amount: float) -> void:
@@ -754,5 +770,165 @@ func _clear_runtime_vfx() -> void:
 
 
 func _on_enemy_damaged(enemy: RVEnemyActor, amount: float, tags: Array = []) -> void:
+	CombatJuiceSystemScript.enemy_hit_feedback(self, _rf_feedback_root(), enemy, amount, tags)
 	var root: Node2D = _ensure_vfx_root() if has_method("_ensure_vfx_root") else self
 	CombatFeedbackSystemScript.enemy_hit(self, root, enemy, amount, tags)
+
+
+func _on_enemy_phase_changed(enemy: RVEnemyActor, phase: int) -> void:
+	BossPhaseDirectorScript.on_phase_changed(self, state_ref, enemy, phase)
+
+
+func _chain_lightning(source: RVEnemyActor, damage: float, count: int, tags: Array) -> void:
+	var chained: Array[RVEnemyActor] = [source]
+	var current: RVEnemyActor = source
+	for i: int in range(max(0, count)):
+		var best: RVEnemyActor = null
+		var best_dist: float = 999999.0
+		for enemy_node: Node in enemies_root.get_children():
+			if enemy_node is RVEnemyActor:
+				var enemy: RVEnemyActor = enemy_node
+				if chained.has(enemy):
+					continue
+				var dist: float = current.global_position.distance_to(enemy.global_position)
+				if dist < best_dist and dist <= 220.0:
+					best = enemy
+					best_dist = dist
+		if best == null:
+			return
+		best.take_damage(damage, tags, "chain")
+		_rf_spawn_damage_number(best.global_position, damage, tags)
+		if best.has_method("apply_status"):
+			best.apply_status("shock", 2.5, 1.0)
+		chained.append(best)
+		current = best
+		damage *= 0.72
+
+# -----------------------------------------------------------------------------
+# Patch 072B: Safe ground-loot helper block.
+# Avoids global-class type annotations so CombatArena can parse even if Godot's
+# class cache has not refreshed after installing new scripts.
+# -----------------------------------------------------------------------------
+func _rf_ensure_combat_layers() -> void:
+	_rf_named_node2d("MapGroundLayer", -100)
+	_rf_named_node2d("MapDressingLayer", -50)
+	_rf_named_node2d("GroundTelegraphLayer", -20)
+	_rf_named_node2d("GroundLootLayer", 8)
+	_rf_named_node2d("FloatingCombatTextLayer", 120)
+	if enemies_root != null:
+		enemies_root.z_as_relative = false
+		enemies_root.z_index = 20
+	var projectile_root: Node2D = get_node_or_null("ProjectilesRoot") as Node2D
+	if projectile_root != null:
+		projectile_root.z_as_relative = false
+		projectile_root.z_index = 40
+
+func _rf_named_node2d(node_name: String, z: int) -> Node2D:
+	var node: Node2D = get_node_or_null(node_name) as Node2D
+	if node == null:
+		node = Node2D.new()
+		node.name = node_name
+		add_child(node)
+	node.z_as_relative = false
+	node.z_index = z
+	return node
+
+func _rf_loot_root() -> Node2D:
+	return _rf_named_node2d("GroundLootLayer", 8)
+
+func _rf_prepare_enemy_visual_layer(enemy: Node2D) -> void:
+	if enemy == null:
+		return
+	enemy.z_as_relative = false
+	enemy.z_index = 20
+	for child: Node in enemy.get_children():
+		if child is CanvasItem:
+			var canvas_child: CanvasItem = child as CanvasItem
+			canvas_child.z_as_relative = true
+
+func _rf_spawn_damage_number(pos: Vector2, amount: float, tags: Array = []) -> void:
+	if RVFloatingCombatTextSystemScript != null:
+		RVFloatingCombatTextSystemScript.spawn_damage(_rf_feedback_root(), pos, amount, tags, false)
+
+func _rf_spawn_combat_callout(pos: Vector2, label_text: String, color: Color = Color(1.0, 0.82, 0.32)) -> void:
+	if RVFloatingCombatTextSystemScript != null:
+		RVFloatingCombatTextSystemScript.spawn_callout(_rf_feedback_root(), pos, label_text, color)
+
+func _rf_drop_enemy_loot(enemy: Node) -> void:
+	if state_ref == null or enemy == null:
+		return
+	var payloads: Array[Dictionary] = RVLootDropSystemScript.enemy_drop_payloads(state_ref, enemy, activity)
+	if payloads.is_empty():
+		return
+	var root: Node2D = _rf_loot_root()
+	var base_pos: Vector2 = Vector2.ZERO
+	if enemy is Node2D:
+		base_pos = (enemy as Node2D).global_position
+	var count: int = payloads.size()
+	for i: int in range(count):
+		var angle: float = TAU * float(i) / max(1.0, float(count))
+		var offset: Vector2 = Vector2(cos(angle), sin(angle)) * (18.0 + 7.0 * float(i % 3))
+		_rf_spawn_ground_loot(payloads[i], base_pos + offset)
+	if bool(enemy.get("is_map_boss")):
+		_rf_spawn_combat_callout(base_pos, "BOSS LOOT", Color(1.0, 0.62, 0.18))
+		_rf_hide_map_reward_chest_if_any()
+
+func _rf_spawn_ground_loot(payload: Dictionary, pos: Vector2) -> void:
+	var drop: Node = RVLootDropActorScript.new()
+	_rf_loot_root().add_child(drop)
+	if drop is Node2D:
+		(drop as Node2D).global_position = pos
+	if drop.has_method("setup"):
+		drop.call("setup", payload)
+	if drop.has_signal("picked_up"):
+		drop.connect("picked_up", Callable(self, "_rf_pickup_loot_drop"))
+
+func _rf_update_ground_loot() -> void:
+	if state_ref == null:
+		return
+	var wants_pickup: bool = Input.is_key_pressed(KEY_E)
+	var mouse_pickup: bool = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
+	if not wants_pickup and not mouse_pickup:
+		return
+	var best: Node = null
+	var best_dist: float = 999999.0
+	var root: Node2D = _rf_loot_root()
+	var mouse_pos: Vector2 = get_global_mouse_position()
+	for child: Node in root.get_children():
+		if not child.has_method("pick_up"):
+			continue
+		if not (child is Node2D):
+			continue
+		var drop_node: Node2D = child as Node2D
+		var dist: float = drop_node.global_position.distance_to(state_ref.player_pos)
+		if mouse_pickup and drop_node.global_position.distance_to(mouse_pos) <= 42.0:
+			dist = 0.0
+		if dist < best_dist and dist <= 48.0:
+			best = child
+			best_dist = dist
+	if best != null:
+		best.call("pick_up")
+
+func _rf_pickup_loot_drop(drop: Node) -> void:
+	if drop == null or state_ref == null:
+		return
+	var payload: Dictionary = {}
+	if drop.get("payload") != null:
+		payload = Dictionary(drop.get("payload"))
+	var msg: String = RVLootDropSystemScript.pickup_payload(state_ref, payload)
+	if msg != "":
+		state_ref.add_notice(msg)
+		var pos: Vector2 = Vector2.ZERO
+		if drop is Node2D:
+			pos = (drop as Node2D).global_position
+		RVFloatingCombatTextSystemScript.spawn_callout(_rf_feedback_root(), pos, msg, Color(0.90, 0.84, 0.58), 12)
+
+func _rf_hide_map_reward_chest_if_any() -> void:
+	if str(activity.get("kind", "")) != "map":
+		return
+	for node: Node in get_tree().get_nodes_in_group("reward_chest"):
+		if node is CanvasItem:
+			(node as CanvasItem).visible = false
+	for child: Node in get_children():
+		if child.name.to_lower().find("chest") >= 0 and child is CanvasItem:
+			(child as CanvasItem).visible = false

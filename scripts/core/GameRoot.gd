@@ -36,18 +36,23 @@ func _process(delta: float) -> void:
 
 	_update_player(delta)
 	RVSkillSystem.update(state, delta)
+
 	if state.mode == "hub":
 		hub.update_focus(state)
 	else:
 		combat.update_combat(state, player, delta)
+
 	if state.notice_time > 0.0:
 		state.notice_time = max(0.0, state.notice_time - delta)
+
 	autosave_timer += delta
 	if autosave_timer >= 10.0:
 		autosave_timer = 0.0
 		RVSaveSystem.save(state)
+
 	hud.update_from_state(state)
 	panels.update_from_state(state)
+	_consume_pending_map_activity()
 
 func _update_player(delta: float) -> void:
 	if state.panel_mode != "":
@@ -148,6 +153,15 @@ func _handle_key(keycode: int) -> void:
 			RVSaveSystem.save(state)
 			state.add_notice("Saved")
 
+func _consume_pending_map_activity() -> void:
+	if state.pending_start_activity.is_empty():
+		return
+
+	var activity: Dictionary = state.pending_start_activity.duplicate(true)
+	state.pending_start_activity.clear()
+	state.panel_mode = ""
+	_start_activity(activity)
+	
 func _start_activity(activity: Dictionary) -> void:
 	state.enter_combat(activity)
 	hub.visible = false

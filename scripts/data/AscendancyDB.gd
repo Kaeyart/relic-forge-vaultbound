@@ -1,90 +1,117 @@
 class_name RVAscendancyDB
 extends RefCounted
 
+const ASCENDANCIES: Dictionary = {
+	"ember_savant": {
+		"id": "ember_savant",
+		"class_id": "sorceress",
+		"name": "Ember Savant",
+		"description": "Fire, burn, explosions, and Fireball scaling.",
+		"nodes": ["ember_savant_1", "ember_savant_2", "ember_savant_3", "ember_savant_4"]
+	},
+	"storm_oracle": {
+		"id": "storm_oracle",
+		"class_id": "sorceress",
+		"name": "Storm Oracle",
+		"description": "Lightning chains, shock pressure, cast speed, and overload.",
+		"nodes": ["storm_oracle_1", "storm_oracle_2", "storm_oracle_3", "storm_oracle_4"]
+	},
+	"void_arcanist": {
+		"id": "void_arcanist",
+		"class_id": "sorceress",
+		"name": "Void Arcanist",
+		"description": "Void rifts, curses, delayed pulses, and spirit manipulation.",
+		"nodes": ["void_arcanist_1", "void_arcanist_2", "void_arcanist_3", "void_arcanist_4"]
+	},
+	"trapwright": {
+		"id": "trapwright",
+		"class_id": "huntress",
+		"name": "Trapwright",
+		"description": "Trap count, trigger radius, repeats, and trap cooldown recovery.",
+		"nodes": ["trapwright_1", "trapwright_2", "trapwright_3", "trapwright_4"]
+	},
+	"bloodstalker": {
+		"id": "bloodstalker",
+		"class_id": "huntress",
+		"name": "Bloodstalker",
+		"description": "Bleed, crit, execute damage, and fast movement after kills.",
+		"nodes": ["bloodstalker_1", "bloodstalker_2", "bloodstalker_3", "bloodstalker_4"]
+	},
+	"rift_poacher": {
+		"id": "rift_poacher",
+		"class_id": "huntress",
+		"name": "Rift Poacher",
+		"description": "Void/trap hybrid damage, marked prey, and ambush scaling.",
+		"nodes": ["rift_poacher_1", "rift_poacher_2", "rift_poacher_3", "rift_poacher_4"]
+	},
+	"ironbreaker": {
+		"id": "ironbreaker",
+		"class_id": "warrior",
+		"name": "Ironbreaker",
+		"description": "Armor, stagger, heavy hits, and boss pressure.",
+		"nodes": ["ironbreaker_1", "ironbreaker_2", "ironbreaker_3", "ironbreaker_4"]
+	},
+	"bloodbound": {
+		"id": "bloodbound",
+		"class_id": "warrior",
+		"name": "Bloodbound",
+		"description": "Bleed, leech, low-life rage, and kill chains.",
+		"nodes": ["bloodbound_1", "bloodbound_2", "bloodbound_3", "bloodbound_4"]
+	},
+	"forgeguard": {
+		"id": "forgeguard",
+		"class_id": "warrior",
+		"name": "Forgeguard",
+		"description": "Fire/physical hybrid pressure, forge bonuses, and defensive spirit.",
+		"nodes": ["forgeguard_1", "forgeguard_2", "forgeguard_3", "forgeguard_4"]
+	}
+}
+
+const ASCENDANCY_POINT_LEVELS: Array[int] = [20, 30, 40, 50]
+
 static func ids_for_class(class_id: String) -> Array[String]:
-	match class_id:
-		"sorceress":
-			return ["ember_savant", "storm_oracle", "void_arcanist"]
-		"huntress":
-			return ["trapwright", "bloodstalker", "rift_poacher"]
-		"warrior":
-			return ["ironbreaker", "bloodbound", "forgeguard"]
-	return []
-
-static func first_for_class(class_id: String) -> String:
-	var list: Array[String] = ids_for_class(class_id)
-	return "" if list.is_empty() else list[0]
-
-static func next_for_class(class_id: String, current_id: String) -> String:
-	var list: Array[String] = ids_for_class(class_id)
-	if list.is_empty():
-		return ""
-	var index: int = list.find(current_id)
-	if index < 0:
-		return list[0]
-	return list[(index + 1) % list.size()]
+	var result: Array[String] = []
+	for id_value: String in ASCENDANCIES.keys():
+		var data: Dictionary = ASCENDANCIES[id_value]
+		if str(data.get("class_id", "")) == class_id:
+			result.append(id_value)
+	return result
 
 static func data(ascendancy_id: String) -> Dictionary:
-	match ascendancy_id:
-		"ember_savant":
-			return _make("ember_savant", "Ember Savant", "sorceress", "Burn, Fireball, explosions, and ignite spread.", {"Fire Damage": 14.0, "Burn Damage": 18.0}, ["asc_ember_savant", "fire_burn_engine"])
-		"storm_oracle":
-			return _make("storm_oracle", "Storm Oracle", "sorceress", "Lightning chains, shock, cast speed, and overloads.", {"Lightning Damage": 14.0, "Cast Speed": 6.0}, ["asc_storm_oracle", "storm_chain_engine"])
-		"void_arcanist":
-			return _make("void_arcanist", "Void Arcanist", "sorceress", "Void rifts, curses, delayed pulses, and spirit manipulation.", {"Void Damage": 14.0, "Curse Effect": 10.0, "Maximum Spirit": 5.0}, ["asc_void_arcanist", "void_curse_engine"])
-		"trapwright":
-			return _make("trapwright", "Trapwright", "huntress", "Trap count, trigger radius, arming speed, and cooldown recovery.", {"Trap Damage": 16.0, "Cooldown Recovery": 6.0}, ["asc_trapwright", "trap_engine"])
-		"bloodstalker":
-			return _make("bloodstalker", "Bloodstalker", "huntress", "Bleed, crit, execute damage, and speed after kills.", {"Bleed Damage": 14.0, "Critical Chance": 6.0}, ["asc_bloodstalker", "bleed_execute_engine"])
-		"rift_poacher":
-			return _make("rift_poacher", "Rift Poacher", "huntress", "Void/trap hybrid, cursed prey, marks, and ambush damage.", {"Void Damage": 10.0, "Trap Damage": 10.0}, ["asc_rift_poacher", "void_trap_engine"])
-		"ironbreaker":
-			return _make("ironbreaker", "Ironbreaker", "warrior", "Armor, stagger, heavy hits, and boss pressure.", {"Armor": 20.0, "Stagger Damage": 16.0}, ["asc_ironbreaker", "stagger_engine"])
-		"bloodbound":
-			return _make("bloodbound", "Bloodbound", "warrior", "Bleed, leech, rage, and kill chains.", {"Maximum Life": 22.0, "Bleed Damage": 14.0}, ["asc_bloodbound", "leech_bleed_engine"])
-		"forgeguard":
-			return _make("forgeguard", "Forgeguard", "warrior", "Fire/physical hybrid, forge bonuses, and defensive spirit.", {"Fire Damage": 8.0, "Physical Damage": 8.0, "Maximum Spirit": 5.0}, ["asc_forgeguard", "fire_physical_engine"])
-	return {}
+	return Dictionary(ASCENDANCIES.get(ascendancy_id, {})).duplicate(true)
 
-static func _make(id_value: String, name_value: String, class_value: String, summary_value: String, stats_value: Dictionary, flags_value: Array) -> Dictionary:
-	return {
-		"id": id_value,
-		"name": name_value,
-		"class_id": class_value,
-		"summary": summary_value,
-		"stats": stats_value,
-		"flags": flags_value
-	}
-
-static func display_name(ascendancy_id: String) -> String:
+static func name_for(ascendancy_id: String) -> String:
 	if ascendancy_id == "":
-		return "No Ascendancy"
+		return "None"
 	return str(data(ascendancy_id).get("name", ascendancy_id.capitalize()))
 
-static func node_ids(ascendancy_id: String) -> Array[String]:
-	if ascendancy_id == "":
-		return []
-	return [ascendancy_id + "_a", ascendancy_id + "_b", ascendancy_id + "_c", ascendancy_id + "_d"]
+static func belongs_to_class(ascendancy_id: String, class_id: String) -> bool:
+	var data_value: Dictionary = data(ascendancy_id)
+	return not data_value.is_empty() and str(data_value.get("class_id", "")) == class_id
 
-static func node_data(node_id: String) -> Dictionary:
-	var asc_id: String = ""
-	var suffix: String = ""
-	for id_value: String in ["ember_savant", "storm_oracle", "void_arcanist", "trapwright", "bloodstalker", "rift_poacher", "ironbreaker", "bloodbound", "forgeguard"]:
-		if node_id.begins_with(id_value):
-			asc_id = id_value
-			suffix = node_id.trim_prefix(id_value + "_")
-			break
-	var asc: Dictionary = data(asc_id)
-	if asc.is_empty():
-		return {}
-	var base_name: String = str(asc.get("name", "Ascendancy"))
-	match suffix:
-		"a":
-			return {"id": node_id, "name": base_name + " I", "stats": asc.get("stats", {}), "flags": [str(asc_id) + "_1"], "cost": 1}
-		"b":
-			return {"id": node_id, "name": base_name + " II", "stats": asc.get("stats", {}), "flags": [str(asc_id) + "_2"], "cost": 1}
-		"c":
-			return {"id": node_id, "name": base_name + " Keystone", "stats": {}, "flags": asc.get("flags", []), "cost": 2}
-		"d":
-			return {"id": node_id, "name": base_name + " Mastery", "stats": asc.get("stats", {}), "flags": [str(asc_id) + "_mastery"], "cost": 2}
-	return {}
+static func first_for_class(class_id: String) -> String:
+	var values: Array[String] = ids_for_class(class_id)
+	return "" if values.is_empty() else values[0]
+
+static func next_for_class(class_id: String, current_id: String) -> String:
+	var values: Array[String] = ids_for_class(class_id)
+	if values.is_empty():
+		return ""
+	var index: int = values.find(current_id)
+	if index < 0:
+		return values[0]
+	return values[(index + 1) % values.size()]
+
+static func earned_points_for_level(level: int) -> int:
+	var points: int = 0
+	for threshold: int in ASCENDANCY_POINT_LEVELS:
+		if level >= threshold:
+			points += 1
+	return points
+
+static func nodes_for(ascendancy_id: String) -> Array[String]:
+	var raw: Array = data(ascendancy_id).get("nodes", [])
+	var result: Array[String] = []
+	for value: Variant in raw:
+		result.append(str(value))
+	return result
