@@ -117,6 +117,20 @@ var pending_start_activity: Dictionary = {}
 var inventory_cursor: int = 0
 var stash_cursor: int = 0
 var stash_tab_mode: String = "items"
+var stash_tabs: Dictionary = {}
+var stash_purchased_tabs: Dictionary = {
+	"general": true,
+	"maps": true,
+	"currency": true,
+	"materials": true,
+	"gems": false,
+	"uniques": false,
+	"dump": false
+}
+var stash_affinities_enabled: bool = true
+var stash_tab_cursor: int = 0
+var stash_upgrade_cost_paid: int = 0
+var stash_economy_version: int = 1
 var loot_pet_enabled: bool = true
 var loot_pet_radius: float = 210.0
 var loot_pet_collect_radius: float = 54.0
@@ -175,6 +189,7 @@ func ensure_defaults() -> void:
 	stash_cursor = clamp(stash_cursor, 0, max(0, stash.size() - 1))
 	equipment_cursor = clamp(equipment_cursor, 0, 9)
 	RVMapSystem.ensure_defaults(self)
+	RVStashSystem.ensure_defaults(self)
 	map_cursor = clamp(map_cursor, 0, max(0, map_stash.size() - 1))
 	skill_gem_cursor = clamp(skill_gem_cursor, 0, max(0, skill_gem_inventory.size() - 1))
 	support_gem_cursor = clamp(support_gem_cursor, 0, max(0, support_gem_inventory.size() - 1))
@@ -412,6 +427,13 @@ func to_save_dict() -> Dictionary:
 		"deaths": deaths,
 		"inventory_cursor": inventory_cursor,
 		"stash_cursor": stash_cursor,
+		"stash_tab_mode": stash_tab_mode,
+		"stash_tabs": stash_tabs,
+		"stash_purchased_tabs": stash_purchased_tabs,
+		"stash_affinities_enabled": stash_affinities_enabled,
+		"stash_tab_cursor": stash_tab_cursor,
+		"stash_upgrade_cost_paid": stash_upgrade_cost_paid,
+		"stash_economy_version": stash_economy_version,
 		"equipment_cursor": equipment_cursor
 	}
 
@@ -503,6 +525,13 @@ func apply_save_dict(data: Dictionary) -> void:
 	deaths = int(data.get("deaths", deaths))
 	inventory_cursor = int(data.get("inventory_cursor", inventory_cursor))
 	stash_cursor = int(data.get("stash_cursor", stash_cursor))
+	stash_tab_mode = str(data.get("stash_tab_mode", stash_tab_mode))
+	stash_tabs = Dictionary(data.get("stash_tabs", stash_tabs))
+	stash_purchased_tabs = Dictionary(data.get("stash_purchased_tabs", stash_purchased_tabs))
+	stash_affinities_enabled = bool(data.get("stash_affinities_enabled", stash_affinities_enabled))
+	stash_tab_cursor = int(data.get("stash_tab_cursor", stash_tab_cursor))
+	stash_upgrade_cost_paid = int(data.get("stash_upgrade_cost_paid", stash_upgrade_cost_paid))
+	stash_economy_version = int(data.get("stash_economy_version", stash_economy_version))
 	equipment_cursor = int(data.get("equipment_cursor", equipment_cursor))
 	ensure_defaults()
 	recompute_stats()
