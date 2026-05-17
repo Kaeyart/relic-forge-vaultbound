@@ -208,6 +208,8 @@ static func prepare_selected_map_activity(state: RVGameState) -> void:
 		"rooms": int(map_item.get("rooms", 1)),
 		"threat": float(map_item.get("threat", 1.0)),
 		"map": map_item,
+		"layout_archetype": RVMapLayoutSystem.archetype_for_map(map_item),
+		"layout_label": RVMapLayoutSystem.layout_label(RVMapLayoutSystem.archetype_for_map(map_item)),
 	}
 	state.panel_mode = ""
 	state.add_notice("Opening map: " + str(map_item.get("name", "Map")))

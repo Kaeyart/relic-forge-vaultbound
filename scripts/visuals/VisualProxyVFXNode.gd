@@ -146,3 +146,43 @@ func _draw_hit_spark(t: float) -> void:
 
 func _draw_generic_impact(t: float) -> void:
 	draw_arc(Vector2.ZERO, radius * (0.20 + t * 0.60), 0.0, TAU, 24, Color(color_a.r, color_a.g, color_a.b, (1.0 - t) * color_a.a), 2.0)
+
+
+func _rv_find_combat_arena() -> Node:
+	var current: Node = self
+	while current != null:
+		if current.has_method("resolve_projectile_segment"):
+			return current
+		current = current.get_parent()
+	return null
+
+func _rv_apply_projectile_collision(previous_pos: Vector2, current_pos: Vector2, delta: float) -> bool:
+	var arena: Node = _rv_find_combat_arena()
+	if arena == null or not arena.has_method("resolve_projectile_segment"):
+		return false
+	var velocity_value: Variant = get("velocity")
+	var velocity: Vector2 = Vector2.ZERO
+	if typeof(velocity_value) == TYPE_VECTOR2:
+		velocity = Vector2(velocity_value)
+	elif delta > 0.0:
+		velocity = (current_pos - previous_pos) / delta
+	var bounces: int = 0
+	for key: String in ["bounces_remaining", "remaining_bounces", "bounce_count", "bounces"]:
+		var bounce_value: Variant = get(key)
+		if typeof(bounce_value) == TYPE_INT or typeof(bounce_value) == TYPE_FLOAT:
+			bounces = int(bounce_value)
+			break
+	var result: Dictionary = Dictionary(arena.call("resolve_projectile_segment", previous_pos, current_pos, velocity, 5.0, bounces))
+	if not bool(result.get("hit", false)):
+		return false
+	if bool(result.get("expired", false)):
+		queue_free()
+		return true
+	global_position = Vector2(result.get("position", current_pos))
+	if get("velocity") != null:
+		set("velocity", Vector2(result.get("velocity", velocity)))
+	for key: String in ["bounces_remaining", "remaining_bounces", "bounce_count", "bounces"]:
+		if get(key) != null:
+			set(key, int(result.get("bounces_remaining", 0)))
+			break
+	return true

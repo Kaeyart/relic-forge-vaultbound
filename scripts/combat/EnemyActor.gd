@@ -455,3 +455,28 @@ func _draw_status_rings() -> void:
 		ring_radius += 3.0
 	if has_status("shock"):
 		draw_arc(Vector2.ZERO, ring_radius, 0.0, TAU, 24, Color(0.75, 0.95, 1.0, 0.72), 2.0)
+
+
+func _rv_find_combat_arena() -> Node:
+	var current: Node = self
+	while current != null:
+		if current.has_method("has_line_of_sight") or current.has_method("constrain_actor_position"):
+			return current
+		current = current.get_parent()
+	return null
+
+func _rv_has_line_of_sight_to(target_pos: Vector2) -> bool:
+	var arena: Node = _rv_find_combat_arena()
+	if arena == null or not arena.has_method("has_line_of_sight"):
+		return true
+	return bool(arena.call("has_line_of_sight", global_position, target_pos, 12.0))
+
+func _rv_constrain_position(pos: Vector2) -> Vector2:
+	var arena: Node = _rv_find_combat_arena()
+	if arena == null or not arena.has_method("constrain_actor_position"):
+		return pos
+	var radius: float = 16.0
+	var radius_value: Variant = get("radius")
+	if typeof(radius_value) == TYPE_FLOAT or typeof(radius_value) == TYPE_INT:
+		radius = max(10.0, float(radius_value))
+	return Vector2(arena.call("constrain_actor_position", pos, radius))

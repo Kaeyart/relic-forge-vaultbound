@@ -577,6 +577,8 @@ func _detail_bbcode(state: RVGameState) -> String:
 	return text
 
 func _item_detail_bbcode(item: Dictionary, header: String, source_line: String) -> String:
+	if RVItemizationSystem.is_equipment_item(item):
+		return RVItemizationSystem.item_detail_bbcode(item, header, source_line)
 	if RVMapItemSystem.is_map_item(item):
 		return RVMapItemSystem.map_detail_bbcode(item, current_state, header, source_line)
 	var rarity: String = str(item.get("rarity", "Normal"))

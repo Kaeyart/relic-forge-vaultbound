@@ -1,184 +1,142 @@
 class_name RVItemRollSystem
 extends RefCounted
 
-# Patch 037-041: coherent item roller with archetype-biased affix clustering.
+static func make_starter_weapon() -> Dictionary:
+	var base: Dictionary = RVItemBaseDB.get_base("ember_wand")
+	var prefix_def: Dictionary = RVItemAffixDB.affix_def_by_id("spell_damage")
+	var prefixes: Array = [RVItemAffixDB.materialize_affix(prefix_def, "prefix", 5, 1)]
+	return build_item_from_parts(base, "Magic", 1, prefixes, [], 32, {}, [], [], "A starter wand with enough potential to teach crafting.")
 
-static func generate_drop(state: RVGameState, depth: int) -> Dictionary:
-	var item_level: int = max(1, int(state.level) + max(0, depth - 1))
-	return roll_item(state.rng, item_level)
+static func craft_basic_item(state: Object) -> Dictionary:
+	var rng: RandomNumberGenerator = _rng_from_state(state)
+	var item_level: int = max(1, int(state.get("level")) if state != null else 1)
+	return roll_item(rng, item_level, "", "Rare")
 
-static func craft_basic_item(state: RVGameState) -> Dictionary:
-	var item_level: int = max(1, int(state.level))
-	var base: Dictionary = RVItemBaseDB.random_base_for_level(state.rng, item_level)
-	return roll_item_from_base(state.rng, item_level, base, "Crafted")
-
-static func roll_item(rng: RandomNumberGenerator, item_level: int, forced_slot: String = "", forced_rarity: String = "") -> Dictionary:
-	var rarity: String = forced_rarity if forced_rarity != "" else roll_rarity(rng, item_level)
+static func generate_drop(state: Object, depth: int) -> Dictionary:
+	var rng: RandomNumberGenerator = _rng_from_state(state)
+	var item_level: int = _drop_item_level(state, depth)
+	var rarity: String = _roll_rarity(rng, item_level, state)
 	if rarity == "Unique":
-		var unique_template: Dictionary = RVItemAffixDB.random_unique_for_level(rng, item_level)
-		if not unique_template.is_empty():
-			return build_unique(unique_template, item_level)
+		var unique_item: Dictionary = _roll_unique(rng, item_level)
+		if not unique_item.is_empty(): return unique_item
 		rarity = "Rare"
-	var base: Dictionary = RVItemBaseDB.random_base_for_slot(rng, item_level, forced_slot) if forced_slot != "" else RVItemBaseDB.random_base_for_level(rng, item_level)
-	return roll_item_from_base(rng, item_level, base, rarity)
+	return roll_item(rng, item_level, "", rarity, _reward_bias_tags(state))
 
-static func roll_item_from_base(rng: RandomNumberGenerator, item_level: int, base: Dictionary, rarity: String) -> Dictionary:
-	if rarity == "Unique":
-		var unique_template: Dictionary = RVItemAffixDB.random_unique_for_level(rng, item_level)
-		if not unique_template.is_empty():
-			return build_unique(unique_template, item_level)
-		rarity = "Rare"
-	var counts: Dictionary = affix_counts_for_rarity(rng, rarity)
-	var preferred_tags: Array = _preferred_tags_for_base(rng, base)
+static func generate_test_item(rng: RandomNumberGenerator, item_level: int, slot: String = "", rarity: String = "") -> Dictionary:
+	return roll_item(rng, max(1, item_level), _normalize_slot(slot), rarity)
+
+static func roll_item(rng: RandomNumberGenerator, item_level: int, slot: String = "", rarity: String = "", required_tags: Array = []) -> Dictionary:
+	var base: Dictionary = RVItemBaseDB.random_base_for_level(rng, max(1, item_level), _normalize_slot(slot), required_tags)
+	var chosen_rarity: String = rarity if rarity != "" else _roll_rarity(rng, item_level, null)
+	if chosen_rarity == "Unique":
+		var unique_item: Dictionary = _roll_unique(rng, item_level, str(base.get("slot", "")))
+		if not unique_item.is_empty(): return unique_item
+		chosen_rarity = "Rare"
 	var prefixes: Array = []
 	var suffixes: Array = []
-	var used_families: Array[String] = []
-	for i: int in range(int(counts.get("prefix", 0))):
-		var prefix: Dictionary = RVItemAffixDB.roll_affix(rng, "prefix", base, item_level, used_families, preferred_tags)
-		if prefix.is_empty():
-			continue
-		prefixes.append(prefix)
-		var family: String = str(prefix.get("family", ""))
-		if family != "" and not used_families.has(family):
-			used_families.append(family)
-	for j: int in range(int(counts.get("suffix", 0))):
-		var suffix: Dictionary = RVItemAffixDB.roll_affix(rng, "suffix", base, item_level, used_families, preferred_tags)
-		if suffix.is_empty():
-			continue
-		suffixes.append(suffix)
-		var family2: String = str(suffix.get("family", ""))
-		if family2 != "" and not used_families.has(family2):
-			used_families.append(family2)
-	var potential: int = _forge_potential_for(rarity, item_level, rng)
-	return build_item_from_parts(base, rarity, item_level, prefixes, suffixes, potential, {}, [], [], "A rough item with craftable potential.")
+	var existing_groups: Array[String] = []
+	for i: int in range(_roll_affix_count(rng, chosen_rarity)):
+		var affix: Dictionary = RVItemAffixDB.random_affix(rng, "prefix", str(base.get("slot", "")), item_level, existing_groups, [])
+		if not affix.is_empty():
+			prefixes.append(affix)
+			existing_groups.append(str(affix.get("group", affix.get("id", ""))))
+	for i2: int in range(_roll_affix_count(rng, chosen_rarity)):
+		var suffix: Dictionary = RVItemAffixDB.random_affix(rng, "suffix", str(base.get("slot", "")), item_level, existing_groups, [])
+		if not suffix.is_empty():
+			suffixes.append(suffix)
+			existing_groups.append(str(suffix.get("group", suffix.get("id", ""))))
+	return build_item_from_parts(base, chosen_rarity, item_level, prefixes, suffixes, _roll_forge_potential(rng, chosen_rarity, item_level, prefixes.size() + suffixes.size()))
 
-static func build_unique(template: Dictionary, item_level: int) -> Dictionary:
-	var base: Dictionary = RVItemBaseDB.get_base(str(template.get("base_id", "rusted_sword")))
-	var stats: Dictionary = Dictionary(template.get("stats", {})).duplicate(true)
-	var build_flags: Array = Array(template.get("build_flags", [])).duplicate(true)
-	var unique_effects: Array = Array(template.get("unique_effects", [])).duplicate(true)
-	return build_item_from_parts(base, "Unique", item_level, [], [], 0, stats, build_flags, unique_effects, str(template.get("description", "A unique item.")), str(template.get("name", "Unique Item")), Array(template.get("tags", [])).duplicate(true))
-
-static func build_item_from_parts(base: Dictionary, rarity: String, item_level: int, prefixes: Array, suffixes: Array, forge_potential: int, extra_stats: Dictionary = {}, build_flags: Array = [], unique_effects: Array = [], description: String = "", forced_name: String = "", extra_tags: Array = []) -> Dictionary:
+static func build_item_from_parts(base: Dictionary, rarity: String, item_level: int, prefixes: Array, suffixes: Array, forge_potential: int, extra_stats: Dictionary = {}, unique_effects: Array = [], build_flags: Array = [], description: String = "") -> Dictionary:
 	var base_name: String = str(base.get("name", "Item"))
-	var item_name: String = forced_name if forced_name != "" else RVItemAffixDB.item_name_for(base_name, rarity, prefixes, suffixes)
-	var implicit_stats: Dictionary = Dictionary(base.get("implicit_stats", {})).duplicate(true)
-	var total_stats: Dictionary = RVItemAffixDB.aggregate_stats(implicit_stats, prefixes, suffixes, extra_stats)
-	var affix_names: Array[String] = RVItemAffixDB.affix_names(prefixes, suffixes)
-	var tags: Array = Array(base.get("tags", [])).duplicate(true)
-	for affix_value: Variant in prefixes + suffixes:
-		if typeof(affix_value) != TYPE_DICTIONARY:
-			continue
-		for tag_value: Variant in Dictionary(affix_value).get("tags", []):
-			var tag: String = str(tag_value)
-			if tag != "" and not tags.has(tag):
-				tags.append(tag)
-	for tag_value2: Variant in extra_tags:
-		var tag2: String = str(tag_value2)
-		if tag2 != "" and not tags.has(tag2):
-			tags.append(tag2)
-	var dimensions: Array = Array(base.get("dimensions", [1, 1])).duplicate(true)
-	return {
-		"name": item_name,
-		"slot": str(base.get("slot", "relic")),
-		"base_id": str(base.get("id", "")),
-		"base_name": base_name,
-		"base_type": str(base.get("base_type", base_name)),
-		"item_class": str(base.get("item_class", "Item")),
-		"armor_class": str(base.get("armor_class", "")),
-		"item_level": item_level,
-		"rarity": rarity,
-		"tags": tags,
-		"implicit_stats": implicit_stats,
-		"prefixes": prefixes.duplicate(true),
-		"suffixes": suffixes.duplicate(true),
-		"stats": total_stats.duplicate(true),
-		"total_stats": total_stats.duplicate(true),
-		"affixes": affix_names,
-		"forge_potential": forge_potential,
-		"max_forge_potential": max(forge_potential, int(forge_potential)),
-		"build_flags": build_flags.duplicate(true),
-		"flags": build_flags.duplicate(true),
-		"unique_effects": unique_effects.duplicate(true),
-		"description": description,
-		"dimensions": dimensions,
-		"inv_w": int(dimensions[0]) if dimensions.size() >= 2 else 1,
-		"inv_h": int(dimensions[1]) if dimensions.size() >= 2 else 1
-	}
+	var item: Dictionary = {"uid":"item_" + str(Time.get_ticks_msec()) + "_" + str(randi()), "item_type":"equipment", "category":"equipment", "base_id":str(base.get("base_id", "")), "base_name":base_name, "base_type":str(base.get("base_type", base_name)), "item_class":str(base.get("item_class", base.get("base_type", "Item"))), "armor_class":str(base.get("armor_class", "")), "slot":str(base.get("slot", "")), "rarity":rarity, "item_level":max(1, item_level), "required_level":max(1, min(max(1, item_level), int(base.get("min_level", 1)) + int(item_level * 0.72))), "implicit_stats":Dictionary(base.get("implicit_stats", {})).duplicate(true), "prefixes":prefixes.duplicate(true), "suffixes":suffixes.duplicate(true), "crafted_mods":[], "sealed_mods":[], "fractured_mod_uid":"", "quality":0, "corrupted":false, "influence":"", "extra_stats":extra_stats.duplicate(true), "unique_effects":unique_effects.duplicate(true), "build_flags":build_flags.duplicate(true), "flags":build_flags.duplicate(true), "forge_potential":max(0, forge_potential), "max_forge_potential":max(0, forge_potential), "tags":Array(base.get("tags", [])).duplicate(true), "dimensions":Array(base.get("dimensions", [1, 1])).duplicate(true), "description":description}
+	item["name"] = RVItemAffixDB.item_name_for(base_name, rarity, prefixes, suffixes)
+	return RVItemizationSystem.normalize_item(item)
 
 static func rebuild_item(item: Dictionary) -> Dictionary:
-	var normalized: Dictionary = item.duplicate(true)
-	var base_id: String = str(normalized.get("base_id", ""))
-	var base: Dictionary = RVItemBaseDB.get_base(base_id) if base_id != "" else {"name": normalized.get("base_name", normalized.get("name", "Item")), "slot": normalized.get("slot", "relic"), "base_type": normalized.get("base_type", "Item"), "item_class": normalized.get("item_class", "Item"), "armor_class": normalized.get("armor_class", ""), "implicit_stats": normalized.get("implicit_stats", {}), "tags": normalized.get("tags", []), "dimensions": normalized.get("dimensions", [1, 1])}
-	var rarity: String = str(normalized.get("rarity", "Normal"))
-	var item_level: int = int(normalized.get("item_level", 1))
-	var prefixes: Array = Array(normalized.get("prefixes", []))
-	var suffixes: Array = Array(normalized.get("suffixes", []))
-	var extra_stats: Dictionary = {}
-	if rarity == "Unique":
-		extra_stats = Dictionary(normalized.get("stats", normalized.get("total_stats", {}))).duplicate(true)
-	var rebuilt: Dictionary = build_item_from_parts(base, rarity, item_level, prefixes, suffixes, int(normalized.get("forge_potential", 0)), {}, Array(normalized.get("build_flags", normalized.get("flags", []))), Array(normalized.get("unique_effects", [])), str(normalized.get("description", "")), str(normalized.get("name", "")) if rarity == "Unique" else "", Array(normalized.get("extra_tags", [])))
-	for key_value: Variant in normalized.keys():
-		if not rebuilt.has(key_value):
-			rebuilt[key_value] = normalized[key_value]
-	return rebuilt
+	return RVItemizationSystem.normalize_item(item)
 
-static func roll_rarity(rng: RandomNumberGenerator, item_level: int) -> String:
+static func _roll_unique(rng: RandomNumberGenerator, item_level: int, preferred_slot: String = "") -> Dictionary:
+	var unique_template: Dictionary = RVItemAffixDB.random_unique_for_level(rng, item_level)
+	if unique_template.is_empty(): return {}
+	var base: Dictionary = RVItemBaseDB.base_item(str(unique_template.get("base_id", "relic_core")))
+	if preferred_slot != "" and str(base.get("slot", "")) != preferred_slot and rng.randf() < 0.65: return {}
+	var item: Dictionary = build_item_from_parts(base, "Unique", max(item_level, int(unique_template.get("required_level", 1))), [], [], 0, Dictionary(unique_template.get("stats", {})), Array(unique_template.get("unique_effects", [])), Array(unique_template.get("build_flags", [])), str(unique_template.get("description", "")))
+	item["unique_id"] = str(unique_template.get("id", "unique"))
+	item["name"] = str(unique_template.get("name", item.get("name", "Unique Item")))
+	item["required_level"] = int(unique_template.get("required_level", item.get("required_level", 1)))
+	return RVItemizationSystem.normalize_item(item)
+
+static func _roll_rarity(rng: RandomNumberGenerator, item_level: int, state: Object = null) -> String:
+	var unique_chance: float = 0.018 + float(item_level) * 0.00018
+	var rare_chance: float = 0.16 + min(0.16, float(item_level) * 0.002)
+	var magic_chance: float = 0.34
+	if state != null:
+		var activity: Variant = state.get("current_activity")
+		if typeof(activity) == TYPE_DICTIONARY:
+			var map_item: Dictionary = Dictionary(Dictionary(activity).get("map", {}))
+			if str(map_item.get("rarity", "Normal")) == "Rare":
+				rare_chance += 0.08
+				unique_chance += 0.008
 	var roll: float = rng.randf()
-	var unique_chance: float = 0.010 + min(0.030, float(item_level) * 0.0009)
-	if roll >= 1.0 - unique_chance:
-		return "Unique"
-	if roll >= 0.78:
-		return "Rare"
-	if roll >= 0.30:
-		return "Magic"
+	if roll < unique_chance: return "Unique"
+	if roll < unique_chance + rare_chance: return "Rare"
+	if roll < unique_chance + rare_chance + magic_chance: return "Magic"
 	return "Normal"
 
-static func affix_counts_for_rarity(rng: RandomNumberGenerator, rarity: String) -> Dictionary:
+static func _roll_affix_count(rng: RandomNumberGenerator, rarity: String) -> int:
 	match rarity:
-		"Normal":
-			return {"prefix": 0, "suffix": 0}
-		"Magic":
-			return {"prefix": 1, "suffix": 1 if rng.randf() < 0.55 else 0}
+		"Magic": return 1 if rng.randf() < 0.82 else 0
 		"Rare":
-			var total: int = rng.randi_range(3, 6)
-			var prefixes: int = rng.randi_range(1, min(3, total))
-			var suffixes: int = clamp(total - prefixes, 0, 3)
-			if suffixes == 0:
-				suffixes = 1
-				prefixes = max(1, prefixes - 1)
-			return {"prefix": prefixes, "suffix": suffixes}
-		"Crafted":
-			return {"prefix": 1, "suffix": 1}
-	return {"prefix": 0, "suffix": 0}
+			var roll: float = rng.randf()
+			if roll < 0.14: return 1
+			if roll < 0.58: return 2
+			return 3
+	return 0
 
-static func _preferred_tags_for_base(rng: RandomNumberGenerator, base: Dictionary) -> Array:
-	var tags: Array = Array(base.get("tags", []))
-	var out: Array = []
-	for tag: Variant in tags:
-		out.append(str(tag))
-	if out.has("Fire"):
-		out.append_array(["Burn", "Mana", "Projectile", "Area"])
-	elif out.has("Cold"):
-		out.append_array(["Freeze", "Control", "Mana", "Area"])
-	elif out.has("Lightning"):
-		out.append_array(["Chain", "Critical", "Proc", "Mana"])
-	elif out.has("Void"):
-		out.append_array(["Curse", "Cooldown", "Proc", "Mana"])
-	elif out.has("Trap"):
-		out.append_array(["Trap", "Cooldown", "Void", "Proc"])
-	elif out.has("Melee") or out.has("Physical"):
-		out.append_array(["Physical", "Critical", "Bleed", "Life"])
-	if rng.randf() < 0.25:
-		out.append("Defense")
-	return out
-
-static func _forge_potential_for(rarity: String, item_level: int, rng: RandomNumberGenerator) -> int:
-	var base_potential: int = 12 + int(float(item_level) * 0.45)
+static func _roll_forge_potential(rng: RandomNumberGenerator, rarity: String, item_level: int, affix_count: int) -> int:
+	if rarity == "Unique": return 0
+	var base: int = 18 + int(float(item_level) * 0.52)
 	match rarity:
-		"Normal": base_potential += 14
-		"Magic": base_potential += 8
-		"Rare": base_potential += 2
-		"Crafted": base_potential += 6
-		"Unique": return 0
-	return max(1, base_potential + rng.randi_range(-3, 6))
+		"Normal": base += 18
+		"Magic": base += 11
+		"Rare": base += 4
+	base -= affix_count * 2
+	base += rng.randi_range(-5, 9)
+	return clampi(base, 6, 78)
+
+static func _drop_item_level(state: Object, depth: int) -> int:
+	var level: int = max(1, depth)
+	if state != null:
+		level = max(level, int(state.get("level")))
+		var activity: Variant = state.get("current_activity")
+		if typeof(activity) == TYPE_DICTIONARY:
+			var map_item: Dictionary = Dictionary(Dictionary(activity).get("map", {}))
+			level = max(level, int(map_item.get("map_level", map_item.get("item_level", level))))
+	return max(1, level)
+
+static func _reward_bias_tags(state: Object) -> Array:
+	if state == null: return []
+	var activity: Variant = state.get("current_activity")
+	if typeof(activity) != TYPE_DICTIONARY: return []
+	var map_item: Dictionary = Dictionary(Dictionary(activity).get("map", {}))
+	var area: String = str(map_item.get("area_name", map_item.get("id", ""))).to_lower()
+	if area.contains("forge") or area.contains("ember"): return ["fire"]
+	if area.contains("catacomb") or area.contains("ossuary"): return ["void"]
+	if area.contains("aqueduct") or area.contains("storm"): return ["lightning"]
+	return []
+
+static func _rng_from_state(state: Object) -> RandomNumberGenerator:
+	if state != null:
+		var value: Variant = state.get("rng")
+		if value is RandomNumberGenerator: return value as RandomNumberGenerator
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.randomize()
+	return rng
+
+static func _normalize_slot(slot: String) -> String:
+	match slot:
+		"ring1", "ring2": return "ring"
+		"helmet": return "head"
+		"armor": return "chest"
+		_: return slot

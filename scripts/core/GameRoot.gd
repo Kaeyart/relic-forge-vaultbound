@@ -10,6 +10,7 @@ extends Node2D
 var state: RVGameState = RVGameState.new()
 var autosave_timer: float = 0.0
 var dev_tools_panel: Node = null
+var world_camera: Camera2D = null
 var loot_pickup_pet: Node2D = null
 
 func _ready() -> void:
@@ -25,6 +26,7 @@ func _ready() -> void:
 	player.sync_from_state(state)
 	set_process(true)
 	set_process_unhandled_input(true)
+	_install_world_camera()
 	_install_dev_tools()
 	_install_loot_pickup_pet()
 
@@ -43,6 +45,10 @@ func _process(delta: float) -> void:
 		hub.update_focus(state)
 	else:
 		combat.update_combat(state, player, delta)
+		if combat.has_method("enforce_layout_entity_collisions"):
+			combat.call("enforce_layout_entity_collisions")
+		if combat.has_method("enforce_layout_projectile_collisions"):
+			combat.call("enforce_layout_projectile_collisions", delta)
 		RVLootPickupAssistSystem.update(state, combat, player, delta)
 		if loot_pickup_pet != null and loot_pickup_pet.has_method("sync_from_state"):
 			loot_pickup_pet.call("sync_from_state", state, player)
@@ -57,6 +63,7 @@ func _process(delta: float) -> void:
 
 	hud.update_from_state(state)
 	panels.update_from_state(state)
+	_update_world_camera(delta)
 	_consume_pending_map_activity()
 
 func _update_player(delta: float) -> void:
@@ -71,10 +78,11 @@ func _update_player(delta: float) -> void:
 	if move.length() > 0.01:
 		move = move.normalized()
 	state.player_pos += move * state.player_speed * delta
-	state.player_pos.x = clamp(state.player_pos.x, 80.0, 1200.0)
-	state.player_pos.y = clamp(state.player_pos.y, 95.0, 620.0)
 	if state.mode == "combat" and combat != null and combat.has_method("constrain_player_position"):
 		state.player_pos = combat.constrain_player_position(state.player_pos)
+	else:
+		state.player_pos.x = clamp(state.player_pos.x, 80.0, 1200.0)
+		state.player_pos.y = clamp(state.player_pos.y, 95.0, 620.0)
 	state.invuln = max(0.0, state.invuln - delta)
 	state.player_mana = min(state.max_mana, state.player_mana + 14.0 * delta)
 	player.sync_from_state(state)
@@ -233,3 +241,39 @@ func dev_return_to_hub(message: String = "Dev: returned to hub") -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		RVSaveSystem.save(state)
+
+
+func _install_world_camera() -> void:
+	if world_camera != null and is_instance_valid(world_camera):
+		return
+	world_camera = Camera2D.new()
+	world_camera.name = "WorldCombatCamera"
+	world_camera.enabled = false
+	world_camera.position_smoothing_enabled = true
+	world_camera.position_smoothing_speed = 9.0
+	world_camera.zoom = Vector2.ONE
+	add_child(world_camera)
+
+func _update_world_camera(delta: float) -> void:
+	if world_camera == null or not is_instance_valid(world_camera):
+		_install_world_camera()
+	if world_camera == null:
+		return
+	if state.mode != "combat":
+		world_camera.enabled = false
+		return
+	world_camera.enabled = true
+	world_camera.make_current()
+	var target: Vector2 = state.player_pos
+	if world_camera.global_position == Vector2.ZERO:
+		world_camera.global_position = target
+	else:
+		world_camera.global_position = world_camera.global_position.lerp(target, clampf(delta * 10.0, 0.0, 1.0))
+	if combat != null and combat.has_method("get_combat_bounds"):
+		var bounds_value: Variant = combat.call("get_combat_bounds")
+		if typeof(bounds_value) == TYPE_RECT2:
+			var bounds: Rect2 = bounds_value
+			world_camera.limit_left = int(floor(bounds.position.x - 96.0))
+			world_camera.limit_top = int(floor(bounds.position.y - 96.0))
+			world_camera.limit_right = int(ceil(bounds.position.x + bounds.size.x + 96.0))
+			world_camera.limit_bottom = int(ceil(bounds.position.y + bounds.size.y + 96.0))

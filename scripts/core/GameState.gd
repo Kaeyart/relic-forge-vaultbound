@@ -1,7 +1,7 @@
 class_name RVGameState
 extends RefCounted
 
-const SAVE_VERSION: int = 74
+const SAVE_VERSION: int = 80
 
 var mode: String = "hub"
 var panel_mode: String = ""

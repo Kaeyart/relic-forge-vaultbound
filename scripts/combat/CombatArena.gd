@@ -1,6 +1,8 @@
 class_name RVCombatArena
 extends Node2D
 
+const CombatGeometrySystemScript := preload("res://scripts/systems/CombatGeometrySystem.gd")
+
 const RVLootDropActorScript := preload("res://scripts/combat/LootDropActor.gd")
 const RVFloatingCombatTextSystemScript := preload("res://scripts/systems/FloatingCombatTextSystem.gd")
 const RVLootDropSystemScript := preload("res://scripts/systems/LootDropSystem.gd")
@@ -37,6 +39,7 @@ var map_layout: Dictionary = {}
 var encounter_plan: Dictionary = {}
 var map_visual_root: Node2D = null
 var vfx_root: Node2D = null
+var runtime_map_camera: Camera2D = null
 var enemy_zones: Array[Dictionary] = []
 var map_pack_total: int = 0
 var map_pack_cleared: int = 0
@@ -70,6 +73,9 @@ func start_activity(state: RVGameState, new_activity: Dictionary) -> void:
 	spawn_room(state)
 
 func stop_activity() -> void:
+	if runtime_map_camera != null and is_instance_valid(runtime_map_camera):
+		runtime_map_camera.clear_current()
+		runtime_map_camera.enabled = false
 	active = false
 	_clear_children(enemies_root)
 	_clear_children(projectiles_root)
@@ -151,6 +157,8 @@ func _spawn_map_room(state: RVGameState) -> void:
 	_set_static_room_visible(false)
 	_set_authored_obstacles_visible(false)
 	state.player_pos = Vector2(map_layout.get("start_pos", Vector2(640.0, 594.0)))
+	_ensure_runtime_map_camera()
+	_update_runtime_map_camera(state.player_pos)
 	if reward_chest != null:
 		reward_chest.global_position = Vector2(map_layout.get("reward_pos", Vector2(640.0, 178.0)))
 	if exit_portal != null:
@@ -300,14 +308,6 @@ func cast_selected_skill(state: RVGameState, aim: Vector2) -> void:
 				for i: int in range(min(extra_projectiles, angles.size())):
 					var side_dir: Vector2 = direction.rotated(float(angles[i]))
 					_spawn_projectile(state.player_pos + side_dir * 24.0, side_dir * speed, damage * 0.58, radius, tags, false)
-
-func constrain_player_position(pos: Vector2) -> Vector2:
-	if not active:
-		return pos
-	if str(activity.get("kind", "")) != "map" or map_layout.is_empty():
-		return pos
-	var constrained: Vector2 = _nearest_walkable_position(pos)
-	return _push_from_map_obstacles(constrained, 18.0)
 
 func _update_enemy_zones(state: RVGameState, player: RVPlayerActor, delta: float) -> void:
 	for i: int in range(enemy_zones.size() - 1, -1, -1):
@@ -932,3 +932,172 @@ func _rf_hide_map_reward_chest_if_any() -> void:
 	for child: Node in get_children():
 		if child.name.to_lower().find("chest") >= 0 and child is CanvasItem:
 			(child as CanvasItem).visible = false
+
+
+func _ensure_runtime_map_camera() -> void:
+	if runtime_map_camera == null or not is_instance_valid(runtime_map_camera):
+		runtime_map_camera = Camera2D.new()
+		runtime_map_camera.name = "RuntimeMapCamera"
+		runtime_map_camera.position_smoothing_enabled = true
+		runtime_map_camera.position_smoothing_speed = 8.0
+		add_child(runtime_map_camera)
+	if not map_layout.is_empty() and map_layout.has("bounds"):
+		var bounds_value: Variant = map_layout.get("bounds")
+		if typeof(bounds_value) == TYPE_RECT2:
+			var bounds: Rect2 = bounds_value
+			runtime_map_camera.limit_left = int(floor(bounds.position.x - 140.0))
+			runtime_map_camera.limit_top = int(floor(bounds.position.y - 110.0))
+			runtime_map_camera.limit_right = int(ceil(bounds.position.x + bounds.size.x + 140.0))
+			runtime_map_camera.limit_bottom = int(ceil(bounds.position.y + bounds.size.y + 110.0))
+	runtime_map_camera.enabled = true
+	runtime_map_camera.make_current()
+
+func _update_runtime_map_camera(target: Vector2) -> void:
+	if runtime_map_camera == null or not is_instance_valid(runtime_map_camera):
+		return
+	if str(activity.get("kind", "")) != "map":
+		return
+	runtime_map_camera.global_position = target
+
+func get_current_map_layout() -> Dictionary:
+	var value: Variant = get("map_layout")
+	if typeof(value) == TYPE_DICTIONARY:
+		return Dictionary(value)
+	return {}
+
+func get_combat_bounds() -> Rect2:
+	return RVCombatGeometrySystem.layout_bounds(get_current_map_layout())
+
+func constrain_player_position(pos: Vector2) -> Vector2:
+	return RVCombatGeometrySystem.constrain_point(get_current_map_layout(), pos, 18.0)
+
+func constrain_actor_position(pos: Vector2, radius: float = 16.0) -> Vector2:
+	return RVCombatGeometrySystem.constrain_point(get_current_map_layout(), pos, radius)
+
+func has_line_of_sight(from_pos: Vector2, to_pos: Vector2, padding: float = 10.0) -> bool:
+	return RVCombatGeometrySystem.has_line_of_sight(get_current_map_layout(), from_pos, to_pos, padding)
+
+func resolve_projectile_segment(previous_pos: Vector2, current_pos: Vector2, velocity: Vector2, radius: float = 5.0, bounces_remaining: int = 0) -> Dictionary:
+	return RVCombatGeometrySystem.resolve_projectile_segment(get_current_map_layout(), previous_pos, current_pos, velocity, radius, bounces_remaining)
+
+func enforce_layout_entity_collisions() -> void:
+	var layout: Dictionary = get_current_map_layout()
+	if layout.is_empty():
+		return
+	var enemies: Array[Node2D] = []
+	_collect_layout_enemy_nodes(self, enemies)
+	for enemy: Node2D in enemies:
+		if enemy == null or not is_instance_valid(enemy):
+			continue
+		var radius: float = 16.0
+		var radius_value: Variant = enemy.get("radius")
+		if typeof(radius_value) == TYPE_FLOAT or typeof(radius_value) == TYPE_INT:
+			radius = max(10.0, float(radius_value))
+		enemy.global_position = RVCombatGeometrySystem.constrain_point(layout, enemy.global_position, radius)
+
+func enforce_layout_projectile_collisions(delta: float) -> void:
+	var layout: Dictionary = get_current_map_layout()
+	if layout.is_empty():
+		return
+	var projectiles: Array[Node2D] = []
+	_collect_layout_projectile_nodes(self, projectiles)
+	for projectile: Node2D in projectiles:
+		if projectile == null or not is_instance_valid(projectile):
+			continue
+		var current_pos: Vector2 = projectile.global_position
+		var previous_pos: Vector2 = current_pos
+		if projectile.has_meta("rv_prev_projectile_pos"):
+			previous_pos = Vector2(projectile.get_meta("rv_prev_projectile_pos"))
+		else:
+			previous_pos = current_pos - _projectile_velocity(projectile) * max(delta, 0.001)
+		var velocity: Vector2 = _projectile_velocity(projectile)
+		var radius: float = _projectile_radius(projectile)
+		var bounces: int = _projectile_bounces(projectile)
+		var result: Dictionary = RVCombatGeometrySystem.resolve_projectile_segment(layout, previous_pos, current_pos, velocity, radius, bounces)
+		if bool(result.get("hit", false)):
+			if bool(result.get("expired", false)):
+				if projectile.has_method("expire"):
+					projectile.call("expire")
+				else:
+					projectile.queue_free()
+			else:
+				projectile.global_position = Vector2(result.get("position", current_pos))
+				_set_projectile_velocity(projectile, Vector2(result.get("velocity", velocity)))
+				_set_projectile_bounces(projectile, int(result.get("bounces_remaining", max(0, bounces - 1))))
+		if is_instance_valid(projectile):
+			projectile.set_meta("rv_prev_projectile_pos", projectile.global_position)
+
+func _collect_layout_enemy_nodes(root: Node, out: Array[Node2D]) -> void:
+	for child: Node in root.get_children():
+		if child is Node2D:
+			var node2d: Node2D = child as Node2D
+			if _looks_like_enemy_node(node2d):
+				out.append(node2d)
+		_collect_layout_enemy_nodes(child, out)
+
+func _looks_like_enemy_node(node: Node) -> bool:
+	var lower_name: String = node.name.to_lower()
+	if lower_name.contains("enemy") or lower_name.contains("grunt") or lower_name.contains("wretch") or lower_name.contains("imp") or lower_name.contains("boss"):
+		return true
+	var script: Script = node.get_script() as Script
+	if script != null and script.resource_path.to_lower().ends_with("enemyactor.gd"):
+		return true
+	return node.has_method("take_damage") and (node.has_method("update_actor") or node.has_method("update_enemy") or node.has_method("update_combat"))
+
+func _collect_layout_projectile_nodes(root: Node, out: Array[Node2D]) -> void:
+	for child: Node in root.get_children():
+		if child is Node2D:
+			var node2d: Node2D = child as Node2D
+			if _looks_like_projectile_node(node2d):
+				out.append(node2d)
+		_collect_layout_projectile_nodes(child, out)
+
+func _looks_like_projectile_node(node: Node) -> bool:
+	var lower_name: String = node.name.to_lower()
+	if lower_name.contains("projectile") or lower_name.contains("bolt") or lower_name.contains("missile"):
+		return true
+	var script: Script = node.get_script() as Script
+	if script != null:
+		var path: String = script.resource_path.to_lower()
+		if path.contains("projectile") or path.contains("visualproxyvfxnode"):
+			return true
+	var velocity_value: Variant = node.get("velocity")
+	return typeof(velocity_value) == TYPE_VECTOR2 and lower_name.contains("vfx")
+
+func _projectile_velocity(node: Node) -> Vector2:
+	var velocity_value: Variant = node.get("velocity")
+	if typeof(velocity_value) == TYPE_VECTOR2:
+		return Vector2(velocity_value)
+	var direction_value: Variant = node.get("direction")
+	var speed_value: Variant = node.get("speed")
+	if typeof(direction_value) == TYPE_VECTOR2 and (typeof(speed_value) == TYPE_FLOAT or typeof(speed_value) == TYPE_INT):
+		return Vector2(direction_value).normalized() * float(speed_value)
+	return Vector2.ZERO
+
+func _set_projectile_velocity(node: Node, velocity: Vector2) -> void:
+	if node.get("velocity") != null:
+		node.set("velocity", velocity)
+	if node.get("direction") != null and velocity.length_squared() > 0.001:
+		node.set("direction", velocity.normalized())
+	if node.get("speed") != null:
+		node.set("speed", velocity.length())
+
+func _projectile_radius(node: Node) -> float:
+	for key: String in ["collision_radius", "radius", "hit_radius"]:
+		var value: Variant = node.get(key)
+		if typeof(value) == TYPE_FLOAT or typeof(value) == TYPE_INT:
+			return max(2.0, float(value))
+	return 5.0
+
+func _projectile_bounces(node: Node) -> int:
+	for key: String in ["bounces_remaining", "remaining_bounces", "bounce_count", "bounces"]:
+		var value: Variant = node.get(key)
+		if typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT:
+			return int(value)
+	return 0
+
+func _set_projectile_bounces(node: Node, bounces: int) -> void:
+	for key: String in ["bounces_remaining", "remaining_bounces", "bounce_count", "bounces"]:
+		if node.get(key) != null:
+			node.set(key, bounces)
+			return
