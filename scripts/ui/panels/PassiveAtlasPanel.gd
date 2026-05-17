@@ -2,7 +2,6 @@ class_name RVPassiveAtlasPanel
 extends RVUIPanelBase
 
 @onready var content_label: Label = get_node_or_null("%ContentLabel") as Label
-@onready var title_label: Label = get_node_or_null("%TitleLabel") as Label
 
 func update_from_state(state: RVGameState) -> void:
 	if content_label == null:

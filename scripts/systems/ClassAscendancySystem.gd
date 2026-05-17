@@ -25,7 +25,7 @@ static func ensure_defaults(state: Object) -> void:
 	state.set("passive_atlas_allocated", allocated)
 	state.set("ascendancy_points", available_ascendancy_points(state))
 
-static func class_name(state: Object) -> String:
+static func class_display_name(state: Object) -> String:
 	return RVClassDB.name_for(str(state.get("character_class_id")))
 
 static func ascendancy_name(state: Object) -> String:
@@ -56,7 +56,7 @@ static func lock_class(state: Object) -> bool:
 	state.set("character_class_locked", true)
 	ensure_defaults(state)
 	if state.has_method("add_notice"):
-		state.call("add_notice", "Class chosen: " + class_name(state))
+		state.call("add_notice", "Class chosen: " + class_display_name(state))
 	return true
 
 static func earned_ascendancy_points(state: Object) -> int:
@@ -209,7 +209,7 @@ static func panel_text(state: Object) -> String:
 	ensure_defaults(state)
 	var text: String = "CLASS / PASSIVE ATLAS\n"
 	text += "Character: " + str(state.get("character_name")) + "  Slot: " + str(state.get("character_slot_id")) + "\n"
-	text += "Class: " + class_name(state) + ("  LOCKED" if bool(state.get("character_class_locked")) else "  NOT LOCKED") + "\n"
+	text += "Class: " + class_display_name(state) + ("  LOCKED" if bool(state.get("character_class_locked")) else "  NOT LOCKED") + "\n"
 	text += "Ascendancy: " + ascendancy_name(state) + "\n"
 	text += "Passive Points: " + str(int(state.get("mastery_points"))) + "  Refund: " + str(int(state.get("refund_points"))) + "\n"
 	text += "Ascendancy Points: " + str(available_ascendancy_points(state)) + " / " + str(earned_ascendancy_points(state)) + " earned at Lv20/30/40/50\n\n"
