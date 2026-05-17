@@ -234,7 +234,7 @@ func _rebuild_runtime_items(state: RVGameState) -> void:
 	var cell_size: Vector2 = _cell_size()
 	var pitch: Vector2 = _cell_pitch()
 	for i: int in range(state.backpack.size()):
-		var item: Dictionary = RVItemDB.normalize_item(state.backpack[i])
+		var item: Dictionary = _normalize_inventory_item(state.backpack[i])
 		var item_size: Vector2i = _item_grid_size(item)
 		var item_pos: Vector2i = Vector2i(int(item.get("inv_x", 0)), int(item.get("inv_y", 0)))
 		var item_button: Button = Button.new()
@@ -285,7 +285,7 @@ func _update_equipment_slots(state: RVGameState) -> void:
 		var display_slot: String = _slot_label(slot_key)
 		var has_item: bool = typeof(item_value) == TYPE_DICTIONARY and not Dictionary(item_value).is_empty()
 		if has_item:
-			var equipped_item: Dictionary = RVItemDB.normalize_item(item_value)
+			var equipped_item: Dictionary = _normalize_inventory_item(item_value)
 			button.text = _rarity_letter(equipped_item)
 			button.tooltip_text = "%s: %s" % [display_slot, _item_name(equipped_item)]
 		else:
@@ -314,9 +314,16 @@ func _update_details(state: RVGameState) -> void:
 func _update_actions(state: RVGameState) -> void:
 	var backpack_selected: bool = selected_source == "backpack" and not state.backpack.is_empty()
 	var equipped_selected: bool = selected_source == "equipment" and not RVInventorySystem.selected_equipped_item(state).is_empty()
-	_set_button_state(equip_button, backpack_selected, "Equip Selected")
-	_set_button_state(stash_button, backpack_selected, "Move to Stash")
-	_set_button_state(salvage_button, backpack_selected, "Destroy / Salvage")
+	var selected_item: Dictionary = {}
+	var selected_is_map: bool = false
+	if backpack_selected:
+		selected_item = RVInventorySystem.selected_backpack_item(state)
+		selected_is_map = RVMapItemSystem.is_map_item(selected_item)
+	_set_button_state(equip_button, backpack_selected and not selected_is_map, "Equip Selected" if not selected_is_map else "Open Map Device")
+	if equip_button != null and selected_is_map:
+		equip_button.disabled = false
+	_set_button_state(stash_button, backpack_selected, "Store in Map Tab" if selected_is_map else "Move to Stash")
+	_set_button_state(salvage_button, backpack_selected and not selected_is_map, "Destroy / Salvage" if not selected_is_map else "Map: Not Salvageable")
 	_set_button_state(unequip_button, equipped_selected, "Unequip Gear")
 	_set_button_state(close_button, true, "Close")
 
@@ -358,6 +365,11 @@ func _on_equip_pressed() -> void:
 		return
 	if selected_source != "backpack":
 		return
+	var selected_item: Dictionary = RVInventorySystem.selected_backpack_item(current_state)
+	if RVMapItemSystem.is_map_item(selected_item):
+		current_state.panel_mode = "map_device"
+		current_state.add_notice("Open the Map Device, then store/activate this map from the Map Tab")
+		return
 	RVInventorySystem.equip_selected_backpack_item(current_state)
 	selected_source = "backpack"
 	selected_equipment_slot = ""
@@ -367,12 +379,20 @@ func _on_equip_pressed() -> void:
 func _on_stash_pressed() -> void:
 	if current_state == null or selected_source != "backpack":
 		return
-	RVInventorySystem.stash_selected_backpack_item(current_state)
+	var selected_item: Dictionary = RVInventorySystem.selected_backpack_item(current_state)
+	if RVMapItemSystem.is_map_item(selected_item):
+		RVMapItemSystem.deposit_selected_backpack_map_to_map_tab(current_state)
+	else:
+		RVInventorySystem.stash_selected_backpack_item(current_state)
 	_ensure_backpack_positions(current_state)
 	update_from_state(current_state)
 
 func _on_salvage_pressed() -> void:
 	if current_state == null or selected_source != "backpack":
+		return
+	var selected_item: Dictionary = RVInventorySystem.selected_backpack_item(current_state)
+	if RVMapItemSystem.is_map_item(selected_item):
+		current_state.add_notice("Maps cannot be salvaged. Store them in the Map Tab or run them.")
 		return
 	RVInventorySystem.salvage_selected_backpack_item(current_state)
 	_ensure_backpack_positions(current_state)
@@ -398,7 +418,7 @@ func _start_drag(index: int, mouse_pos: Vector2) -> void:
 	selected_source = "backpack"
 	selected_equipment_slot = ""
 	RVInventorySystem.select_backpack_index(current_state, index)
-	var item: Dictionary = RVItemDB.normalize_item(current_state.backpack[index])
+	var item: Dictionary = _normalize_inventory_item(current_state.backpack[index])
 	drag_index = index
 	drag_origin = Vector2i(int(item.get("inv_x", 0)), int(item.get("inv_y", 0)))
 	if drag_preview != null and is_instance_valid(drag_preview):
@@ -447,7 +467,7 @@ func _cancel_drag() -> void:
 func _try_drop_on_equipment(mouse_pos: Vector2) -> bool:
 	if current_state == null or drag_index < 0:
 		return false
-	var item: Dictionary = RVItemDB.normalize_item(current_state.backpack[drag_index])
+	var item: Dictionary = _normalize_inventory_item(current_state.backpack[drag_index])
 	for slot_key_variant: Variant in equipment_buttons.keys():
 		var slot_key: String = RVInventorySystem.normalize_slot(str(slot_key_variant))
 		var button: Button = equipment_buttons[slot_key_variant]
@@ -463,17 +483,29 @@ func _try_drop_on_equipment(mouse_pos: Vector2) -> bool:
 func _try_drop_on_action(mouse_pos: Vector2) -> bool:
 	if current_state == null or drag_index < 0:
 		return false
+	var dragged_item: Dictionary = _normalize_inventory_item(current_state.backpack[drag_index])
+	var dragged_is_map: bool = RVMapItemSystem.is_map_item(dragged_item)
 	if _button_contains(equip_button, mouse_pos):
-		RVInventorySystem.select_backpack_index(current_state, drag_index)
-		RVInventorySystem.equip_selected_backpack_item(current_state)
+		if dragged_is_map:
+			current_state.panel_mode = "map_device"
+			current_state.add_notice("Map selected. Store it in the Map Tab or activate it at the Map Device.")
+		else:
+			RVInventorySystem.select_backpack_index(current_state, drag_index)
+			RVInventorySystem.equip_selected_backpack_item(current_state)
 		return true
 	if _button_contains(stash_button, mouse_pos):
 		RVInventorySystem.select_backpack_index(current_state, drag_index)
-		RVInventorySystem.stash_selected_backpack_item(current_state)
+		if dragged_is_map:
+			RVMapItemSystem.deposit_selected_backpack_map_to_map_tab(current_state)
+		else:
+			RVInventorySystem.stash_selected_backpack_item(current_state)
 		return true
 	if _button_contains(salvage_button, mouse_pos):
-		RVInventorySystem.select_backpack_index(current_state, drag_index)
-		RVInventorySystem.salvage_selected_backpack_item(current_state)
+		if dragged_is_map:
+			current_state.add_notice("Maps cannot be salvaged")
+		else:
+			RVInventorySystem.select_backpack_index(current_state, drag_index)
+			RVInventorySystem.salvage_selected_backpack_item(current_state)
 		return true
 	return false
 
@@ -488,7 +520,7 @@ func _try_drop_on_backpack(mouse_pos: Vector2) -> bool:
 	var local: Vector2 = mouse_pos - runtime_layer.global_position
 	var pitch: Vector2 = _cell_pitch()
 	var target: Vector2i = Vector2i(int(floor(local.x / pitch.x)), int(floor(local.y / pitch.y)))
-	var item: Dictionary = RVItemDB.normalize_item(current_state.backpack[drag_index])
+	var item: Dictionary = _normalize_inventory_item(current_state.backpack[drag_index])
 	var size_cells: Vector2i = _item_grid_size(item)
 	if not _can_place_at(current_state, drag_index, target, size_cells):
 		current_state.add_notice("No room there")
@@ -512,7 +544,7 @@ func _character_summary_text(state: RVGameState) -> String:
 	for slot_key: String in RVInventorySystem.EQUIPMENT_ORDER:
 		var item_value: Variant = state.equipped.get(slot_key, {})
 		if typeof(item_value) == TYPE_DICTIONARY and not Dictionary(item_value).is_empty():
-			var item: Dictionary = RVItemDB.normalize_item(item_value)
+			var item: Dictionary = _normalize_inventory_item(item_value)
 			lines.append("%s: %s" % [_slot_label(slot_key), _item_name(item)])
 		else:
 			lines.append("%s: Empty" % _slot_label(slot_key))
@@ -532,7 +564,7 @@ func _detail_bbcode(state: RVGameState) -> String:
 		var slot_key: String = RVInventorySystem.normalize_slot(selected_equipment_slot)
 		var item_value: Variant = state.equipped.get(slot_key, {})
 		if typeof(item_value) == TYPE_DICTIONARY and not Dictionary(item_value).is_empty():
-			var equipped_item: Dictionary = RVItemDB.normalize_item(item_value)
+			var equipped_item: Dictionary = _normalize_inventory_item(item_value)
 			return _item_detail_bbcode(equipped_item, "SELECTED EQUIPPED ITEM", "Equipped %s" % _slot_label(slot_key))
 		return "[b]SELECTED EQUIPPED ITEM[/b]\n%s is empty." % _slot_label(slot_key)
 	if state.backpack.is_empty():
@@ -545,6 +577,8 @@ func _detail_bbcode(state: RVGameState) -> String:
 	return text
 
 func _item_detail_bbcode(item: Dictionary, header: String, source_line: String) -> String:
+	if RVMapItemSystem.is_map_item(item):
+		return RVMapItemSystem.map_detail_bbcode(item, current_state, header, source_line)
 	var rarity: String = str(item.get("rarity", "Normal"))
 	var color: String = _rarity_color_hex(rarity)
 	var lines: Array[String] = []
@@ -643,7 +677,7 @@ func _affix_stat_text(affix: Dictionary) -> String:
 func _ensure_backpack_positions(state: RVGameState) -> void:
 	var occupied: Dictionary = {}
 	for i: int in range(state.backpack.size()):
-		var item: Dictionary = RVItemDB.normalize_item(state.backpack[i])
+		var item: Dictionary = _normalize_inventory_item(state.backpack[i])
 		var size_cells: Vector2i = _item_grid_size(item)
 		var existing: Vector2i = Vector2i(int(item.get("inv_x", -1)), int(item.get("inv_y", -1)))
 		var valid_existing: bool = existing.x >= 0 and existing.y >= 0 and _can_place_in_map(occupied, existing, size_cells)
@@ -670,7 +704,7 @@ func _can_place_at(state: RVGameState, ignore_index: int, pos: Vector2i, size_ce
 	for i: int in range(state.backpack.size()):
 		if i == ignore_index:
 			continue
-		var item: Dictionary = RVItemDB.normalize_item(state.backpack[i])
+		var item: Dictionary = _normalize_inventory_item(state.backpack[i])
 		var item_pos: Vector2i = Vector2i(int(item.get("inv_x", 0)), int(item.get("inv_y", 0)))
 		var item_size: Vector2i = _item_grid_size(item)
 		_mark_occupied(occupied, item_pos, item_size, i)
@@ -693,6 +727,8 @@ func _mark_occupied(occupied: Dictionary, pos: Vector2i, size_cells: Vector2i, i
 			occupied["%s,%s" % [x, y]] = index
 
 func _item_grid_size(item: Dictionary) -> Vector2i:
+	if RVMapItemSystem.is_map_item(item):
+		return Vector2i(1, 1)
 	var explicit_w: int = int(item.get("inv_w", 0))
 	var explicit_h: int = int(item.get("inv_h", 0))
 	if explicit_w > 0 and explicit_h > 0:
@@ -733,6 +769,8 @@ func _grid_total_size() -> Vector2:
 	return Vector2(float(GRID_COLUMNS - 1) * pitch.x + cell.x, float(GRID_ROWS - 1) * pitch.y + cell.y)
 
 func _comparison_slot_for_item(state: RVGameState, item: Dictionary) -> String:
+	if RVMapItemSystem.is_map_item(item):
+		return ""
 	if item.is_empty():
 		return ""
 	var slot: String = RVInventorySystem.normalize_slot(str(item.get("slot", "")))
@@ -746,6 +784,8 @@ func _comparison_slot_for_item(state: RVGameState, item: Dictionary) -> String:
 	return ""
 
 func _item_can_go_to_slot(item: Dictionary, slot_key: String) -> bool:
+	if RVMapItemSystem.is_map_item(item):
+		return false
 	var item_slot: String = RVInventorySystem.normalize_slot(str(item.get("slot", "")))
 	var target: String = RVInventorySystem.normalize_slot(slot_key)
 	if item_slot == "ring" and (target == "ring1" or target == "ring2"):
@@ -833,6 +873,8 @@ func _rarity_letter(item: Dictionary) -> String:
 	return str(item.get("rarity", "N")).substr(0, 1)
 
 func _type_short(item: Dictionary) -> String:
+	if RVMapItemSystem.is_map_item(item):
+		return "Map"
 	var base_type: String = str(item.get("base_type", item.get("slot", "Item")))
 	if base_type.length() <= 5:
 		return base_type
@@ -856,12 +898,7 @@ func _slot_label(slot: String) -> String:
 		_: return slot.capitalize()
 
 func _rarity_color_hex(rarity: String) -> String:
-	match rarity:
-		"Unique": return "#ff9d3d"
-		"Rare": return "#f2d75c"
-		"Magic": return "#82a4ff"
-		"Crafted": return "#61e6cb"
-		_: return "#dddddd"
+	return RVMapItemSystem.map_rarity_hex(rarity) if ["Normal", "Magic", "Rare", "Unique"].has(rarity) else "#dddddd"
 
 func _strip_bbcode(text: String) -> String:
 	var stripped: String = text
@@ -871,3 +908,11 @@ func _strip_bbcode(text: String) -> String:
 	if regex.compile("\\[/?color[^\\]]*\\]") == OK:
 		stripped = regex.sub(stripped, "", true)
 	return stripped
+
+
+func _normalize_inventory_item(value: Variant) -> Dictionary:
+	if RVMapItemSystem.is_map_item(value):
+		return RVMapItemSystem.normalize_map_item(Dictionary(value), "inventory", current_state)
+	if typeof(value) == TYPE_DICTIONARY:
+		return RVItemDB.normalize_item(Dictionary(value))
+	return RVItemDB.normalize_item(value)

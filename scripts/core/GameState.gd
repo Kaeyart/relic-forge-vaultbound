@@ -109,10 +109,14 @@ var backpack: Array[Dictionary] = []
 var stash: Array[Dictionary] = []
 var map_stash: Array[Dictionary] = []
 var map_cursor: int = 0
+var map_tier_filter: int = 0
+var completed_maps: Dictionary = {}
+var map_system_seeded: bool = false
 var pending_start_activity: Dictionary = {}
 
 var inventory_cursor: int = 0
 var stash_cursor: int = 0
+var stash_tab_mode: String = "items"
 var equipment_cursor: int = 0
 
 var current_activity: Dictionary = {}
@@ -382,7 +386,7 @@ func to_save_dict() -> Dictionary:
 		"equipped": equipped,
 		"backpack": backpack,
 		"stash": stash,
-		"map_stash": map_stash,
+		"map_stash": map_stash, "map_tier_filter": map_tier_filter, "completed_maps": completed_maps, "map_system_seeded": map_system_seeded,
 		"map_cursor": map_cursor,
 		"rooms_cleared": rooms_cleared,
 		"kills": kills,
@@ -472,6 +476,9 @@ func apply_save_dict(data: Dictionary) -> void:
 			if typeof(map_value) == TYPE_DICTIONARY:
 				map_stash.append(map_value)
 	map_cursor = int(data.get("map_cursor", map_cursor))
+	map_tier_filter = int(data.get("map_tier_filter", map_tier_filter))
+	completed_maps = Dictionary(data.get("completed_maps", completed_maps))
+	map_system_seeded = bool(data.get("map_system_seeded", map_system_seeded))
 	rooms_cleared = int(data.get("rooms_cleared", rooms_cleared))
 	kills = int(data.get("kills", kills))
 	deaths = int(data.get("deaths", deaths))

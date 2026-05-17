@@ -1,0 +1,870 @@
+{
+  "map_device_panel_frame": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (1)-Photoroom.png",
+    "box": [
+      41,
+      33,
+      756,
+      1033
+    ],
+    "file": "assets/ui/map_device/map_device_panel_frame.png",
+    "size": [
+      715,
+      1000
+    ]
+  },
+  "map_device_header_plate": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (1)-Photoroom.png",
+    "box": [
+      769,
+      184,
+      1415,
+      397
+    ],
+    "file": "assets/ui/map_device/map_device_header_plate.png",
+    "size": [
+      646,
+      213
+    ]
+  },
+  "map_device_subpanel_frame": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (1)-Photoroom.png",
+    "box": [
+      778,
+      520,
+      1406,
+      984
+    ],
+    "file": "assets/ui/map_device/map_device_subpanel_frame.png",
+    "size": [
+      628,
+      464
+    ]
+  },
+  "map_card_frame_common": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (2)-Photoroom.png",
+    "box": [
+      24,
+      29,
+      339,
+      595
+    ],
+    "file": "assets/ui/map_device/map_card_frame_common.png",
+    "size": [
+      315,
+      566
+    ]
+  },
+  "map_card_frame_magic": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (2)-Photoroom.png",
+    "box": [
+      385,
+      29,
+      701,
+      595
+    ],
+    "file": "assets/ui/map_device/map_card_frame_magic.png",
+    "size": [
+      316,
+      566
+    ]
+  },
+  "map_card_frame_rare": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (2)-Photoroom.png",
+    "box": [
+      746,
+      28,
+      1062,
+      595
+    ],
+    "file": "assets/ui/map_device/map_card_frame_rare.png",
+    "size": [
+      316,
+      567
+    ]
+  },
+  "map_card_frame_unique": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (2)-Photoroom.png",
+    "box": [
+      1108,
+      18,
+      1424,
+      612
+    ],
+    "file": "assets/ui/map_device/map_card_frame_unique.png",
+    "size": [
+      316,
+      594
+    ]
+  },
+  "map_device_station_socket": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (2)-Photoroom.png",
+    "box": [
+      474,
+      593,
+      968,
+      1072
+    ],
+    "file": "assets/ui/map_device/map_device_station_socket.png",
+    "size": [
+      494,
+      479
+    ]
+  },
+  "modifier_row_bg": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (3)-Photoroom.png",
+    "box": [
+      30,
+      46,
+      1418,
+      241
+    ],
+    "file": "assets/ui/map_device/modifier_row_bg.png",
+    "size": [
+      1388,
+      195
+    ]
+  },
+  "reward_icon_frame": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (3)-Photoroom.png",
+    "box": [
+      76,
+      297,
+      433,
+      655
+    ],
+    "file": "assets/ui/map_device/reward_icon_frame.png",
+    "size": [
+      357,
+      358
+    ]
+  },
+  "legacy_tier_badge_base": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (3)-Photoroom.png",
+    "box": [
+      519,
+      268,
+      860,
+      677
+    ],
+    "file": "assets/ui/map_device/tier_badge_base_legacy.png",
+    "size": [
+      341,
+      409
+    ]
+  },
+  "map_completed_badge": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (3)-Photoroom.png",
+    "box": [
+      948,
+      276,
+      1331,
+      666
+    ],
+    "file": "assets/ui/map_device/map_completed_badge.png",
+    "size": [
+      383,
+      390
+    ]
+  },
+  "inventory_slot_frame": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (3)-Photoroom.png",
+    "box": [
+      78,
+      720,
+      348,
+      990
+    ],
+    "file": "assets/ui/slots/inventory_slot_frame.png",
+    "size": [
+      270,
+      270
+    ]
+  },
+  "inventory_slot_selected": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (3)-Photoroom.png",
+    "box": [
+      405,
+      715,
+      680,
+      991
+    ],
+    "file": "assets/ui/slots/inventory_slot_selected.png",
+    "size": [
+      275,
+      276
+    ]
+  },
+  "inventory_slot_hover": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (3)-Photoroom.png",
+    "box": [
+      745,
+      716,
+      1019,
+      992
+    ],
+    "file": "assets/ui/slots/inventory_slot_hover.png",
+    "size": [
+      274,
+      276
+    ]
+  },
+  "inventory_slot_map_overlay": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (3)-Photoroom.png",
+    "box": [
+      1081,
+      720,
+      1353,
+      990
+    ],
+    "file": "assets/ui/slots/inventory_slot_map_overlay.png",
+    "size": [
+      272,
+      270
+    ]
+  },
+  "button_activate_idle": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      14,
+      41,
+      422,
+      238
+    ],
+    "file": "assets/ui/buttons/button_activate_idle.png",
+    "size": [
+      408,
+      197
+    ]
+  },
+  "button_activate_hover": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      424,
+      41,
+      834,
+      238
+    ],
+    "file": "assets/ui/buttons/button_activate_hover.png",
+    "size": [
+      410,
+      197
+    ]
+  },
+  "button_activate_pressed": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      835,
+      41,
+      1245,
+      238
+    ],
+    "file": "assets/ui/buttons/button_activate_pressed.png",
+    "size": [
+      410,
+      197
+    ]
+  },
+  "button_activate_disabled": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      1246,
+      41,
+      1656,
+      238
+    ],
+    "file": "assets/ui/buttons/button_activate_disabled.png",
+    "size": [
+      410,
+      197
+    ]
+  },
+  "button_secondary_idle": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      31,
+      265,
+      405,
+      387
+    ],
+    "file": "assets/ui/buttons/button_secondary_idle.png",
+    "size": [
+      374,
+      122
+    ]
+  },
+  "button_secondary_hover": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      442,
+      265,
+      816,
+      387
+    ],
+    "file": "assets/ui/buttons/button_secondary_hover.png",
+    "size": [
+      374,
+      122
+    ]
+  },
+  "button_secondary_pressed": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      852,
+      265,
+      1226,
+      387
+    ],
+    "file": "assets/ui/buttons/button_secondary_pressed.png",
+    "size": [
+      374,
+      122
+    ]
+  },
+  "button_secondary_disabled": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      1262,
+      265,
+      1635,
+      387
+    ],
+    "file": "assets/ui/buttons/button_secondary_disabled.png",
+    "size": [
+      373,
+      122
+    ]
+  },
+  "close_button_idle": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      255,
+      418,
+      447,
+      592
+    ],
+    "file": "assets/ui/buttons/close_button_idle.png",
+    "size": [
+      192,
+      174
+    ]
+  },
+  "close_button_hover": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      556,
+      417,
+      748,
+      592
+    ],
+    "file": "assets/ui/buttons/close_button_hover.png",
+    "size": [
+      192,
+      175
+    ]
+  },
+  "close_button_pressed": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      858,
+      413,
+      1050,
+      592
+    ],
+    "file": "assets/ui/buttons/close_button_pressed.png",
+    "size": [
+      192,
+      179
+    ]
+  },
+  "close_button_disabled": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      1162,
+      413,
+      1353,
+      592
+    ],
+    "file": "assets/ui/buttons/close_button_disabled.png",
+    "size": [
+      191,
+      179
+    ]
+  },
+  "stash_tab_button_idle": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      112,
+      602,
+      435,
+      732
+    ],
+    "file": "assets/ui/buttons/stash_tab_button_idle.png",
+    "size": [
+      323,
+      130
+    ]
+  },
+  "stash_tab_button_hover": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      472,
+      602,
+      795,
+      732
+    ],
+    "file": "assets/ui/buttons/stash_tab_button_hover.png",
+    "size": [
+      323,
+      130
+    ]
+  },
+  "stash_tab_button_selected": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      835,
+      602,
+      1159,
+      732
+    ],
+    "file": "assets/ui/buttons/stash_tab_button_selected.png",
+    "size": [
+      324,
+      130
+    ]
+  },
+  "stash_tab_button_disabled": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      1197,
+      604,
+      1517,
+      731
+    ],
+    "file": "assets/ui/buttons/stash_tab_button_disabled.png",
+    "size": [
+      320,
+      127
+    ]
+  },
+  "tier_arrow_left_idle": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      131,
+      770,
+      265,
+      898
+    ],
+    "file": "assets/ui/buttons/tier_arrow_left_idle.png",
+    "size": [
+      134,
+      128
+    ]
+  },
+  "tier_arrow_left_hover": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      283,
+      770,
+      417,
+      898
+    ],
+    "file": "assets/ui/buttons/tier_arrow_left_hover.png",
+    "size": [
+      134,
+      128
+    ]
+  },
+  "tier_arrow_left_pressed": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      437,
+      770,
+      571,
+      898
+    ],
+    "file": "assets/ui/buttons/tier_arrow_left_pressed.png",
+    "size": [
+      134,
+      128
+    ]
+  },
+  "tier_arrow_left_disabled": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      590,
+      770,
+      724,
+      898
+    ],
+    "file": "assets/ui/buttons/tier_arrow_left_disabled.png",
+    "size": [
+      134,
+      128
+    ]
+  },
+  "tier_arrow_right_idle": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      890,
+      770,
+      1025,
+      898
+    ],
+    "file": "assets/ui/buttons/tier_arrow_right_idle.png",
+    "size": [
+      135,
+      128
+    ]
+  },
+  "tier_arrow_right_hover": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      1045,
+      770,
+      1180,
+      898
+    ],
+    "file": "assets/ui/buttons/tier_arrow_right_hover.png",
+    "size": [
+      135,
+      128
+    ]
+  },
+  "tier_arrow_right_pressed": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      1202,
+      770,
+      1337,
+      898
+    ],
+    "file": "assets/ui/buttons/tier_arrow_right_pressed.png",
+    "size": [
+      135,
+      128
+    ]
+  },
+  "tier_arrow_right_disabled": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (4)-Photoroom.png",
+    "box": [
+      1359,
+      770,
+      1493,
+      898
+    ],
+    "file": "assets/ui/buttons/tier_arrow_right_disabled.png",
+    "size": [
+      134,
+      128
+    ]
+  },
+  "map_icon_ash_cistern": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (5)-Photoroom.png",
+    "box": [
+      51,
+      373,
+      368,
+      741
+    ],
+    "file": "assets/items/maps/map_icon_ash_cistern.png",
+    "size": [
+      317,
+      368
+    ]
+  },
+  "map_icon_iron_catacomb": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (5)-Photoroom.png",
+    "box": [
+      403,
+      323,
+      719,
+      738
+    ],
+    "file": "assets/items/maps/map_icon_iron_catacomb.png",
+    "size": [
+      316,
+      415
+    ]
+  },
+  "map_icon_forgeworks": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (5)-Photoroom.png",
+    "box": [
+      745,
+      330,
+      1050,
+      731
+    ],
+    "file": "assets/items/maps/map_icon_forgeworks.png",
+    "size": [
+      305,
+      401
+    ]
+  },
+  "map_icon_bastion": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (5)-Photoroom.png",
+    "box": [
+      1077,
+      332,
+      1390,
+      761
+    ],
+    "file": "assets/items/maps/map_icon_bastion.png",
+    "size": [
+      313,
+      429
+    ]
+  },
+  "map_icon_sanctum": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (6)-Photoroom.png",
+    "box": [
+      39,
+      329,
+      350,
+      746
+    ],
+    "file": "assets/items/maps/map_icon_sanctum.png",
+    "size": [
+      311,
+      417
+    ]
+  },
+  "map_icon_depths": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (6)-Photoroom.png",
+    "box": [
+      381,
+      330,
+      718,
+      756
+    ],
+    "file": "assets/items/maps/map_icon_depths.png",
+    "size": [
+      337,
+      426
+    ]
+  },
+  "map_icon_aqueducts": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (6)-Photoroom.png",
+    "box": [
+      732,
+      349,
+      1067,
+      746
+    ],
+    "file": "assets/items/maps/map_icon_aqueducts.png",
+    "size": [
+      335,
+      397
+    ]
+  },
+  "map_icon_vault": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (6)-Photoroom.png",
+    "box": [
+      1087,
+      363,
+      1420,
+      721
+    ],
+    "file": "assets/items/maps/map_icon_vault.png",
+    "size": [
+      333,
+      358
+    ]
+  },
+  "reward_icon_currency": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (7)-Photoroom.png",
+    "box": [
+      64,
+      205,
+      354,
+      470
+    ],
+    "file": "assets/ui/rewards/reward_icon_currency.png",
+    "size": [
+      290,
+      265
+    ]
+  },
+  "reward_icon_skill_gem": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (7)-Photoroom.png",
+    "box": [
+      439,
+      166,
+      684,
+      488
+    ],
+    "file": "assets/ui/rewards/reward_icon_skill_gem.png",
+    "size": [
+      245,
+      322
+    ]
+  },
+  "reward_icon_crafting_shards": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (7)-Photoroom.png",
+    "box": [
+      764,
+      173,
+      1009,
+      480
+    ],
+    "file": "assets/ui/rewards/reward_icon_crafting_shards.png",
+    "size": [
+      245,
+      307
+    ]
+  },
+  "reward_icon_boss_loot": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (7)-Photoroom.png",
+    "box": [
+      1095,
+      161,
+      1386,
+      490
+    ],
+    "file": "assets/ui/rewards/reward_icon_boss_loot.png",
+    "size": [
+      291,
+      329
+    ]
+  },
+  "reward_icon_maps": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (7)-Photoroom.png",
+    "box": [
+      44,
+      578,
+      365,
+      892
+    ],
+    "file": "assets/ui/rewards/reward_icon_maps.png",
+    "size": [
+      321,
+      314
+    ]
+  },
+  "reward_icon_completion": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (7)-Photoroom.png",
+    "box": [
+      412,
+      576,
+      708,
+      900
+    ],
+    "file": "assets/ui/rewards/reward_icon_completion.png",
+    "size": [
+      296,
+      324
+    ]
+  },
+  "reward_icon_materials": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (7)-Photoroom.png",
+    "box": [
+      742,
+      599,
+      1057,
+      894
+    ],
+    "file": "assets/ui/rewards/reward_icon_materials.png",
+    "size": [
+      315,
+      295
+    ]
+  },
+  "reward_icon_relics": {
+    "source": "ChatGPT Image May 17, 2026, 10_00_48 PM (7)-Photoroom.png",
+    "box": [
+      1109,
+      560,
+      1375,
+      917
+    ],
+    "file": "assets/ui/rewards/reward_icon_relics.png",
+    "size": [
+      266,
+      357
+    ]
+  },
+  "map_slot_empty": {
+    "source": "ChatGPT Image May 17, 2026, 10_03_08 PM (1)-Photoroom.png",
+    "box": [
+      152,
+      8,
+      971,
+      1395
+    ],
+    "file": "assets/ui/map_device/map_slot_empty.png",
+    "size": [
+      819,
+      1387
+    ]
+  },
+  "tier_badge_base": {
+    "source": "ChatGPT Image May 17, 2026, 10_03_08 PM (2)-Photoroom.png",
+    "box": [
+      163,
+      75,
+      1091,
+      1164
+    ],
+    "file": "assets/ui/map_device/tier_badge_base.png",
+    "size": [
+      928,
+      1089
+    ]
+  },
+  "map_icon_stronghold": {
+    "source": "ChatGPT Image May 17, 2026, 10_03_08 PM (3)-Photoroom.png",
+    "box": [
+      65,
+      35,
+      1189,
+      1219
+    ],
+    "file": "assets/items/maps/map_icon_stronghold.png",
+    "size": [
+      1124,
+      1184
+    ]
+  },
+  "map_icon_ossuary": {
+    "source": "ChatGPT Image May 17, 2026, 10_03_08 PM (4)-Photoroom.png",
+    "box": [
+      118,
+      47,
+      1136,
+      1198
+    ],
+    "file": "assets/items/maps/map_icon_ossuary.png",
+    "size": [
+      1018,
+      1151
+    ]
+  },
+  "hub_map_device_station_glow": {
+    "source": "ChatGPT Image May 17, 2026, 10_03_08 PM (5)-Photoroom.png",
+    "box": [
+      116,
+      186,
+      1157,
+      1098
+    ],
+    "file": "assets/hub/stations/hub_map_device_station_glow.png",
+    "size": [
+      1041,
+      912
+    ]
+  },
+  "map_card_placeholder_art": {
+    "source": "ChatGPT Image May 17, 2026, 10_03_08 PM (6)-Photoroom.png",
+    "box": [
+      152,
+      65,
+      976,
+      1339
+    ],
+    "file": "assets/ui/map_device/map_card_placeholder_art.png",
+    "size": [
+      824,
+      1274
+    ]
+  }
+}

@@ -1,8 +1,155 @@
-[gd_scene format=3 uid="uid://bjqtunrg24ts"]
+[gd_scene format=3 uid="uid://dwx83wbou3bna"]
 
-[ext_resource type="Script" uid="uid://cyqw4ckt5ee2u" path="res://scripts/ui/panels/MapDevicePanel.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://qhv2yc4lytfv" path="res://assets/ui/buttons/button_activate_disabled.png" id="btn_activate_disabled"]
+[ext_resource type="Texture2D" uid="uid://cx3qo0fkadw5h" path="res://assets/ui/buttons/button_activate_hover.png" id="btn_activate_hover"]
+[ext_resource type="Texture2D" uid="uid://br4iwsfswng8a" path="res://assets/ui/buttons/button_activate_idle.png" id="btn_activate_idle"]
+[ext_resource type="Texture2D" uid="uid://c2ll8es111a3y" path="res://assets/ui/buttons/button_activate_pressed.png" id="btn_activate_pressed"]
+[ext_resource type="Texture2D" uid="uid://dpusgmigbq31l" path="res://assets/ui/buttons/close_button_disabled.png" id="btn_close_disabled"]
+[ext_resource type="Texture2D" uid="uid://ddbtjkdmyrq1d" path="res://assets/ui/buttons/close_button_hover.png" id="btn_close_hover"]
+[ext_resource type="Texture2D" uid="uid://dtmf7c5lvn3yp" path="res://assets/ui/buttons/close_button_idle.png" id="btn_close_idle"]
+[ext_resource type="Texture2D" uid="uid://bag00rrs68td" path="res://assets/ui/buttons/close_button_pressed.png" id="btn_close_pressed"]
+[ext_resource type="Texture2D" uid="uid://b34ibhsdfshg7" path="res://assets/ui/buttons/button_secondary_disabled.png" id="btn_secondary_disabled"]
+[ext_resource type="Texture2D" uid="uid://dw1cxiqnhxrvk" path="res://assets/ui/buttons/button_secondary_hover.png" id="btn_secondary_hover"]
+[ext_resource type="Texture2D" uid="uid://bh105egmr86rg" path="res://assets/ui/buttons/button_secondary_idle.png" id="btn_secondary_idle"]
+[ext_resource type="Texture2D" uid="uid://c7awys1diltyi" path="res://assets/ui/buttons/button_secondary_pressed.png" id="btn_secondary_pressed"]
+[ext_resource type="Texture2D" uid="uid://c5h22bus3nl35" path="res://assets/ui/map_device/map_card_frame_common.png" id="card_common"]
+[ext_resource type="Texture2D" uid="uid://slv4rryt8dtv" path="res://assets/ui/map_device/map_card_frame_magic.png" id="card_magic"]
+[ext_resource type="Texture2D" uid="uid://b8qp5xd51rewd" path="res://assets/ui/map_device/map_card_placeholder_art.png" id="card_placeholder"]
+[ext_resource type="Texture2D" uid="uid://b5bgstlq83vqu" path="res://assets/ui/map_device/map_card_frame_rare.png" id="card_rare"]
+[ext_resource type="Texture2D" uid="uid://b8ythmvpjcii" path="res://assets/ui/map_device/map_card_frame_unique.png" id="card_unique"]
+[ext_resource type="Texture2D" uid="uid://xr1sxxtpxhyt" path="res://assets/ui/map_device/map_completed_badge.png" id="completed_badge"]
+[ext_resource type="Texture2D" uid="uid://cska202vprrfs" path="res://assets/ui/map_device/map_device_header_plate.png" id="header_plate"]
+[ext_resource type="Texture2D" uid="uid://bkgolnkstwe" path="res://assets/items/maps/map_icon_aqueducts.png" id="map_aqueducts"]
+[ext_resource type="Texture2D" uid="uid://b6bckq6531r0q" path="res://assets/items/maps/map_icon_ash_cistern.png" id="map_ash_cistern"]
+[ext_resource type="Texture2D" uid="uid://dfuj1gtmymxbn" path="res://assets/items/maps/map_icon_bastion.png" id="map_bastion"]
+[ext_resource type="Texture2D" uid="uid://by0paxrjfqqlv" path="res://assets/items/maps/map_icon_depths.png" id="map_depths"]
+[ext_resource type="Texture2D" uid="uid://cjhnfcndovpxw" path="res://assets/items/maps/map_icon_forgeworks.png" id="map_forgeworks"]
+[ext_resource type="Texture2D" uid="uid://mc3w05565a2y" path="res://assets/items/maps/map_icon_iron_catacomb.png" id="map_iron_catacomb"]
+[ext_resource type="Texture2D" uid="uid://ch4crtfnaomog" path="res://assets/items/maps/map_icon_ossuary.png" id="map_ossuary"]
+[ext_resource type="Texture2D" uid="uid://bua1it2e4oa1b" path="res://assets/items/maps/map_icon_sanctum.png" id="map_sanctum"]
+[ext_resource type="Texture2D" uid="uid://bqfir82aeqies" path="res://assets/items/maps/map_icon_stronghold.png" id="map_stronghold"]
+[ext_resource type="Texture2D" uid="uid://bu20y7k8yg02w" path="res://assets/items/maps/map_icon_vault.png" id="map_vault"]
+[ext_resource type="Texture2D" uid="uid://bkn3rj5qsipb7" path="res://assets/ui/map_device/map_device_panel_frame.png" id="panel_frame"]
+[ext_resource type="Texture2D" uid="uid://bqj6m05c7v27l" path="res://assets/ui/rewards/reward_icon_boss_loot.png" id="reward_boss_loot"]
+[ext_resource type="Texture2D" uid="uid://dyvgjnqf4gvgg" path="res://assets/ui/rewards/reward_icon_completion.png" id="reward_completion"]
+[ext_resource type="Texture2D" uid="uid://ctf43pd4cyvfa" path="res://assets/ui/rewards/reward_icon_crafting_shards.png" id="reward_crafting_shards"]
+[ext_resource type="Texture2D" uid="uid://s2lr46ckbajx" path="res://assets/ui/rewards/reward_icon_currency.png" id="reward_currency"]
+[ext_resource type="Texture2D" uid="uid://drn5bgrb6ssjw" path="res://assets/ui/rewards/reward_icon_maps.png" id="reward_maps"]
+[ext_resource type="Texture2D" uid="uid://7hyuwc8dyo3k" path="res://assets/ui/rewards/reward_icon_skill_gem.png" id="reward_skill_gem"]
+[ext_resource type="Script" uid="uid://cyqw4ckt5ee2u" path="res://scripts/ui/panels/MapDevicePanel.gd" id="script"]
+[ext_resource type="Texture2D" uid="uid://ch6lrackxwl71" path="res://assets/ui/map_device/map_slot_empty.png" id="slot_empty"]
+[ext_resource type="Texture2D" uid="uid://b2h3jx1oaxthk" path="res://assets/ui/map_device/map_device_subpanel_frame.png" id="subpanel_frame"]
+[ext_resource type="Texture2D" uid="uid://bu5cbv6ajqtxa" path="res://assets/ui/map_device/tier_badge_base.png" id="tier_badge"]
 
-[node name="MapDevicePanel" type="Control" unique_id=1841926477]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_idle"]
+texture = ExtResource("btn_close_idle")
+texture_margin_left = 18.0
+texture_margin_top = 18.0
+texture_margin_right = 18.0
+texture_margin_bottom = 18.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_pressed"]
+texture = ExtResource("btn_close_pressed")
+texture_margin_left = 18.0
+texture_margin_top = 18.0
+texture_margin_right = 18.0
+texture_margin_bottom = 18.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_hover"]
+texture = ExtResource("btn_close_hover")
+texture_margin_left = 18.0
+texture_margin_top = 18.0
+texture_margin_right = 18.0
+texture_margin_bottom = 18.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_disabled"]
+texture = ExtResource("btn_close_disabled")
+texture_margin_left = 18.0
+texture_margin_top = 18.0
+texture_margin_right = 18.0
+texture_margin_bottom = 18.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_secondary_idle"]
+texture = ExtResource("btn_secondary_idle")
+texture_margin_left = 24.0
+texture_margin_top = 18.0
+texture_margin_right = 24.0
+texture_margin_bottom = 18.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_secondary_pressed"]
+texture = ExtResource("btn_secondary_pressed")
+texture_margin_left = 24.0
+texture_margin_top = 18.0
+texture_margin_right = 24.0
+texture_margin_bottom = 18.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_secondary_hover"]
+texture = ExtResource("btn_secondary_hover")
+texture_margin_left = 24.0
+texture_margin_top = 18.0
+texture_margin_right = 24.0
+texture_margin_bottom = 18.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_secondary_disabled"]
+texture = ExtResource("btn_secondary_disabled")
+texture_margin_left = 24.0
+texture_margin_top = 18.0
+texture_margin_right = 24.0
+texture_margin_bottom = 18.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_activate_idle"]
+texture = ExtResource("btn_activate_idle")
+texture_margin_left = 28.0
+texture_margin_top = 20.0
+texture_margin_right = 28.0
+texture_margin_bottom = 20.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_activate_pressed"]
+texture = ExtResource("btn_activate_pressed")
+texture_margin_left = 28.0
+texture_margin_top = 20.0
+texture_margin_right = 28.0
+texture_margin_bottom = 20.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_activate_hover"]
+texture = ExtResource("btn_activate_hover")
+texture_margin_left = 28.0
+texture_margin_top = 20.0
+texture_margin_right = 28.0
+texture_margin_bottom = 20.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_activate_disabled"]
+texture = ExtResource("btn_activate_disabled")
+texture_margin_left = 28.0
+texture_margin_top = 20.0
+texture_margin_right = 28.0
+texture_margin_bottom = 20.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="MapDevicePanel" type="Control" unique_id=1770474543]
 unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 15
@@ -10,188 +157,810 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1")
+script = ExtResource("script")
+card_frame_common = ExtResource("card_common")
+card_frame_magic = ExtResource("card_magic")
+card_frame_rare = ExtResource("card_rare")
+card_frame_unique = ExtResource("card_unique")
+map_icon_default = ExtResource("map_ash_cistern")
+map_icon_ash_cistern = ExtResource("map_ash_cistern")
+map_icon_iron_catacomb = ExtResource("map_iron_catacomb")
+map_icon_forgeworks = ExtResource("map_forgeworks")
+map_icon_bastion = ExtResource("map_bastion")
+map_icon_sanctum = ExtResource("map_sanctum")
+map_icon_depths = ExtResource("map_depths")
+map_icon_aqueducts = ExtResource("map_aqueducts")
+map_icon_vault = ExtResource("map_vault")
+map_icon_stronghold = ExtResource("map_stronghold")
+map_icon_ossuary = ExtResource("map_ossuary")
+reward_icon_currency = ExtResource("reward_currency")
+reward_icon_skill_gem = ExtResource("reward_skill_gem")
+reward_icon_crafting_shards = ExtResource("reward_crafting_shards")
+reward_icon_boss_loot = ExtResource("reward_boss_loot")
+reward_icon_maps = ExtResource("reward_maps")
+reward_icon_completion = ExtResource("reward_completion")
 
-[node name="Backdrop" type="ColorRect" parent="." unique_id=789808030]
+[node name="Background" type="Control" parent="." unique_id=241575713]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -1.0
+offset_right = -1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.01, 0.009, 0.012, 0.78)
+mouse_filter = 2
 
-[node name="MainFrame" type="Panel" parent="." unique_id=780177645]
-layout_mode = 0
-offset_left = 130.0
-offset_top = 72.0
-offset_right = 1150.0
-offset_bottom = 650.0
+[node name="Dim" type="ColorRect" parent="Background" unique_id=1941634352]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 173.0
+offset_top = 44.0
+offset_right = -133.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.9529412)
 
-[node name="TitleLabel" type="Label" parent="MainFrame" unique_id=987525253]
+[node name="MainFrameArt" type="TextureRect" parent="." unique_id=1129202767]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = -57.0
+offset_right = -82.37024
+offset_bottom = 31.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.0799999, 1)
+mouse_filter = 2
+texture = ExtResource("panel_frame")
+expand_mode = 1
+
+[node name="SafeMargin" type="MarginContainer" parent="." unique_id=1997854846]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 96.0
+offset_top = 76.0
+offset_right = -96.0
+offset_bottom = -70.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 12
+
+[node name="MainVBox" type="Control" parent="SafeMargin" unique_id=209090880]
+layout_mode = 2
+
+[node name="HeaderBar" type="Control" parent="SafeMargin/MainVBox" unique_id=849662787]
+visible = false
+custom_minimum_size = Vector2(0, 58)
+anchors_preset = 0
+offset_left = 26.0
+offset_top = -107.0
+offset_right = 1066.0
+offset_bottom = -49.0
+scale = Vector2(1, 2.52)
+
+[node name="HeaderPlateArt" type="TextureRect" parent="SafeMargin/MainVBox/HeaderBar" unique_id=237966787]
+self_modulate = Color(1, 1, 1, 0.82)
+custom_minimum_size = Vector2(520, 58)
 layout_mode = 0
-offset_left = 38.0
-offset_top = -67.0
-offset_right = 994.0
-offset_bottom = -37.0
+offset_right = 978.0
+offset_bottom = 67.0
+size_flags_horizontal = 3
+mouse_filter = 2
+texture = ExtResource("header_plate")
+expand_mode = 1
+
+[node name="TitleLabel" type="Label" parent="SafeMargin/MainVBox/HeaderBar/HeaderPlateArt" unique_id=212850898]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = -45.0
+offset_right = 1.0
+offset_bottom = -45.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.78, 0.42, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.95)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 30
 text = "MAP DEVICE"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="MapListPanel" type="Panel" parent="MainFrame" unique_id=1581594210]
+[node name="HeaderRight" type="HBoxContainer" parent="SafeMargin/MainVBox/HeaderBar" unique_id=1995896806]
 layout_mode = 0
-offset_left = -8.0
-offset_top = 5.0
-offset_right = 338.0
-offset_bottom = 584.0
+offset_left = 919.0
+offset_top = 35.31746
+offset_right = 973.0
+offset_bottom = 102.31746
+scale = Vector2(2.4536831, 0.3360434)
 
-[node name="MapListLabel" type="Label" parent="MainFrame/MapListPanel" unique_id=976987713]
+[node name="CloseButton" type="Button" parent="SafeMargin/MainVBox/HeaderBar/HeaderRight" unique_id=1146752643]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(54, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.86, 0.64, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxTexture_close_idle")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_close_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_close_hover")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_close_disabled")
+text = "×"
+
+[node name="BodyHBox" type="Control" parent="SafeMargin/MainVBox" unique_id=1704620874]
+anchors_preset = 0
+offset_top = 68.0
+offset_right = 1040.0
+offset_bottom = 469.0
+size_flags_vertical = 3
+
+[node name="LeftColumn" type="Control" parent="SafeMargin/MainVBox/BodyHBox" unique_id=387794307]
+anchors_preset = 0
+offset_left = -1.0
+offset_top = -10.0
+offset_right = 409.0
+offset_bottom = 662.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.38
+
+[node name="InsertedMapSectionLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn" unique_id=963624445]
 unique_name_in_owner = true
 visible = false
+z_index = 10
+custom_minimum_size = Vector2(0, 28)
 layout_mode = 0
-offset_left = 21.0
-offset_right = 317.0
-offset_bottom = 168.0
-text = "MAP STASH"
-
-[node name="MapButton0" type="Button" parent="MainFrame/MapListPanel" unique_id=1031627709]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 19.0
-offset_top = 25.0
-offset_right = 319.0
-offset_bottom = 57.0
-text = "Map 1"
-
-[node name="MapButton1" type="Button" parent="MainFrame/MapListPanel" unique_id=882914857]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 19.0
-offset_top = 63.0
-offset_right = 319.0
-offset_bottom = 95.0
-text = "Map 2"
-
-[node name="MapButton2" type="Button" parent="MainFrame/MapListPanel" unique_id=572063820]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 19.0
-offset_top = 101.0
-offset_right = 319.0
-offset_bottom = 133.0
-text = "Map 3"
-
-[node name="MapButton3" type="Button" parent="MainFrame/MapListPanel" unique_id=1175557169]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 19.0
-offset_top = 139.0
-offset_right = 319.0
-offset_bottom = 171.0
-text = "Map 4"
-
-[node name="MapButton4" type="Button" parent="MainFrame/MapListPanel" unique_id=208028720]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 19.0
-offset_top = 177.0
-offset_right = 319.0
-offset_bottom = 209.0
-text = "Map 5"
-
-[node name="MapButton5" type="Button" parent="MainFrame/MapListPanel" unique_id=167948276]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 19.0
-offset_top = 215.0
-offset_right = 319.0
-offset_bottom = 247.0
-text = "Map 6"
-
-[node name="MapButton6" type="Button" parent="MainFrame/MapListPanel" unique_id=302125839]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 19.0
-offset_top = 253.0
-offset_right = 319.0
-offset_bottom = 285.0
-text = "Map 7"
-
-[node name="MapButton7" type="Button" parent="MainFrame/MapListPanel" unique_id=1632985677]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 19.0
-offset_top = 291.0
-offset_right = 319.0
-offset_bottom = 323.0
-text = "Map 8"
-
-[node name="InsertedPanel" type="Panel" parent="MainFrame" unique_id=1487684832]
-layout_mode = 0
-offset_left = 380.0
-offset_top = 9.0
-offset_right = 660.0
-offset_bottom = 265.0
-
-[node name="SelectedMapLabel" type="Label" parent="MainFrame/InsertedPanel" unique_id=937890805]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 14.0
-offset_top = 12.0
-offset_right = 260.0
-offset_bottom = 56.0
-text = "Inserted Map: None"
-autowrap_mode = 3
-
-[node name="RunMapButton" type="Button" parent="MainFrame/InsertedPanel" unique_id=1695594980]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 43.0
-offset_top = 365.0
-offset_right = 259.0
-offset_bottom = 407.0
-text = "RUN MAP"
-
-[node name="DetailPanel" type="Panel" parent="MainFrame" unique_id=1957737888]
-layout_mode = 0
-offset_left = 696.0
-offset_top = 16.0
-offset_right = 1002.0
-offset_bottom = 511.0
-
-[node name="MapDetailLabel" type="Label" parent="MainFrame/DetailPanel" unique_id=578943868]
-unique_name_in_owner = true
-layout_mode = 0
-offset_top = -1.0
-offset_right = 312.0
-offset_bottom = 499.0
-text = "Map details"
-autowrap_mode = 3
-
-[node name="HintLabel" type="Label" parent="MainFrame" unique_id=1752949921]
-unique_name_in_owner = true
-visible = false
-layout_mode = 0
-offset_left = 63.0
-offset_top = 508.0
-offset_right = 1035.0
-offset_bottom = 532.0
-text = "Walk to the physical Map Device and press E."
+offset_left = 5.0
+offset_top = -119.0
+offset_right = 415.0
+offset_bottom = -91.0
+theme_override_colors/font_color = Color(0.84, 0.65, 0.38, 1)
+theme_override_font_sizes/font_size = 18
+text = "INSERTED MAP"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="AddDevMapButton" type="Button" parent="MainFrame" unique_id=1069128832]
+[node name="MapCardPanel" type="Control" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn" unique_id=882980904]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(410, 430)
+anchors_preset = 0
+offset_left = 63.0
+offset_top = -123.0
+offset_right = 473.0
+offset_bottom = 317.0
+scale = Vector2(1, 1.04)
+size_flags_vertical = 3
+
+[node name="MapSlotEmptyArt" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapCardPanel" unique_id=1745464591]
+unique_name_in_owner = true
+self_modulate = Color(1, 1, 1, 0.92)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -47.0
+offset_top = -11.5
+offset_right = -47.0
+offset_bottom = -11.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("slot_empty")
+expand_mode = 1
+
+[node name="MapCardPlaceholderArt" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapCardPanel" unique_id=1120374428]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -3.0
+offset_top = 58.0
+offset_right = -72.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("card_placeholder")
+expand_mode = 1
+
+[node name="MapIconArt" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapCardPanel" unique_id=368238916]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 383.0
-offset_top = 535.0
-offset_right = 663.0
-offset_bottom = 575.0
-text = "ADD DEV MAP"
+offset_left = 55.0
+offset_top = 92.0
+offset_right = 255.0
+offset_bottom = 292.0
+texture = ExtResource("map_ash_cistern")
+expand_mode = 1
 
-[node name="CloseButton" type="Button" parent="MainFrame" unique_id=1806482248]
+[node name="MapCardFrameArt" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapCardPanel" unique_id=1030191511]
+unique_name_in_owner = true
+self_modulate = Color(1, 1, 1, 0.92)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -47.0
+offset_top = -18.0
+offset_right = -29.0
+offset_bottom = 6.1538696
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("card_common")
+expand_mode = 1
+
+[node name="TierBadgeArt" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapCardPanel" unique_id=1081499998]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 828.0
-offset_top = 532.0
-offset_right = 996.0
-offset_bottom = 568.0
+offset_left = 90.0
+offset_top = 328.84616
+offset_right = 228.0
+offset_bottom = 436.84616
+texture = ExtResource("tier_badge")
+expand_mode = 1
+
+[node name="MapTierLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapCardPanel" unique_id=741596929]
+unique_name_in_owner = true
+z_index = 10
+layout_mode = 0
+offset_left = 81.0
+offset_top = 103.5
+offset_right = 205.0
+offset_bottom = 137.5
+theme_override_colors/font_color = Color(1, 0.78, 0.36, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.95)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 22
+text = "TIER —"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CompletedBadgeArt" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapCardPanel" unique_id=413707981]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 233.0
+offset_top = 319.23077
+offset_right = 319.0
+offset_bottom = 405.23077
+texture = ExtResource("completed_badge")
+expand_mode = 1
+
+[node name="MapNameLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapCardPanel" unique_id=1635429784]
+unique_name_in_owner = true
+z_index = 10
+layout_mode = 0
+offset_left = 6.0
+offset_top = 128.0
+offset_right = 332.0
+offset_bottom = 172.0
+theme_override_colors/font_color = Color(0.96, 0.88, 0.72, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.95)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 23
+text = "No Map Selected"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="MapSubtitleLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapCardPanel" unique_id=1659184881]
+unique_name_in_owner = true
+visible = false
+z_index = 10
+layout_mode = 0
+offset_left = 841.0
+offset_top = 789.0
+offset_right = 1155.0
+offset_bottom = 838.0
+theme_override_colors/font_color = Color(0.77, 0.58, 0.36, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.95)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "Store a physical map item in the Map Tab"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="EmptyStateLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapCardPanel" unique_id=1647262965]
+unique_name_in_owner = true
+visible = false
+z_index = 10
+layout_mode = 0
+offset_left = 827.0
+offset_top = 810.0
+offset_right = 1141.0
+offset_bottom = 848.0
+theme_override_colors/font_color = Color(0.58, 0.51, 0.41, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.95)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "Maps drop into the backpack first."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="LeftActionsHBox" type="Control" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn" unique_id=347464368]
+anchors_preset = 0
+offset_top = 474.0
+offset_right = 410.0
+offset_bottom = 474.0
+
+[node name="RemoveMapButton" type="Button" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/LeftActionsHBox" unique_id=1855533906]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 0
+offset_left = 103.0
+offset_top = -8.0
+offset_right = 280.0
+offset_bottom = 51.0
+scale = Vector2(0.76, 0.72)
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.82, 0.58, 1)
+theme_override_styles/normal = SubResource("StyleBoxTexture_secondary_idle")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_secondary_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_secondary_hover")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_secondary_disabled")
+text = "WITHDRAW MAP"
+
+[node name="OpenStashButton" type="Button" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/LeftActionsHBox" unique_id=1105793515]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 0
+offset_left = 250.0
+offset_top = -9.0
+offset_right = 429.0
+offset_bottom = 50.0
+scale = Vector2(0.71999514, 0.76)
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.82, 0.58, 1)
+theme_override_styles/normal = SubResource("StyleBoxTexture_secondary_idle")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_secondary_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_secondary_hover")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_secondary_disabled")
+text = "STORE MAPS"
+
+[node name="MapTabPanel" type="Control" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn" unique_id=2103284483]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(410, 190)
+anchors_preset = 0
+offset_left = -7.0
+offset_top = 494.0
+offset_right = 403.0
+offset_bottom = 684.0
+
+[node name="MapTabPanelArt" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapTabPanel" unique_id=520954104]
+self_modulate = Color(1, 1, 1, 0.82)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 55.0
+offset_top = -200.0
+offset_right = 15.0
+offset_bottom = -195.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("subpanel_frame")
+expand_mode = 1
+
+[node name="MapTabTitleRow" type="HBoxContainer" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapTabPanel" unique_id=224650838]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 19.0
+offset_right = 404.0
+offset_bottom = 43.0
+
+[node name="MapTabTitleLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapTabPanel/MapTabTitleRow" unique_id=360093484]
+unique_name_in_owner = true
+visible = false
+z_index = 10
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.87, 0.68, 0.39, 1)
+theme_override_font_sizes/font_size = 16
+text = "MAP TAB"
+
+[node name="MapTierFilterLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapTabPanel/MapTabTitleRow" unique_id=1188776518]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.55, 0.42, 1)
+text = "ALL TIERS"
+horizontal_alignment = 2
+
+[node name="MapStoredListLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapTabPanel" unique_id=202510343]
+unique_name_in_owner = true
+z_index = 10
+layout_mode = 0
+offset_left = 94.0
+offset_top = -167.0
+offset_right = 384.0
+offset_bottom = -29.0
+theme_override_colors/font_color = Color(0.82, 0.78, 0.68, 1)
+theme_override_font_sizes/font_size = 13
+text = "No stored maps."
+autowrap_mode = 2
+
+[node name="BackpackMapsLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/LeftColumn/MapTabPanel" unique_id=1530424425]
+unique_name_in_owner = true
+visible = false
+z_index = 10
+layout_mode = 0
+offset_left = 24.0
+offset_top = 154.0
+offset_right = 386.0
+offset_bottom = 184.0
+theme_override_colors/font_color = Color(0.62, 0.56, 0.48, 1)
+theme_override_font_sizes/font_size = 12
+text = "Backpack maps: 0 · M / Store Maps deposits them"
+
+[node name="RightColumn" type="VBoxContainer" parent="SafeMargin/MainVBox/BodyHBox" unique_id=1368719748]
+layout_mode = 0
+offset_left = 416.0
+offset_top = -64.0
+offset_right = 1032.0
+offset_bottom = 608.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.62
+theme_override_constants/separation = 10
+
+[node name="DetailsPanel" type="Control" parent="SafeMargin/MainVBox/BodyHBox/RightColumn" unique_id=1214188760]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+
+[node name="DetailsPanelArt" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/DetailsPanel" unique_id=134242835]
+self_modulate = Color(1, 1, 1, 0.82)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -54.0
+offset_top = -41.0
+offset_right = -40.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("subpanel_frame")
+expand_mode = 1
+
+[node name="DetailsTitleLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/DetailsPanel" unique_id=1634346175]
+unique_name_in_owner = true
+visible = false
+z_index = 10
+layout_mode = 0
+offset_left = -2.0
+offset_top = -32.0
+offset_right = 614.0
+offset_bottom = -6.0
+theme_override_colors/font_color = Color(0.87, 0.68, 0.39, 1)
+theme_override_font_sizes/font_size = 18
+text = "MAP DETAILS"
+
+[node name="DetailsGrid" type="GridContainer" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/DetailsPanel" unique_id=262819097]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 33.0
+offset_top = -5.0
+offset_right = 498.0
+offset_bottom = 142.0
+theme_override_constants/h_separation = 28
+theme_override_constants/v_separation = 5
+columns = 2
+
+[node name="TierKeyLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/DetailsPanel/DetailsGrid" unique_id=1797262457]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.56, 0.48, 1)
+text = "Map Tier"
+
+[node name="TierValueLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/DetailsPanel/DetailsGrid" unique_id=1330279206]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(190, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.85, 0.72, 1)
+text = "—"
+horizontal_alignment = 2
+
+[node name="ItemLevelKeyLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/DetailsPanel/DetailsGrid" unique_id=1790344797]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.56, 0.48, 1)
+text = "Item Level"
+
+[node name="ItemLevelValueLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/DetailsPanel/DetailsGrid" unique_id=1592372121]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(190, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.85, 0.72, 1)
+text = "—"
+horizontal_alignment = 2
+
+[node name="MapTypeKeyLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/DetailsPanel/DetailsGrid" unique_id=1351438620]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.56, 0.48, 1)
+text = "Map Type"
+
+[node name="MapTypeValueLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/DetailsPanel/DetailsGrid" unique_id=770016527]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(190, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.85, 0.72, 1)
+text = "—"
+horizontal_alignment = 2
+
+[node name="SizeKeyLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/DetailsPanel/DetailsGrid" unique_id=1327447611]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.56, 0.48, 1)
+text = "Map Size"
+
+[node name="SizeValueLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/DetailsPanel/DetailsGrid" unique_id=2001961240]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(190, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.85, 0.72, 1)
+text = "—"
+horizontal_alignment = 2
+
+[node name="QualityKeyLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/DetailsPanel/DetailsGrid" unique_id=1319216298]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.56, 0.48, 1)
+text = "Quality"
+
+[node name="QualityValueLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/DetailsPanel/DetailsGrid" unique_id=278022710]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(190, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.47, 0.66, 0.95, 1)
+text = "—"
+horizontal_alignment = 2
+
+[node name="ModifiersPanel" type="Control" parent="SafeMargin/MainVBox/BodyHBox/RightColumn" unique_id=1902805779]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 210)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ModifiersPanelArt" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/ModifiersPanel" unique_id=264982543]
+self_modulate = Color(1, 1, 1, 0.82)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -54.0
+offset_top = -3.0
+offset_bottom = -97.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("subpanel_frame")
+expand_mode = 1
+
+[node name="ModifiersTitleRow" type="HBoxContainer" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/ModifiersPanel" unique_id=1267332568]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 30.0
+offset_top = 39.0
+offset_right = 656.0
+offset_bottom = 65.0
+
+[node name="ModifiersTitleLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/ModifiersPanel/ModifiersTitleRow" unique_id=505590270]
+unique_name_in_owner = true
+visible = false
+z_index = 10
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.87, 0.68, 0.39, 1)
+theme_override_font_sizes/font_size = 18
+text = "MAP MODIFIERS"
+
+[node name="ModifierCountLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/ModifiersPanel/ModifiersTitleRow" unique_id=1414222694]
+unique_name_in_owner = true
+z_index = 10
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.55, 0.42, 1)
+text = "0 MODIFIERS"
+horizontal_alignment = 2
+
+[node name="ModifiersList" type="VBoxContainer" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/ModifiersPanel" unique_id=1075821938]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 29.0
+offset_top = 71.0
+offset_right = 543.0
+offset_bottom = 222.0
+theme_override_constants/separation = 5
+
+[node name="RewardsPanel" type="Control" parent="SafeMargin/MainVBox/BodyHBox/RightColumn" unique_id=2007316608]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+
+[node name="RewardsPanelArt" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/RewardsPanel" unique_id=907573597]
+self_modulate = Color(1, 1, 1, 0.82)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -37.000015
+offset_top = -121.0
+offset_right = 66.04761
+offset_bottom = -100.28479
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.84000003, 0.83999515)
+mouse_filter = 2
+texture = ExtResource("subpanel_frame")
+expand_mode = 1
+
+[node name="RewardsTitleLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/RewardsPanel" unique_id=1347242839]
+unique_name_in_owner = true
+visible = false
+z_index = 10
+layout_mode = 0
+offset_left = 195.0
+offset_top = -133.0
+offset_right = 821.0
+offset_bottom = -107.0
+theme_override_colors/font_color = Color(0.87, 0.68, 0.39, 1)
+theme_override_font_sizes/font_size = 18
+text = "POTENTIAL REWARDS"
+
+[node name="RewardIconsRow" type="HBoxContainer" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/RewardsPanel" unique_id=1605390472]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 36.0
+offset_top = -98.0
+offset_right = 576.4762
+offset_bottom = -46.0
+scale = Vector2(1.2000049, 1.5599952)
+theme_override_constants/separation = 10
+
+[node name="RewardIcon1" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/RewardsPanel/RewardIconsRow" unique_id=617275]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(54, 50)
+layout_mode = 2
+texture = ExtResource("reward_currency")
+expand_mode = 1
+
+[node name="RewardIcon2" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/RewardsPanel/RewardIconsRow" unique_id=1710071760]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(54, 50)
+layout_mode = 2
+texture = ExtResource("reward_skill_gem")
+expand_mode = 1
+
+[node name="RewardIcon3" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/RewardsPanel/RewardIconsRow" unique_id=1130818127]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(54, 50)
+layout_mode = 2
+texture = ExtResource("reward_crafting_shards")
+expand_mode = 1
+
+[node name="RewardIcon4" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/RewardsPanel/RewardIconsRow" unique_id=362252813]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(54, 50)
+layout_mode = 2
+texture = ExtResource("reward_boss_loot")
+expand_mode = 1
+
+[node name="RewardIcon5" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/RewardsPanel/RewardIconsRow" unique_id=1422898247]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(54, 50)
+layout_mode = 2
+texture = ExtResource("reward_maps")
+expand_mode = 1
+
+[node name="RewardIcon6" type="TextureRect" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/RewardsPanel/RewardIconsRow" unique_id=837819847]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(54, 50)
+layout_mode = 2
+texture = ExtResource("reward_completion")
+expand_mode = 1
+
+[node name="RewardsHintLabel" type="Label" parent="SafeMargin/MainVBox/BodyHBox/RightColumn/RewardsPanel" unique_id=1990594376]
+unique_name_in_owner = true
+visible = false
+z_index = 10
+layout_mode = 0
+offset_left = 267.0
+offset_top = -31.0
+offset_right = 889.0
+offset_bottom = -3.0
+theme_override_colors/font_color = Color(0.62, 0.56, 0.48, 1)
+text = "Rewards are estimated from tier, rarity, and modifiers."
+
+[node name="FooterBar" type="HBoxContainer" parent="SafeMargin/MainVBox" unique_id=1981675802]
+visible = false
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 0
+offset_left = 18.0
+offset_top = 492.0
+offset_right = 1058.0
+offset_bottom = 563.0
+theme_override_constants/separation = 12
+
+[node name="FooterLeftButtons" type="HBoxContainer" parent="SafeMargin/MainVBox/FooterBar" unique_id=1010164320]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="ScarabsButton" type="Button" parent="SafeMargin/MainVBox/FooterBar/FooterLeftButtons" unique_id=1117075834]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.82, 0.58, 1)
+theme_override_styles/normal = SubResource("StyleBoxTexture_secondary_idle")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_secondary_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_secondary_hover")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_secondary_disabled")
+text = "SCARABS"
+
+[node name="AtlasPassivesButton" type="Button" parent="SafeMargin/MainVBox/FooterBar/FooterLeftButtons" unique_id=812747676]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(170, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.82, 0.58, 1)
+theme_override_styles/normal = SubResource("StyleBoxTexture_secondary_idle")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_secondary_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_secondary_hover")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_secondary_disabled")
+text = "ATLAS PASSIVES"
+
+[node name="FooterCenter" type="HBoxContainer" parent="SafeMargin/MainVBox/FooterBar" unique_id=194166177]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="ActivateMapButton" type="Button" parent="SafeMargin/MainVBox/FooterBar/FooterCenter" unique_id=1559958857]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 54)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.62, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxTexture_activate_idle")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_activate_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_activate_hover")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_activate_disabled")
+text = "ACTIVATE MAP"
+
+[node name="FooterRightButtons" type="HBoxContainer" parent="SafeMargin/MainVBox/FooterBar" unique_id=1557095231]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="QuickClearButton" type="Button" parent="SafeMargin/MainVBox/FooterBar/FooterRightButtons" unique_id=1188418446]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.82, 0.58, 1)
+theme_override_styles/normal = SubResource("StyleBoxTexture_secondary_idle")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_secondary_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_secondary_hover")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_secondary_disabled")
+text = "QUICK CLEAR"
+
+[node name="FooterCloseButton" type="Button" parent="SafeMargin/MainVBox/FooterBar/FooterRightButtons" unique_id=2082929988]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.82, 0.58, 1)
+theme_override_styles/normal = SubResource("StyleBoxTexture_secondary_idle")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_secondary_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_secondary_hover")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_secondary_disabled")
 text = "CLOSE"

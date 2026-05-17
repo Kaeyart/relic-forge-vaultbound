@@ -323,9 +323,60 @@ text = "Deposit All Backpack"
 [node name="CloseButton" type="Button" parent="Root" unique_id=1179771261]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 844.0
+offset_left = 873.0
 offset_top = 20.0
-offset_right = 974.0
+offset_right = 1003.0
 offset_bottom = 52.0
 focus_mode = 0
 text = "Close"
+
+[node name="GeneralTabButton" type="Button" parent="Root" unique_id=1031127599]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 424.0
+offset_top = 18.0
+offset_right = 544.0
+offset_bottom = 52.0
+focus_mode = 0
+text = "Items"
+
+[node name="MapsTabButton" type="Button" parent="Root" unique_id=1926664780]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 552.0
+offset_top = 18.0
+offset_right = 672.0
+offset_bottom = 52.0
+focus_mode = 0
+text = "Maps"
+
+[node name="TierPrevButton" type="Button" parent="Root" unique_id=810456718]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 702.0
+offset_top = 20.0
+offset_right = 742.0
+offset_bottom = 54.0
+focus_mode = 0
+text = "<"
+
+[node name="MapTierFilterLabel" type="Label" parent="Root" unique_id=1462522728]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 738.0
+offset_top = 18.0
+offset_right = 832.0
+offset_bottom = 52.0
+text = "All Tiers"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TierNextButton" type="Button" parent="Root" unique_id=1497273380]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 827.0
+offset_top = 17.0
+offset_right = 867.0
+offset_bottom = 51.0
+focus_mode = 0
+text = ">"
