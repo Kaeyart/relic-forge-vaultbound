@@ -14,6 +14,7 @@ var dev_tools_panel: Node = null
 var world_camera: Camera2D = null
 var loot_pickup_pet: Node2D = null
 var loot_filter_panel: Node = null
+var flask_hud: Node = null
 var map_return_portal: Node2D = null
 
 func _ready() -> void:
@@ -34,6 +35,7 @@ func _ready() -> void:
 	_install_dev_tools()
 	_install_loot_pickup_pet()
 	_install_loot_filter_panel()
+	_install_flask_hud()
 	_install_map_return_portal()
 
 func _process(delta: float) -> void:
@@ -72,6 +74,8 @@ func _process(delta: float) -> void:
 		RVSaveSystem.save(state)
 
 	hud.update_from_state(state)
+	if flask_hud != null and is_instance_valid(flask_hud) and flask_hud.has_method("update_from_state"):
+		flask_hud.call("update_from_state", state)
 	panels.update_from_state(state)
 	if loot_filter_panel != null and loot_filter_panel.has_method("update_from_state"):
 		loot_filter_panel.call("update_from_state", state)
@@ -307,6 +311,20 @@ func _install_loot_filter_panel() -> void:
 	add_child(loot_filter_panel)
 	if loot_filter_panel.has_method("update_from_state"):
 		loot_filter_panel.call("update_from_state", state)
+
+
+func _install_flask_hud() -> void:
+	if flask_hud != null and is_instance_valid(flask_hud):
+		return
+	var scene_path: String = "res://scenes/ui/hud/FlaskHUD.tscn"
+	if not ResourceLoader.exists(scene_path):
+		push_warning("Flask HUD scene missing: " + scene_path)
+		return
+	var packed: PackedScene = load(scene_path)
+	flask_hud = packed.instantiate()
+	add_child(flask_hud)
+	if flask_hud.has_method("update_from_state"):
+		flask_hud.call("update_from_state", state)
 
 func _toggle_dev_tools() -> void:
 	if dev_tools_panel == null:

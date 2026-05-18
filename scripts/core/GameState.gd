@@ -197,6 +197,7 @@ func init_new() -> void:
 	full_restore()
 
 func ensure_defaults() -> void:
+	RVFlaskSystem.ensure_defaults(self)
 	# Patch 081A: flask + active map portal defaults.
 	health_flask_max_charges = max(1, health_flask_max_charges)
 	mana_flask_max_charges = max(1, mana_flask_max_charges)
@@ -409,6 +410,7 @@ func enter_hub() -> void:
 	room_index = 0
 	player_pos = Vector2(640.0, 360.0)
 	full_restore()
+	RVFlaskSystem.refill_all(self)
 	clear_prompt()
 
 func enter_combat(activity: Dictionary) -> void:

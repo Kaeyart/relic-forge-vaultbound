@@ -1,55 +1,70 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene format=3 uid="uid://38o7lrasou0a"]
 
-[ext_resource type="Script" path="res://scripts/ui/UIPanelRoot.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/ui/panels/InventoryPanel.tscn" id="2"]
+[ext_resource type="Script" uid="uid://c80c8flql562a" path="res://scripts/ui/UIPanelRoot.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://do3dw57mede1m" path="res://scenes/ui/panels/InventoryPanel.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/panels/CraftingPanel.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/panels/PassiveAtlasPanel.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://scenes/ui/panels/SkillGemsPanel.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://dtvriitmtuqhx" path="res://scenes/ui/panels/SkillGemsPanel.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/ui/panels/CharacterPanel.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://scenes/ui/panels/StashPanel.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://7pqbomd63yrt" path="res://scenes/ui/panels/StashPanel.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://scenes/ui/panels/ActivityPanel.tscn" id="8"]
-[ext_resource type="PackedScene" path="res://scenes/ui/panels/MapDevicePanel.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://dwx83wbou3bna" path="res://scenes/ui/panels/MapDevicePanel.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://chc0yxwpbcnpc" path="res://scenes/ui/panels/LootFilterPanel.tscn" id="99_loot_filter"]
 
-[ext_resource type="PackedScene" path="res://scenes/ui/panels/LootFilterPanel.tscn" id="99_loot_filter"]
-[node name="UIPanelRoot" type="CanvasLayer"]
+[node name="UIPanelRoot" type="CanvasLayer" unique_id=1245313723]
 script = ExtResource("1")
 
-[node name="Root" type="Control" parent="."]
+[node name="Root" type="Control" parent="." unique_id=1714200479]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="InventoryPanel" parent="Root" instance=ExtResource("2")]
+[node name="InventoryPanel" parent="Root" unique_id=1050777070 instance=ExtResource("2")]
 unique_name_in_owner = true
 visible = false
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1224.0
+offset_bottom = 678.0
 
-[node name="CraftingPanel" parent="Root" instance=ExtResource("3")]
-unique_name_in_owner = true
-visible = false
-
-[node name="PassiveAtlasPanel" parent="Root" instance=ExtResource("4")]
-unique_name_in_owner = true
-visible = false
-
-[node name="SkillGemsPanel" parent="Root" instance=ExtResource("5")]
-unique_name_in_owner = true
-visible = false
-
-[node name="CharacterPanel" parent="Root" instance=ExtResource("6")]
+[node name="CraftingPanel" parent="Root" unique_id=766293577 instance=ExtResource("3")]
 unique_name_in_owner = true
 visible = false
 
-[node name="StashPanel" parent="Root" instance=ExtResource("7")]
+[node name="PassiveAtlasPanel" parent="Root" unique_id=1604059939 instance=ExtResource("4")]
 unique_name_in_owner = true
 visible = false
 
-[node name="ActivityPanel" parent="Root" instance=ExtResource("8")]
+[node name="SkillGemsPanel" parent="Root" unique_id=661502111 instance=ExtResource("5")]
 unique_name_in_owner = true
 visible = false
- [node name="MapDevicePanel" parent="Root" instance=ExtResource("9")]
+layout_mode = 1
+
+[node name="CharacterPanel" parent="Root" unique_id=448696380 instance=ExtResource("6")]
 unique_name_in_owner = true
 visible = false
-[node name="LootFilterPanel" parent="Root" instance=ExtResource("99_loot_filter")]
+
+[node name="StashPanel" parent="Root" unique_id=2077939993 instance=ExtResource("7")]
 unique_name_in_owner = true
 visible = false
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1020.0
+offset_bottom = 580.0
+
+[node name="ActivityPanel" parent="Root" unique_id=2110503417 instance=ExtResource("8")]
+unique_name_in_owner = true
+visible = false
+
+[node name="MapDevicePanel" parent="Root" unique_id=1935646492 instance=ExtResource("9")]
+visible = false
+layout_mode = 1
+
+[node name="LootFilterPanel" parent="Root" unique_id=1132738146 instance=ExtResource("99_loot_filter")]
+visible = true
+layout_mode = 1

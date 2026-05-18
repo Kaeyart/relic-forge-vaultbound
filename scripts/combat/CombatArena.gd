@@ -6,6 +6,7 @@ const CombatGeometrySystemScript := preload("res://scripts/systems/CombatGeometr
 const RVLootDropActorScript := preload("res://scripts/combat/LootDropActor.gd")
 const RVFloatingCombatTextSystemScript := preload("res://scripts/systems/FloatingCombatTextSystem.gd")
 const RVLootDropSystemScript := preload("res://scripts/systems/LootDropSystem.gd")
+const ProgressionRewardSystemScript := preload("res://scripts/systems/ProgressionRewardSystem.gd")
 const SpellVFXSystemScript := preload("res://scripts/visuals/SpellVFXSystem.gd")
 const CombatFeedbackSystemScript := preload("res://scripts/systems/CombatFeedbackSystem.gd")
 const MapPropVisualSystemScript := preload("res://scripts/visuals/MapPropVisualSystem.gd")
@@ -768,6 +769,7 @@ func _on_enemy_died(enemy: RVEnemyActor) -> void:
 	CombatFeedbackSystemScript.enemy_death(self, death_root, enemy.global_position, [])
 	if state_ref != null:
 		RVProgressionSystem.award_kill(state_ref)
+		ProgressionRewardSystemScript.award_enemy_kill(state_ref, enemy, activity)
 		FlaskSystemScript.on_enemy_killed(state_ref, enemy)
 		if str(activity.get("kind", "")) == "map":
 			var depth: int = max(1, int(Dictionary(activity.get("map", {})).get("map_level", state_ref.level)))
