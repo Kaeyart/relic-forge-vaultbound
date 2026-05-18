@@ -19,9 +19,12 @@ func _ready() -> void:
 	state.init_new()
 	RVSaveSystem.load_into(state)
 	state.ensure_defaults()
+	# Patch 085S: clear stale panel mode after scene ownership cleanup.
+	state.panel_mode = ""
 	FlaskSystemScript.ensure_defaults(state)
 	RVMapSystem.ensure_defaults(state)
 	state.enter_hub()
+	_rf_085t_sanitize_runtime_input_state("boot")
 	_rf_restore_gameplay_input_after_load()
 	combat.visible = false
 	hub.visible = true
@@ -35,29 +38,129 @@ func _ready() -> void:
 	_install_loot_pickup_pet()
 	_install_map_return_portal()
 
-func _update_player(delta: float) -> void:
-	if state.panel_mode != "":
-		player.sync_from_state(state)
+func _process(delta: float) -> void:
+	# Patch 085V: restore the runtime process loop.
+	# Diagnostic showed _update_player() existed but no _process() was calling it.
+	if state == null:
 		return
+	if state.pending_start_activity != null and not state.pending_start_activity.is_empty():
+		var pending_activity: Dictionary = state.pending_start_activity.duplicate(true)
+		state.pending_start_activity.clear()
+		state.panel_mode = ""
+		_start_activity(pending_activity)
+		return
+	_update_player(delta)
+	RVSkillSystem.update(state, delta)
+	if state.mode == "hub":
+		if hub != null and is_instance_valid(hub) and hub.has_method("update_focus"):
+			hub.update_focus(state)
+	elif state.mode == "combat":
+		if combat != null and is_instance_valid(combat) and not combat.is_queued_for_deletion():
+			combat.update_combat(state, player, delta)
+			if combat.has_method("enforce_layout_entity_collisions"):
+				combat.call("enforce_layout_entity_collisions")
+			if combat.has_method("enforce_layout_projectile_collisions"):
+				combat.call("enforce_layout_projectile_collisions", delta)
+			RVLootPickupAssistSystem.update(state, combat, player, delta)
+			if typeof(RVLootFilterSystem) != TYPE_NIL:
+				RVLootFilterSystem.update_ground_loot(state, combat)
+			if loot_pickup_pet != null and is_instance_valid(loot_pickup_pet) and not loot_pickup_pet.is_queued_for_deletion() and loot_pickup_pet.has_method("sync_from_state"):
+				loot_pickup_pet.call("sync_from_state", state, player)
+	else:
+		state.mode = "hub"
+	if state.notice_time > 0.0:
+		state.notice_time = max(0.0, state.notice_time - delta)
+	autosave_timer += delta
+	if autosave_timer >= 10.0:
+		autosave_timer = 0.0
+		RVSaveSystem.save(state)
+	if hud != null and is_instance_valid(hud) and hud.has_method("update_from_state"):
+		hud.update_from_state(state)
+	if panels != null and is_instance_valid(panels) and panels.has_method("update_from_state"):
+		panels.update_from_state(state)
+	_update_world_camera(delta)
+	_consume_pending_map_activity()
+
+func _update_player(delta: float) -> void:
+	# Patch 085U: hard movement restore.
+	# Movement must not be permanently blocked by stale/invisible UI state or bad speed values.
+	_rf_085u_repair_input_state()
+
 	var move: Vector2 = Vector2.ZERO
-	if Input.is_key_pressed(KEY_W): move.y -= 1.0
-	if Input.is_key_pressed(KEY_S): move.y += 1.0
-	if Input.is_key_pressed(KEY_A): move.x -= 1.0
-	if Input.is_key_pressed(KEY_D): move.x += 1.0
+	if _rf_085u_gameplay_input_allowed():
+		if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
+			move.y -= 1.0
+		if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN):
+			move.y += 1.0
+		if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
+			move.x -= 1.0
+		if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
+			move.x += 1.0
+
+	var previous_pos: Vector2 = state.player_pos
+	var speed: float = float(state.player_speed)
+	if speed <= 1.0:
+		speed = 220.0
+		state.player_speed = speed
+
 	if move.length() > 0.01:
 		move = move.normalized()
-	var _rf_prev_player_pos: Vector2 = state.player_pos
-	state.player_pos += move * state.player_speed * delta
-	if state.mode == "combat" and combat != null and combat.has_method("constrain_player_movement"):
-		state.player_pos = combat.call("constrain_player_movement", _rf_prev_player_pos, state.player_pos, state.player_radius)
-	elif state.mode == "combat" and combat != null and combat.has_method("constrain_player_position"):
-		state.player_pos = combat.constrain_player_position(state.player_pos)
+		state.player_pos += move * speed * delta
+
+	if state.mode == "combat" and combat != null and is_instance_valid(combat) and not combat.is_queued_for_deletion():
+		if combat.has_method("constrain_player_movement"):
+			state.player_pos = Vector2(combat.call("constrain_player_movement", previous_pos, state.player_pos, state.player_radius))
+		elif combat.has_method("constrain_player_position"):
+			state.player_pos = Vector2(combat.call("constrain_player_position", state.player_pos))
 	else:
 		state.player_pos.x = clamp(state.player_pos.x, 80.0, 1200.0)
 		state.player_pos.y = clamp(state.player_pos.y, 95.0, 620.0)
+
 	state.invuln = max(0.0, state.invuln - delta)
 	state.player_mana = min(state.max_mana, state.player_mana + 14.0 * delta)
-	player.sync_from_state(state)
+	if player != null and is_instance_valid(player):
+		player.sync_from_state(state)
+
+
+func _rf_085u_gameplay_input_allowed() -> bool:
+	if state == null:
+		return false
+	var panel_mode_text: String = str(state.panel_mode)
+	if panel_mode_text == "":
+		return true
+
+	# Valid visible panels intentionally block movement. Stale/invisible panel names should not.
+	if panels != null and is_instance_valid(panels) and panels.has_method("has_panel_mode"):
+		if bool(panels.call("has_panel_mode", panel_mode_text)):
+			return false
+
+	state.panel_mode = ""
+	return true
+
+func _rf_085u_repair_input_state() -> void:
+	if state == null:
+		return
+	if state.mode != "hub" and state.mode != "combat":
+		state.mode = "hub"
+	if float(state.player_speed) <= 1.0:
+		state.player_speed = 220.0
+
+	var panel_mode_text: String = str(state.panel_mode)
+	if panel_mode_text != "":
+		if panels == null or not is_instance_valid(panels) or not panels.has_method("has_panel_mode"):
+			state.panel_mode = ""
+		elif not bool(panels.call("has_panel_mode", panel_mode_text)):
+			state.panel_mode = ""
+
+func _rf_085u_emergency_unlock() -> void:
+	if state != null:
+		state.panel_mode = ""
+		if float(state.player_speed) <= 1.0:
+			state.player_speed = 220.0
+		state.add_notice("Input unlocked")
+	if player != null and is_instance_valid(player):
+		player.sync_from_state(state)
+
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
@@ -592,3 +695,67 @@ func _rf_set_control_tree_mouse_filter(root: Node, value: int) -> void:
 		control.mouse_filter = value
 	for child: Node in root.get_children():
 		_rf_set_control_tree_mouse_filter(child, value)
+
+# -----------------------------------------------------------------------------
+# Patch 085T: movement soft-lock guard.
+# Keeps scene-authored UI ownership, but prevents stale/invalid panel state from
+# freezing movement after panel scene migrations.
+# -----------------------------------------------------------------------------
+func _rf_085t_valid_panel_modes() -> Array[String]:
+	return [
+		"inventory",
+		"crafting",
+		"passive_atlas",
+		"skill_gems",
+		"stash",
+		"activities",
+		"map_device",
+		"loot_filter",
+		"character",
+	]
+
+func _rf_085t_sanitize_runtime_input_state(reason: String = "") -> void:
+	if state == null:
+		return
+	var mode_value: String = str(state.get("mode") if state.get("mode") != null else "")
+	if mode_value != "hub" and mode_value != "combat":
+		state.mode = "hub"
+	var panel_value: String = str(state.get("panel_mode") if state.get("panel_mode") != null else "")
+	if panel_value != "" and not _rf_085t_valid_panel_modes().has(panel_value):
+		state.panel_mode = ""
+	# Scene-owned panels can disappear during refactors. If the root does not expose
+	# the requested panel anymore, clear the stale mode instead of freezing movement.
+	panel_value = str(state.get("panel_mode") if state.get("panel_mode") != null else "")
+	if panel_value != "" and panels != null and is_instance_valid(panels) and panels.has_method("has_panel_mode"):
+		var exists_value: Variant = panels.call("has_panel_mode", panel_value)
+		if typeof(exists_value) == TYPE_BOOL and not bool(exists_value):
+			state.panel_mode = ""
+	# Defensive minimums so a bad stat recompute cannot create an invisible soft-lock.
+	if state.get("player_speed") == null or float(state.get("player_speed")) <= 1.0:
+		state.player_speed = 220.0
+	if state.get("player_pos") == null:
+		state.player_pos = Vector2(640.0, 360.0)
+
+func _rf_085t_panel_blocks_movement() -> bool:
+	if state == null:
+		return false
+	var panel_value: String = str(state.get("panel_mode") if state.get("panel_mode") != null else "")
+	if panel_value == "":
+		return false
+	# Panels intentionally block movement only while a valid panel is actually open.
+	if not _rf_085t_valid_panel_modes().has(panel_value):
+		state.panel_mode = ""
+		return false
+	return true
+
+func _rf_085t_emergency_unlock_input() -> void:
+	if state != null:
+		state.panel_mode = ""
+		if str(state.get("mode") if state.get("mode") != null else "") != "combat":
+			state.mode = "hub"
+		if state.get("player_speed") == null or float(state.get("player_speed")) <= 1.0:
+			state.player_speed = 220.0
+	if player != null and is_instance_valid(player):
+		player.sync_from_state(state)
+	if state != null and state.has_method("add_notice"):
+		state.call("add_notice", "Input unlocked")

@@ -17,7 +17,6 @@ func _ready() -> void:
 	_ensure_loot_filter_panel()
 
 func update_from_state(state: RVGameState) -> void:
-	_rf_085n_sync_input_ownership(state)
 	if loot_filter_panel != null and is_instance_valid(loot_filter_panel):
 		if loot_filter_panel is CanvasItem:
 			(loot_filter_panel as CanvasItem).visible = str(state.get("panel_mode")) == "loot_filter"
@@ -86,9 +85,6 @@ func _ensure_loot_filter_panel() -> void:
 
 
 # Patch 085N: root input ownership guard.
-func _rf_085n_sync_input_ownership(state: Object) -> void:
-	var panel_open: bool = state != null and str(state.get("panel_mode")) != ""
-	mouse_filter = Control.MOUSE_FILTER_PASS if panel_open else Control.MOUSE_FILTER_IGNORE
 
 func _rf_set_descendant_mouse_filter(value: int) -> void:
 	_rf_set_descendant_mouse_filter_recursive(self as Node, value)
@@ -101,3 +97,19 @@ func _rf_set_descendant_mouse_filter_recursive(root: Node, value: int) -> void:
 		control.mouse_filter = value
 	for child: Node in root.get_children():
 		_rf_set_descendant_mouse_filter_recursive(child, value)
+
+# Patch 085R: parse-safe input ownership sync.
+# UIPanelRoot is not guaranteed to be a Control root, so never assign bare
+# `mouse_filter` here. Only descendant Control nodes receive mouse-filter changes.
+
+func has_panel_mode(mode: String) -> bool:
+	if mode == "":
+		return true
+	# Most panel scripts are scene-owned children. Check common naming patterns.
+	for child: Node in get_children():
+		var n: String = str(child.name).to_lower()
+		if n == mode.to_lower() or n == (mode + "_panel").to_lower() or n == mode.replace("_", "").to_lower() or n.contains(mode.replace("_", "")):
+			return true
+	# Compatibility: do not treat unknown-but-valid panel modes as fatal here.
+	# GameRoot keeps the canonical valid list.
+	return true
