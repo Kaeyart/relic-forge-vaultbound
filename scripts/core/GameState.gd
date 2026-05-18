@@ -1,5 +1,9 @@
 class_name RVGameState
 extends RefCounted
+# Patch 085A: character passive tree state.
+var unlocked_passive_nodes: Array[String] = []
+var passive_stat_bonuses: Dictionary = {}
+var passive_rules: Array[String] = []
 
 const SAVE_VERSION: int = 81
 
@@ -197,6 +201,12 @@ func init_new() -> void:
 	full_restore()
 
 func ensure_defaults() -> void:
+	if unlocked_passive_nodes.is_empty():
+		unlocked_passive_nodes = ["start_vaultbound"]
+	if passive_stat_bonuses == null:
+		passive_stat_bonuses = {}
+	if passive_rules == null:
+		passive_rules = []
 	RVFlaskSystem.ensure_defaults(self)
 	# Patch 081A: flask + active map portal defaults.
 	health_flask_max_charges = max(1, health_flask_max_charges)
@@ -239,6 +249,7 @@ func ensure_defaults() -> void:
 	support_gem_cursor = clamp(support_gem_cursor, 0, max(0, support_gem_inventory.size() - 1))
 	spirit_gem_cursor = clamp(spirit_gem_cursor, 0, max(0, spirit_gem_inventory.size() - 1))
 	RVClassAscendancySystem.ensure_defaults(self)
+	RVPassiveTreeSystem.ensure_defaults(self)
 	_recompute_spirit_reserved()
 
 func _ensure_default_gems() -> void:

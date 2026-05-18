@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://rv_passive_tree_node_button_085f"]
+
+[ext_resource type="Script" path="res://scripts/ui/components/PassiveTreeNodeButton.gd" id="1_node_script"]
+
+[node name="PassiveTreeNodeButton" type="Button"]
+custom_minimum_size = Vector2(34, 34)
+size = Vector2(34, 34)
+focus_mode = 0
+text = "•"
+script = ExtResource("1_node_script")

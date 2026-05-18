@@ -1,31 +1,100 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://scripts/ui/panels/PassiveAtlasPanel.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/panels/PassiveAtlasPanel.gd" id="1_panel"]
+[ext_resource type="Script" path="res://scripts/ui/components/PassiveTreeConnectionCanvas.gd" id="2_connections"]
 
 [node name="PassiveAtlasPanel" type="PanelContainer"]
-layout_mode = 0
-offset_left = 260.0
-offset_top = 110.0
-offset_right = 1020.0
-offset_bottom = 610.0
-script = ExtResource("1")
-title = "Passive Atlas"
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_panel")
 
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="SafeMargin" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 24
+theme_override_constants/margin_left = 28
 theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 24
+theme_override_constants/margin_right = 28
 theme_override_constants/margin_bottom = 24
 
-[node name="VBox" type="VBoxContainer" parent="Margin"]
+[node name="MainHBox" type="HBoxContainer" parent="SafeMargin"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="TreePanel" type="PanelContainer" parent="SafeMargin/MainHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TreeVBox" type="VBoxContainer" parent="SafeMargin/MainHBox/TreePanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HeaderRow" type="HBoxContainer" parent="SafeMargin/MainHBox/TreePanel/TreeVBox"]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="Margin/VBox"]
+[node name="TreeTitleLabel" type="Label" parent="SafeMargin/MainHBox/TreePanel/TreeVBox/HeaderRow"]
 layout_mode = 2
-text = "Passive Atlas"
+size_flags_horizontal = 3
+text = "Character Passive Tree"
 
-[node name="ContentLabel" type="Label" parent="Margin/VBox"]
+[node name="PointsLabel" type="Label" parent="SafeMargin/MainHBox/TreePanel/TreeVBox/HeaderRow"]
 unique_name_in_owner = true
 layout_mode = 2
-text = ""
+text = "Passive points: 0"
+horizontal_alignment = 2
+
+[node name="TreeScroll" type="ScrollContainer" parent="SafeMargin/MainHBox/TreePanel/TreeVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 2
+vertical_scroll_mode = 2
+
+[node name="PassiveTreeCanvas" type="Control" parent="SafeMargin/MainHBox/TreePanel/TreeVBox/TreeScroll"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(1600, 1250)
+layout_mode = 2
+
+[node name="Connections" type="Control" parent="SafeMargin/MainHBox/TreePanel/TreeVBox/TreeScroll/PassiveTreeCanvas"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 1600.0
+offset_bottom = 1250.0
+mouse_filter = 2
+script = ExtResource("2_connections")
+
+[node name="DetailsPanel" type="PanelContainer" parent="SafeMargin/MainHBox"]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DetailsVBox" type="VBoxContainer" parent="SafeMargin/MainHBox/DetailsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="DetailsTitle" type="Label" parent="SafeMargin/MainHBox/DetailsPanel/DetailsVBox"]
+layout_mode = 2
+text = "Selected Passive"
+
+[node name="DetailsText" type="RichTextLabel" parent="SafeMargin/MainHBox/DetailsPanel/DetailsVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "Select a passive node."
+fit_content = false
+
+[node name="UnlockButton" type="Button" parent="SafeMargin/MainHBox/DetailsPanel/DetailsVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Unlock Passive"
+
+[node name="RefundButton" type="Button" parent="SafeMargin/MainHBox/DetailsPanel/DetailsVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Refund Passive"
+
+[node name="StatusLabel" type="Label" parent="SafeMargin/MainHBox/DetailsPanel/DetailsVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+text = "Status"
