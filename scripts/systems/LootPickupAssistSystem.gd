@@ -277,3 +277,7 @@ static func _notice(state: Object, text: String) -> void:
 
 static func _is_null_or_missing(state: Object, key: String) -> bool:
 	return state.get(key) == null
+
+
+static func loot_filter_should_auto_pickup(state: Object, item: Dictionary) -> bool:
+	return RVLootFilterSystem.should_auto_pickup(state, item)

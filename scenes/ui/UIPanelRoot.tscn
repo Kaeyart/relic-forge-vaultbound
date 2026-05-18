@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/UIPanelRoot.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/panels/InventoryPanel.tscn" id="2"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/panels/ActivityPanel.tscn" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/ui/panels/MapDevicePanel.tscn" id="9"]
 
+[ext_resource type="PackedScene" path="res://scenes/ui/panels/LootFilterPanel.tscn" id="99_loot_filter"]
 [node name="UIPanelRoot" type="CanvasLayer"]
 script = ExtResource("1")
 
@@ -47,5 +48,8 @@ visible = false
 unique_name_in_owner = true
 visible = false
  [node name="MapDevicePanel" parent="Root" instance=ExtResource("9")]
+unique_name_in_owner = true
+visible = false
+[node name="LootFilterPanel" parent="Root" instance=ExtResource("99_loot_filter")]
 unique_name_in_owner = true
 visible = false

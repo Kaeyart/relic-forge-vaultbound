@@ -204,17 +204,21 @@ func _spawn_encounter_plan(state: RVGameState, map_item: Dictionary) -> void:
 
 func update_combat(state: RVGameState, player: RVPlayerActor, delta: float) -> void:
 	_rf_ensure_combat_layers()
-	_rf_update_ground_loot()
 	if not active:
 		return
+	_rf_update_ground_loot()
 	state.prompt_text = ""
 	_update_enemy_zones(state, player, delta)
-	for enemy_node: Node in enemies_root.get_children():
+	for enemy_node: Node in _rf_safe_children(enemies_root):
+		if not is_instance_valid(enemy_node) or enemy_node.is_queued_for_deletion():
+			continue
 		if enemy_node is RVEnemyActor:
 			var enemy: RVEnemyActor = enemy_node
 			CombatPackAISystemScript.apply_context(enemy, enemies_root, player.global_position, delta)
 			enemy.update_ai(player.global_position, delta)
-	for projectile_node: Node in projectiles_root.get_children():
+	for projectile_node: Node in _rf_safe_children(projectiles_root):
+		if not is_instance_valid(projectile_node) or projectile_node.is_queued_for_deletion():
+			continue
 		if projectile_node is RVProjectileActor:
 			var projectile: RVProjectileActor = projectile_node
 			if projectile.from_enemy:
@@ -225,7 +229,7 @@ func update_combat(state: RVGameState, player: RVPlayerActor, delta: float) -> v
 				_check_projectile_enemy_hits(projectile, state)
 	if str(activity.get("kind", "")) == "map":
 		_update_map_objective(state)
-	if enemies_root.get_child_count() == 0 and not room_clear:
+	if _rf_child_count(enemies_root) == 0 and not room_clear:
 		_on_room_clear(state)
 	_update_room_interaction_prompt(state)
 
@@ -525,7 +529,9 @@ func _on_room_clear(state: RVGameState) -> void:
 func _update_map_objective(state: RVGameState) -> void:
 	var alive_by_pack: Dictionary = {}
 	var boss_alive: bool = false
-	for enemy_node: Node in enemies_root.get_children():
+	for enemy_node: Node in _rf_safe_children(enemies_root):
+		if not is_instance_valid(enemy_node) or enemy_node.is_queued_for_deletion():
+			continue
 		if enemy_node is RVEnemyActor:
 			var enemy: RVEnemyActor = enemy_node
 			if enemy.is_map_boss:
@@ -590,7 +596,9 @@ func _spawn_projectile(pos: Vector2, vel: Vector2, damage: float, radius: float,
 	projectile.setup(pos, vel, damage, radius, tags, from_enemy)
 
 func _check_projectile_enemy_hits(projectile: RVProjectileActor, state: RVGameState) -> void:
-	for enemy_node: Node in enemies_root.get_children():
+	for enemy_node: Node in _rf_safe_children(enemies_root):
+		if not is_instance_valid(enemy_node) or enemy_node.is_queued_for_deletion():
+			continue
 		if enemy_node is RVEnemyActor:
 			var enemy: RVEnemyActor = enemy_node
 			if projectile.global_position.distance_to(enemy.global_position) <= projectile.radius + enemy.radius:
@@ -608,7 +616,9 @@ func _check_projectile_enemy_hits(projectile: RVProjectileActor, state: RVGameSt
 
 func _damage_enemies_in_radius(center: Vector2, radius: float, damage: float, state: RVGameState, tags: Array = [], excluded: RVEnemyActor = null) -> int:
 	var hits: int = 0
-	for enemy_node: Node in enemies_root.get_children():
+	for enemy_node: Node in _rf_safe_children(enemies_root):
+		if not is_instance_valid(enemy_node) or enemy_node.is_queued_for_deletion():
+			continue
 		if enemy_node is RVEnemyActor:
 			var enemy: RVEnemyActor = enemy_node
 			if enemy == excluded:
@@ -697,7 +707,7 @@ func _on_enemy_spawn_requested(enemy_type: String, pos: Vector2, count: int) -> 
 		return
 	for i: int in range(max(1, count)):
 		var offset: Vector2 = Vector2(28.0, 0.0).rotated(float(i) * TAU / float(max(1, count)))
-		var enemy_data: Dictionary = RVEnemyDB.make(enemy_type, pos + offset, float(activity.get("threat", 1.0)), enemies_root.get_child_count() + i)
+		var enemy_data: Dictionary = RVEnemyDB.make(enemy_type, pos + offset, float(activity.get("threat", 1.0)), _rf_child_count(enemies_root) + i)
 		enemy_data["wake_radius"] = 999.0
 		enemy_data["pack_id"] = "summoned"
 		_spawn_enemy(enemy_data)
@@ -721,7 +731,7 @@ func dev_spawn_enemy(enemy_type: String, count: int = 1) -> void:
 	for i: int in range(safe_count):
 		var offset: Vector2 = Vector2(80.0 + float(i * 28), 0.0).rotated(float(i) * 0.65)
 		var spawn_pos: Vector2 = state_ref.player_pos + offset
-		var enemy_index: int = enemies_root.get_child_count() + i
+		var enemy_index: int = _rf_child_count(enemies_root) + i
 		var enemy_data: Dictionary = RVEnemyDB.make(enemy_type, spawn_pos, 1.0, enemy_index)
 		_spawn_enemy(enemy_data)
 	state_ref.add_notice("Dev: spawned " + str(safe_count) + " " + enemy_type)
@@ -785,24 +795,26 @@ func _chain_lightning(source: RVEnemyActor, damage: float, count: int, tags: Arr
 	for i: int in range(max(0, count)):
 		var best: RVEnemyActor = null
 		var best_dist: float = 999999.0
-		for enemy_node: Node in enemies_root.get_children():
+		for enemy_node: Node in _rf_safe_children(enemies_root):
+			if not is_instance_valid(enemy_node) or enemy_node.is_queued_for_deletion():
+				continue
 			if enemy_node is RVEnemyActor:
-				var enemy: RVEnemyActor = enemy_node
-				if chained.has(enemy):
-					continue
-				var dist: float = current.global_position.distance_to(enemy.global_position)
-				if dist < best_dist and dist <= 220.0:
-					best = enemy
-					best_dist = dist
-		if best == null:
-			return
-		best.take_damage(damage, tags, "chain")
-		_rf_spawn_damage_number(best.global_position, damage, tags)
-		if best.has_method("apply_status"):
-			best.apply_status("shock", 2.5, 1.0)
-		chained.append(best)
-		current = best
-		damage *= 0.72
+					var enemy: RVEnemyActor = enemy_node
+					if chained.has(enemy):
+						continue
+					var dist: float = current.global_position.distance_to(enemy.global_position)
+					if dist < best_dist and dist <= 220.0:
+						best = enemy
+						best_dist = dist
+			if best == null:
+				return
+			best.take_damage(damage, tags, "chain")
+			_rf_spawn_damage_number(best.global_position, damage, tags)
+			if best.has_method("apply_status"):
+				best.apply_status("shock", 2.5, 1.0)
+			chained.append(best)
+			current = best
+			damage *= 0.72
 
 # -----------------------------------------------------------------------------
 # Patch 072B: Safe ground-loot helper block.
@@ -1101,3 +1113,17 @@ func _set_projectile_bounces(node: Node, bounces: int) -> void:
 		if node.get(key) != null:
 			node.set(key, bounces)
 			return
+
+
+func _rf_node_alive(node: Node) -> bool:
+	return node != null and is_instance_valid(node) and not node.is_queued_for_deletion()
+
+func _rf_safe_children(node: Node) -> Array:
+	if not _rf_node_alive(node):
+		return []
+	return node.get_children()
+
+func _rf_child_count(node: Node) -> int:
+	if not _rf_node_alive(node):
+		return 0
+	return node.get_child_count()

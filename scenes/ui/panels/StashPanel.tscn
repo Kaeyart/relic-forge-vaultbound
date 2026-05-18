@@ -381,82 +381,82 @@ offset_bottom = 51.0
 focus_mode = 0
 text = ">"
 
-[node name="CurrencyTabButton" type="Button" parent="Root"]
+[node name="CurrencyTabButton" type="Button" parent="Root" unique_id=972393096]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 424.0
-offset_top = 56.0
-offset_right = 544.0
-offset_bottom = 90.0
+offset_left = 295.0
+offset_top = 17.0
+offset_right = 415.0
+offset_bottom = 51.0
 focus_mode = 0
 text = "Currency"
 
-[node name="MaterialsTabButton" type="Button" parent="Root"]
+[node name="MaterialsTabButton" type="Button" parent="Root" unique_id=736668602]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 552.0
-offset_top = 56.0
-offset_right = 672.0
-offset_bottom = 90.0
+offset_left = 15.0
+offset_top = 478.0
+offset_right = 135.0
+offset_bottom = 512.0
 focus_mode = 0
 text = "Materials"
 
-[node name="GemsTabButton" type="Button" parent="Root"]
+[node name="GemsTabButton" type="Button" parent="Root" unique_id=2003356799]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 680.0
-offset_top = 56.0
-offset_right = 800.0
-offset_bottom = 90.0
+offset_left = 139.0
+offset_top = 478.0
+offset_right = 259.0
+offset_bottom = 512.0
 focus_mode = 0
 text = "Gems"
 
-[node name="UniquesTabButton" type="Button" parent="Root"]
+[node name="UniquesTabButton" type="Button" parent="Root" unique_id=847233977]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 808.0
-offset_top = 56.0
-offset_right = 928.0
-offset_bottom = 90.0
+offset_left = 263.0
+offset_top = 478.0
+offset_right = 383.0
+offset_bottom = 512.0
 focus_mode = 0
 text = "Uniques"
 
-[node name="DumpTabButton" type="Button" parent="Root"]
+[node name="DumpTabButton" type="Button" parent="Root" unique_id=2098024307]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 936.0
-offset_top = 56.0
-offset_right = 1056.0
-offset_bottom = 90.0
+offset_left = 174.0
+offset_top = 17.0
+offset_right = 294.0
+offset_bottom = 51.0
 focus_mode = 0
 text = "Dump"
 
-[node name="BuyTabButton" type="Button" parent="Root"]
+[node name="BuyTabButton" type="Button" parent="Root" unique_id=1262001523]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 1064.0
-offset_top = 56.0
-offset_right = 1184.0
-offset_bottom = 90.0
+offset_left = 545.0
+offset_top = 479.0
+offset_right = 665.0
+offset_bottom = 513.0
 focus_mode = 0
 text = "Buy Tab"
 
-[node name="AffinityToggleButton" type="Button" parent="Root"]
+[node name="AffinityToggleButton" type="Button" parent="Root" unique_id=666944104]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 1192.0
-offset_top = 56.0
-offset_right = 1288.0
-offset_bottom = 90.0
+offset_left = 77.0
+offset_top = 16.0
+offset_right = 173.0
+offset_bottom = 50.0
 focus_mode = 0
 text = "Affinity"
 
-[node name="StashEconomyLabel" type="Label" parent="Root"]
+[node name="StashEconomyLabel" type="Label" parent="Root" unique_id=2016197636]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 424.0
-offset_top = 94.0
-offset_right = 1288.0
-offset_bottom = 122.0
+offset_left = 313.0
+offset_top = -35.0
+offset_right = 1023.0
+offset_bottom = -7.0
 text = "Affinity deposits route items into matching stash tabs. Locked tabs can be bought with gold."
 vertical_alignment = 1

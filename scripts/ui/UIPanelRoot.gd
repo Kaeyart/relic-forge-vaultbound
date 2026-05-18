@@ -10,12 +10,15 @@ extends CanvasLayer
 @onready var activity_panel: Control = %ActivityPanel
 
 var map_device_panel: Control = null
+var loot_filter_panel: Control = null
 
 func _ready() -> void:
 	_ensure_map_device_panel()
+	_ensure_loot_filter_panel()
 
 func update_from_state(state: RVGameState) -> void:
 	_ensure_map_device_panel()
+	_ensure_loot_filter_panel()
 	_set_visible("inventory", inventory_panel, state)
 	_set_visible("crafting", crafting_panel, state)
 	_set_visible("passive_atlas", passive_panel, state)
@@ -24,7 +27,8 @@ func update_from_state(state: RVGameState) -> void:
 	_set_visible("stash", stash_panel, state)
 	_set_visible("activities", activity_panel, state)
 	_set_visible("map_device", map_device_panel, state)
-	for panel: Control in [inventory_panel, crafting_panel, passive_panel, skill_gems_panel, character_panel, stash_panel, activity_panel, map_device_panel]:
+	_set_visible("loot_filter", loot_filter_panel, state)
+	for panel: Control in [inventory_panel, crafting_panel, passive_panel, skill_gems_panel, character_panel, stash_panel, activity_panel, map_device_panel, loot_filter_panel]:
 		if panel != null and panel.visible and panel.has_method("update_from_state"):
 			panel.call("update_from_state", state)
 
@@ -52,3 +56,24 @@ func _ensure_map_device_panel() -> void:
 		root_node.add_child(map_device_panel)
 	else:
 		add_child(map_device_panel)
+
+
+func _ensure_loot_filter_panel() -> void:
+	if loot_filter_panel != null and is_instance_valid(loot_filter_panel):
+		return
+	var existing: Node = get_node_or_null("%LootFilterPanel")
+	if existing is Control:
+		loot_filter_panel = existing as Control
+		return
+	var scene_path: String = "res://scenes/ui/panels/LootFilterPanel.tscn"
+	if not ResourceLoader.exists(scene_path):
+		return
+	var packed: PackedScene = load(scene_path)
+	loot_filter_panel = packed.instantiate() as Control
+	loot_filter_panel.name = "LootFilterPanel"
+	loot_filter_panel.visible = false
+	var root_node: Node = get_node_or_null("Root")
+	if root_node != null:
+		root_node.add_child(loot_filter_panel)
+	else:
+		add_child(loot_filter_panel)

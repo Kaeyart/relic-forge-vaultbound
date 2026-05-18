@@ -12,6 +12,7 @@ var autosave_timer: float = 0.0
 var dev_tools_panel: Node = null
 var world_camera: Camera2D = null
 var loot_pickup_pet: Node2D = null
+var loot_filter_panel: Node = null
 
 func _ready() -> void:
 	state.init_new()
@@ -29,6 +30,7 @@ func _ready() -> void:
 	_install_world_camera()
 	_install_dev_tools()
 	_install_loot_pickup_pet()
+	_install_loot_filter_panel()
 
 func _process(delta: float) -> void:
 	if not state.pending_start_activity.is_empty():
@@ -50,6 +52,8 @@ func _process(delta: float) -> void:
 		if combat.has_method("enforce_layout_projectile_collisions"):
 			combat.call("enforce_layout_projectile_collisions", delta)
 		RVLootPickupAssistSystem.update(state, combat, player, delta)
+		if combat != null and is_instance_valid(combat) and not combat.is_queued_for_deletion():
+			RVLootFilterSystem.update_ground_loot(state, combat)
 		if loot_pickup_pet != null and loot_pickup_pet.has_method("sync_from_state"):
 			loot_pickup_pet.call("sync_from_state", state, player)
 
@@ -63,6 +67,8 @@ func _process(delta: float) -> void:
 
 	hud.update_from_state(state)
 	panels.update_from_state(state)
+	if loot_filter_panel != null and loot_filter_panel.has_method("update_from_state"):
+		loot_filter_panel.call("update_from_state", state)
 	_update_world_camera(delta)
 	_consume_pending_map_activity()
 
@@ -148,6 +154,7 @@ func _handle_key(keycode: int) -> void:
 		KEY_B: state.toggle_panel("stash")
 		KEY_M: state.toggle_panel("activities")
 		KEY_N: state.toggle_panel("map_device")
+		KEY_L: state.toggle_panel("loot_filter")
 		KEY_TAB: state.toggle_panel("character")
 		KEY_SPACE:
 			if state.mode == "combat": combat.cast_selected_skill(state, get_global_mouse_position())
@@ -224,6 +231,20 @@ func _install_loot_pickup_pet() -> void:
 	add_child(loot_pickup_pet)
 	if loot_pickup_pet != null and loot_pickup_pet.has_method("sync_from_state"):
 		loot_pickup_pet.call("sync_from_state", state, player)
+
+
+func _install_loot_filter_panel() -> void:
+	if loot_filter_panel != null and is_instance_valid(loot_filter_panel):
+		return
+	var scene_path: String = "res://scenes/ui/panels/LootFilterPanel.tscn"
+	if not ResourceLoader.exists(scene_path):
+		push_warning("Loot filter panel scene missing: " + scene_path)
+		return
+	var packed: PackedScene = load(scene_path)
+	loot_filter_panel = packed.instantiate()
+	add_child(loot_filter_panel)
+	if loot_filter_panel.has_method("update_from_state"):
+		loot_filter_panel.call("update_from_state", state)
 
 func _toggle_dev_tools() -> void:
 	if dev_tools_panel == null:

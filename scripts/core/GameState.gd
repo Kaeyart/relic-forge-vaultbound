@@ -136,6 +136,7 @@ var loot_pet_radius: float = 210.0
 var loot_pet_collect_radius: float = 54.0
 var loot_pet_attract_radius: float = 310.0
 var loot_filter_preset: String = "Starter"
+var loot_filter_stats: Dictionary = {}
 var loot_filter_settings: Dictionary = {
 	"auto_pickup_gold": true,
 	"auto_pickup_shards": true,
@@ -172,6 +173,7 @@ func init_new() -> void:
 func ensure_defaults() -> void:
 	RVCraftingCurrencySystem.ensure_defaults(self)
 	RVLootPickupAssistSystem.ensure_defaults(self)
+	RVLootFilterSystem.ensure_defaults(self)
 	for skill_name: String in unlocked_skills:
 		if not skill_cooldowns.has(skill_name):
 			skill_cooldowns[skill_name] = 0.0
@@ -435,7 +437,9 @@ func to_save_dict() -> Dictionary:
 		"stash_tab_cursor": stash_tab_cursor,
 		"stash_upgrade_cost_paid": stash_upgrade_cost_paid,
 		"stash_economy_version": stash_economy_version,
-		"equipment_cursor": equipment_cursor
+		"equipment_cursor": equipment_cursor,
+		"loot_filter_preset": loot_filter_preset,
+		"loot_filter_settings": loot_filter_settings
 	}
 
 func apply_save_dict(data: Dictionary) -> void:
@@ -534,5 +538,8 @@ func apply_save_dict(data: Dictionary) -> void:
 	stash_upgrade_cost_paid = int(data.get("stash_upgrade_cost_paid", stash_upgrade_cost_paid))
 	stash_economy_version = int(data.get("stash_economy_version", stash_economy_version))
 	equipment_cursor = int(data.get("equipment_cursor", equipment_cursor))
+	loot_filter_preset = str(data.get("loot_filter_preset", loot_filter_preset))
+	if typeof(data.get("loot_filter_settings", {})) == TYPE_DICTIONARY:
+		loot_filter_settings.merge(data.get("loot_filter_settings", {}), true)
 	ensure_defaults()
 	recompute_stats()
