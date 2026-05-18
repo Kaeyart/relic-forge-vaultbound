@@ -66,5 +66,4 @@ visible = false
 layout_mode = 1
 
 [node name="LootFilterPanel" parent="Root" unique_id=1132738146 instance=ExtResource("99_loot_filter")]
-visible = true
 layout_mode = 1
