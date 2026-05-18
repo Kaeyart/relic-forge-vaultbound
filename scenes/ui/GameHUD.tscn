@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ccj80iwiepxy0"]
 
 [ext_resource type="Script" uid="uid://f0n2vofg0vu5" path="res://scripts/ui/GameHUD.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud/FlaskHUD.tscn" id="flask_hud_scene"]
 
 [node name="GameHUD" type="CanvasLayer" unique_id=111235464]
 script = ExtResource("1")
@@ -170,3 +171,7 @@ offset_bottom = 86.0
 unique_name_in_owner = true
 layout_mode = 2
 text = "Objective"
+
+[node name="FlaskHUD" parent="." instance=ExtResource("flask_hud_scene")]
+unique_name_in_owner = true
+visible = true

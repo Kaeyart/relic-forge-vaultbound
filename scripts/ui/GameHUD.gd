@@ -1,5 +1,6 @@
 class_name RVGameHUD
 extends CanvasLayer
+@onready var flask_hud: Node = get_node_or_null("%FlaskHUD")
 
 @onready var top_status_label: Label = %TopStatusLabel
 @onready var health_bar: ProgressBar = %HealthBar
@@ -12,6 +13,11 @@ extends CanvasLayer
 @onready var objective_label: Label = get_node_or_null("%ObjectiveLabel") as Label
 
 func update_from_state(state: RVGameState) -> void:
+
+	if flask_hud == null:
+		flask_hud = get_node_or_null("%FlaskHUD")
+	if flask_hud != null and flask_hud.has_method("update_from_state"):
+		flask_hud.call("update_from_state", state)
 	top_status_label.text = "Lv %s  XP %s/%s  Gold %s  MP %s  Refund %s  Spirit %s/%s" % [
 		state.level,
 		int(state.xp),
