@@ -2,6 +2,10 @@ class_name RVCombatArena
 extends Node2D
 const FlaskSystemScript := preload("res://scripts/systems/FlaskSystem.gd")
 const CombatGeometrySystemScript := preload("res://scripts/systems/CombatGeometrySystem.gd")
+const CombatRootSystemScript := preload("res://scripts/systems/CombatRootSystem.gd")
+const MapInstancePersistenceSystemScript := preload("res://scripts/systems/MapInstancePersistenceSystem.gd")
+const CombatProjectileCollisionSystemScript := preload("res://scripts/systems/CombatProjectileCollisionSystem.gd")
+const CombatRewardExitSystemScript := preload("res://scripts/systems/CombatRewardExitSystem.gd")
 
 const RVLootDropActorScript := preload("res://scripts/combat/LootDropActor.gd")
 const RVFloatingCombatTextSystemScript := preload("res://scripts/systems/FloatingCombatTextSystem.gd")
@@ -596,19 +600,7 @@ func _update_room_interaction_prompt(state: RVGameState) -> void:
 
 
 func _rf_live_node2d(field_name: String, node_name: String, z: int = 0) -> Node2D:
-	var current_value: Variant = get(field_name)
-	if current_value != null and is_instance_valid(current_value) and current_value is Node2D and not (current_value as Node2D).is_queued_for_deletion():
-		return current_value as Node2D
-	var found: Node2D = get_node_or_null(node_name) as Node2D
-	if found == null or not is_instance_valid(found) or found.is_queued_for_deletion():
-		found = Node2D.new()
-		found.name = node_name
-		add_child(found)
-	found.z_as_relative = false
-	if z != 0:
-		found.z_index = z
-	set(field_name, found)
-	return found
+	return CombatRootSystemScript.live_node2d(self, field_name, node_name, z)
 
 func _rf_live_enemies_root() -> Node2D:
 	return _rf_live_node2d("enemies_root", "Enemies", 20)
@@ -831,9 +823,7 @@ func _set_exit_visible(value: bool) -> void:
 		exit_portal.visible = value
 
 func _clear_children(root: Variant) -> void:
-	for child: Node in _rf_safe_children(root):
-		if child != null and is_instance_valid(child) and not child.is_queued_for_deletion():
-			child.queue_free()
+	CombatRootSystemScript.clear_children(root)
 
 func dev_spawn_enemy(enemy_type: String, count: int = 1) -> void:
 	if state_ref == null:
@@ -935,33 +925,13 @@ func _chain_lightning(source: RVEnemyActor, damage: float, count: int, tags: Arr
 # class cache has not refreshed after installing new scripts.
 # -----------------------------------------------------------------------------
 func _rf_ensure_combat_layers() -> void:
-	_rf_live_enemies_root()
-	_rf_live_projectiles_root()
-	_rf_named_node2d("MapGroundLayer", -100)
-	_rf_named_node2d("MapDressingLayer", -50)
-	_rf_named_node2d("GroundTelegraphLayer", -20)
-	_rf_named_node2d("GroundLootLayer", 8)
-	_rf_named_node2d("FloatingCombatTextLayer", 120)
-	if enemies_root != null:
-		enemies_root.z_as_relative = false
-		enemies_root.z_index = 20
-	var projectile_root: Node2D = get_node_or_null("ProjectilesRoot") as Node2D
-	if projectile_root != null:
-		projectile_root.z_as_relative = false
-		projectile_root.z_index = 40
+	CombatRootSystemScript.ensure_standard_layers(self)
 
 func _rf_named_node2d(node_name: String, z: int) -> Node2D:
-	var node: Node2D = get_node_or_null(node_name) as Node2D
-	if node == null:
-		node = Node2D.new()
-		node.name = node_name
-		add_child(node)
-	node.z_as_relative = false
-	node.z_index = z
-	return node
+	return CombatRootSystemScript.named_node2d(self, node_name, z)
 
 func _rf_loot_root() -> Node2D:
-	return _rf_named_node2d("GroundLootLayer", 8)
+	return CombatRootSystemScript.named_node2d(self, "GroundLootLayer", 8)
 
 func _rf_prepare_enemy_visual_layer(enemy: Node2D) -> void:
 	if enemy == null:
@@ -1464,32 +1434,10 @@ func _rf_node_alive(node: Node) -> bool:
 	return node != null and is_instance_valid(node) and not node.is_queued_for_deletion()
 
 func _rf_safe_children(root: Variant) -> Array:
-	if root == null:
-		return []
-	if not is_instance_valid(root):
-		return []
-	if not (root is Node):
-		return []
-	var node: Node = root as Node
-	if node == null:
-		return []
-	if node.is_queued_for_deletion():
-		return []
-	return node.get_children()
+	return CombatRootSystemScript.safe_children(root)
 
 func _rf_child_count(root: Variant) -> int:
-	if root == null:
-		return 0
-	if not is_instance_valid(root):
-		return 0
-	if not (root is Node):
-		return 0
-	var node: Node = root as Node
-	if node == null:
-		return 0
-	if node.is_queued_for_deletion():
-		return 0
-	return node.get_child_count()
+	return CombatRootSystemScript.child_count(root)
 
 # -----------------------------------------------------------------------------
 # Patch 081C: active map instance snapshot / restore.
