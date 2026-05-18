@@ -244,9 +244,11 @@ func _update_boss_ai(direction: Vector2, distance: float, actual_speed: float, d
 		_start_attack(0.62, 0.58, 1.35 / phase_speed)
 
 func _move(delta_pos: Vector2) -> void:
-	global_position += delta_pos
-	last_velocity = delta_pos
-	ai_state = "move" if delta_pos.length() > 0.001 else "idle"
+	var previous_pos: Vector2 = global_position
+	var desired_pos: Vector2 = previous_pos + delta_pos
+	global_position = _rv_constrain_movement(previous_pos, desired_pos)
+	last_velocity = global_position - previous_pos
+	ai_state = "move" if last_velocity.length() > 0.001 else "idle"
 
 func _start_attack(windup: float, recover: float, cd: float) -> void:
 	ai_state = "windup"
@@ -318,8 +320,10 @@ func pull_toward(center: Vector2, amount: float) -> void:
 	var direction: Vector2 = center - global_position
 	if direction.length() <= 0.01:
 		return
-	global_position += direction.normalized() * amount
-	last_velocity = direction.normalized() * amount
+	var previous_pos: Vector2 = global_position
+	var desired_pos: Vector2 = previous_pos + direction.normalized() * amount
+	global_position = _rv_constrain_movement(previous_pos, desired_pos)
+	last_velocity = global_position - previous_pos
 
 func _status_speed_multiplier() -> float:
 	var speed_mult: float = 1.0
@@ -471,12 +475,21 @@ func _rv_has_line_of_sight_to(target_pos: Vector2) -> bool:
 		return true
 	return bool(arena.call("has_line_of_sight", global_position, target_pos, 12.0))
 
-func _rv_constrain_position(pos: Vector2) -> Vector2:
+func _rv_constrain_movement(previous_pos: Vector2, target_pos: Vector2) -> Vector2:
 	var arena: Node = _rv_find_combat_arena()
-	if arena == null or not arena.has_method("constrain_actor_position"):
-		return pos
-	var radius: float = 16.0
+	if arena == null:
+		return target_pos
+	var safe_radius: float = 16.0
 	var radius_value: Variant = get("radius")
 	if typeof(radius_value) == TYPE_FLOAT or typeof(radius_value) == TYPE_INT:
-		radius = max(10.0, float(radius_value))
-	return Vector2(arena.call("constrain_actor_position", pos, radius))
+		safe_radius = max(10.0, float(radius_value))
+	if arena.has_method("constrain_actor_movement"):
+		return Vector2(arena.call("constrain_actor_movement", previous_pos, target_pos, safe_radius))
+	if arena.has_method("constrain_player_movement"):
+		return Vector2(arena.call("constrain_player_movement", previous_pos, target_pos, safe_radius))
+	if arena.has_method("constrain_actor_position"):
+		return Vector2(arena.call("constrain_actor_position", target_pos, safe_radius))
+	return target_pos
+
+func _rv_constrain_position(pos: Vector2) -> Vector2:
+	return _rv_constrain_movement(global_position, pos)

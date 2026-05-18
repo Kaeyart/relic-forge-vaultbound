@@ -1,7 +1,7 @@
 class_name RVGameState
 extends RefCounted
 
-const SAVE_VERSION: int = 80
+const SAVE_VERSION: int = 81
 
 var mode: String = "hub"
 var panel_mode: String = ""
@@ -39,6 +39,14 @@ var max_mana: float = 100.0
 var spirit_max: int = 30
 var spirit_reserved: int = 0
 var invuln: float = 0.0
+
+var health_flask_charges: int = 3
+var health_flask_max_charges: int = 3
+var health_flask_heal_ratio: float = 0.45
+var mana_flask_charges: int = 3
+var mana_flask_max_charges: int = 3
+var mana_flask_restore_ratio: float = 0.55
+var flask_kill_refill_counter: int = 0
 
 var level: int = 1
 var xp: float = 0.0
@@ -113,6 +121,14 @@ var map_tier_filter: int = 0
 var completed_maps: Dictionary = {}
 var map_system_seeded: bool = false
 var pending_start_activity: Dictionary = {}
+var active_map_portal_activity: Dictionary = {}
+var active_map_portal_entries: int = 0
+var active_map_portal_max_entries: int = 6
+var active_map_portals_remaining: int = 0
+
+var active_map_instance: Dictionary = {}
+var active_map_town_portal_pos: Vector2 = Vector2.ZERO
+var active_map_portal_pos: Vector2 = Vector2(720.0, 430.0)
 
 var inventory_cursor: int = 0
 var stash_cursor: int = 0
@@ -164,6 +180,16 @@ var prompt_text: String = ""
 var notice_text: String = ""
 var notice_time: float = 0.0
 
+
+func _sync_active_map_portal_state() -> void:
+	active_map_portal_max_entries = max(1, int(active_map_portal_max_entries))
+	if int(active_map_portal_entries) <= 0 and int(active_map_portals_remaining) > 0:
+		active_map_portal_entries = int(active_map_portals_remaining)
+	active_map_portal_entries = clampi(int(active_map_portal_entries), 0, int(active_map_portal_max_entries))
+	active_map_portals_remaining = int(active_map_portal_entries)
+	if active_map_portal_entries <= 0:
+		active_map_portal_activity.clear()
+
 func init_new() -> void:
 	rng.randomize()
 	ensure_defaults()
@@ -171,6 +197,20 @@ func init_new() -> void:
 	full_restore()
 
 func ensure_defaults() -> void:
+	# Patch 081A: flask + active map portal defaults.
+	health_flask_max_charges = max(1, health_flask_max_charges)
+	mana_flask_max_charges = max(1, mana_flask_max_charges)
+	health_flask_charges = clampi(health_flask_charges, 0, health_flask_max_charges)
+	mana_flask_charges = clampi(mana_flask_charges, 0, mana_flask_max_charges)
+	health_flask_heal_ratio = max(0.05, health_flask_heal_ratio)
+	mana_flask_restore_ratio = max(0.05, mana_flask_restore_ratio)
+	active_map_portal_max_entries = max(1, active_map_portal_max_entries)
+	active_map_portal_entries = clampi(active_map_portal_entries, 0, active_map_portal_max_entries)
+	active_map_portals_remaining = active_map_portal_entries
+	if active_map_portal_entries <= 0:
+		active_map_portal_activity.clear()
+		active_map_instance.clear()
+	_sync_active_map_portal_state()
 	RVCraftingCurrencySystem.ensure_defaults(self)
 	RVLootPickupAssistSystem.ensure_defaults(self)
 	RVLootFilterSystem.ensure_defaults(self)
@@ -289,6 +329,8 @@ func full_restore() -> void:
 	recompute_stats()
 	player_hp = max_hp
 	player_mana = max_mana
+	health_flask_charges = health_flask_max_charges
+	mana_flask_charges = mana_flask_max_charges
 	invuln = 0.0
 
 func recompute_stats() -> void:
@@ -405,6 +447,12 @@ func to_save_dict() -> Dictionary:
 		"mastery_points": mastery_points,
 		"refund_points": refund_points,
 		"gold": gold,
+		"health_flask_charges": health_flask_charges,
+		"mana_flask_charges": mana_flask_charges,
+		"flask_kill_refill_counter": flask_kill_refill_counter,
+		"active_map_portal_activity": active_map_portal_activity,
+		"active_map_portal_entries": active_map_portal_entries,
+		"active_map_portal_max_entries": active_map_portal_max_entries,
 		"materials": materials,
 		"active_skills": active_skills,
 		"unlocked_skills": unlocked_skills,
@@ -467,6 +515,14 @@ func apply_save_dict(data: Dictionary) -> void:
 	mastery_points = int(data.get("mastery_points", mastery_points))
 	refund_points = int(data.get("refund_points", refund_points))
 	gold = int(data.get("gold", gold))
+	health_flask_charges = int(data.get("health_flask_charges", health_flask_charges))
+	mana_flask_charges = int(data.get("mana_flask_charges", mana_flask_charges))
+	flask_kill_refill_counter = int(data.get("flask_kill_refill_counter", flask_kill_refill_counter))
+	if typeof(data.get("active_map_portal_activity", {})) == TYPE_DICTIONARY:
+		active_map_portal_activity = Dictionary(data.get("active_map_portal_activity", {})).duplicate(true)
+	active_map_portal_entries = int(data.get("active_map_portal_entries", active_map_portal_entries))
+	active_map_portal_max_entries = int(data.get("active_map_portal_max_entries", active_map_portal_max_entries))
+	active_map_portals_remaining = active_map_portal_entries
 	if typeof(data.get("materials", {})) == TYPE_DICTIONARY:
 		materials.merge(data.get("materials", {}), true)
 	if typeof(data.get("active_skills", [])) == TYPE_ARRAY:
@@ -522,6 +578,10 @@ func apply_save_dict(data: Dictionary) -> void:
 			if typeof(map_value) == TYPE_DICTIONARY:
 				map_stash.append(map_value)
 	map_cursor = int(data.get("map_cursor", map_cursor))
+	if typeof(data.get("active_map_portal_activity", {})) == TYPE_DICTIONARY:
+		active_map_portal_activity = Dictionary(data.get("active_map_portal_activity", {})).duplicate(true)
+	active_map_portal_entries = clampi(int(data.get("active_map_portal_entries", active_map_portal_entries)), 0, 6)
+	active_map_portal_max_entries = max(1, int(data.get("active_map_portal_max_entries", active_map_portal_max_entries)))
 	map_tier_filter = int(data.get("map_tier_filter", map_tier_filter))
 	completed_maps = Dictionary(data.get("completed_maps", completed_maps))
 	map_system_seeded = bool(data.get("map_system_seeded", map_system_seeded))

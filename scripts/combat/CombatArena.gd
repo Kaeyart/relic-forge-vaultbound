@@ -1,6 +1,6 @@
 class_name RVCombatArena
 extends Node2D
-
+const FlaskSystemScript := preload("res://scripts/systems/FlaskSystem.gd")
 const CombatGeometrySystemScript := preload("res://scripts/systems/CombatGeometrySystem.gd")
 
 const RVLootDropActorScript := preload("res://scripts/combat/LootDropActor.gd")
@@ -62,6 +62,8 @@ func _rf_enemy_last_tags(enemy: Node) -> Array:
 	return []
 
 func start_activity(state: RVGameState, new_activity: Dictionary) -> void:
+	_rf_live_enemies_root()
+	_rf_live_projectiles_root()
 	state_ref = state
 	activity = new_activity.duplicate(true)
 	active = true
@@ -73,8 +75,9 @@ func start_activity(state: RVGameState, new_activity: Dictionary) -> void:
 	spawn_room(state)
 
 func stop_activity() -> void:
+	_rf_live_enemies_root()
+	_rf_live_projectiles_root()
 	if runtime_map_camera != null and is_instance_valid(runtime_map_camera):
-		runtime_map_camera.clear_current()
 		runtime_map_camera.enabled = false
 	active = false
 	_clear_children(enemies_root)
@@ -95,6 +98,8 @@ func stop_activity() -> void:
 		state_ref.prompt_text = ""
 
 func spawn_room(state: RVGameState) -> void:
+	_rf_live_enemies_root()
+	_rf_live_projectiles_root()
 	_clear_children(enemies_root)
 	_clear_children(projectiles_root)
 	enemy_zones.clear()
@@ -150,6 +155,15 @@ func _spawn_map_room(state: RVGameState) -> void:
 	state.room_reward_ready = false
 	state.room_reward_claimed = false
 	state.room_exit_ready = false
+	var resume_snapshot: Dictionary = Dictionary(activity.get("resume_snapshot", {}))
+	if resume_snapshot.is_empty() and bool(activity.get("resume_active_portal", false)) and state != null:
+		var state_snapshot_value: Variant = state.get("active_map_instance")
+		if typeof(state_snapshot_value) == TYPE_DICTIONARY:
+			resume_snapshot = Dictionary(state_snapshot_value)
+	if not resume_snapshot.is_empty():
+		_rf_081a_restore_map_instance(state, resume_snapshot)
+		return
+
 	var map_item: Dictionary = Dictionary(activity.get("map", {}))
 	map_layout = MapLayoutSystemScript.generate_layout(state.rng, map_item)
 	encounter_plan = MapEncounterDirectorScript.build_plan(state.rng, map_item, map_layout)
@@ -203,6 +217,8 @@ func _spawn_encounter_plan(state: RVGameState, map_item: Dictionary) -> void:
 	_spawn_enemy(boss_data)
 
 func update_combat(state: RVGameState, player: RVPlayerActor, delta: float) -> void:
+	_rf_live_enemies_root()
+	_rf_live_projectiles_root()
 	_rf_ensure_combat_layers()
 	if not active:
 		return
@@ -214,8 +230,15 @@ func update_combat(state: RVGameState, player: RVPlayerActor, delta: float) -> v
 			continue
 		if enemy_node is RVEnemyActor:
 			var enemy: RVEnemyActor = enemy_node
-			CombatPackAISystemScript.apply_context(enemy, enemies_root, player.global_position, delta)
+			if not _rf_enemy_has_awareness(enemy, player):
+				continue
+			var enemy_previous_pos: Vector2 = enemy.global_position
+			var enemy_radius: float = float(enemy.get("radius") if enemy.get("radius") != null else 16.0)
+			CombatPackAISystemScript.apply_context(enemy, _rf_live_enemies_root(), player.global_position, delta)
 			enemy.update_ai(player.global_position, delta)
+			enemy.global_position = _rf_constrain_entity_movement(enemy_previous_pos, enemy.global_position, enemy_radius)
+			if enemy.get("last_velocity") != null:
+				enemy.set("last_velocity", enemy.global_position - enemy_previous_pos)
 	for projectile_node: Node in _rf_safe_children(projectiles_root):
 		if not is_instance_valid(projectile_node) or projectile_node.is_queued_for_deletion():
 			continue
@@ -223,8 +246,9 @@ func update_combat(state: RVGameState, player: RVPlayerActor, delta: float) -> v
 			var projectile: RVProjectileActor = projectile_node
 			if projectile.from_enemy:
 				if projectile.global_position.distance_to(player.global_position) <= projectile.radius + state.player_radius:
-					_damage_player(state, projectile.damage)
-					projectile.queue_free()
+					if _rf_has_combat_los(projectile.global_position, player.global_position, projectile.radius + state.player_radius):
+						_damage_player(state, projectile.damage)
+						projectile.queue_free()
 			else:
 				_check_projectile_enemy_hits(projectile, state)
 	if str(activity.get("kind", "")) == "map":
@@ -267,6 +291,8 @@ func interact(state: RVGameState) -> void:
 	state.add_notice("Clear the room first")
 
 func cast_selected_skill(state: RVGameState, aim: Vector2) -> void:
+	_rf_live_enemies_root()
+	_rf_live_projectiles_root()
 	var skill_name: String = state.get_selected_skill()
 	if skill_name == "":
 		return
@@ -289,6 +315,12 @@ func cast_selected_skill(state: RVGameState, aim: Vector2) -> void:
 	tags = CombatStatusComboSystemScript.augment_skill_tags(skill_name, tags)
 	CombatJuiceSystemScript.skill_cast_feedback(self, _rf_feedback_root(), skill_name, state.player_pos, tags)
 	match skill_name:
+		"Storm Lance":
+			var lance_origin: Vector2 = state.player_pos + direction * 20.0
+			var lance_range: float = float(skill_data.get("range", 760.0))
+			var lance_width: float = max(26.0, float(skill_data.get("radius", 10.0)) * 2.65)
+			var lance_end: Vector2 = state.player_pos + direction * lance_range
+			_damage_enemies_along_lance(lance_origin, lance_end, lance_width, damage, state, tags)
 		"Cleave":
 			var center: Vector2 = state.player_pos + direction * 64.0
 			_damage_enemies_in_radius(center, float(skill_data.get("radius", 76.0)), damage, state, tags)
@@ -561,9 +593,37 @@ func _update_room_interaction_prompt(state: RVGameState) -> void:
 			else:
 				state.prompt_text = "E - Enter Next Room"
 
+
+func _rf_live_node2d(field_name: String, node_name: String, z: int = 0) -> Node2D:
+	var current_value: Variant = get(field_name)
+	if current_value != null and is_instance_valid(current_value) and current_value is Node2D and not (current_value as Node2D).is_queued_for_deletion():
+		return current_value as Node2D
+	var found: Node2D = get_node_or_null(node_name) as Node2D
+	if found == null or not is_instance_valid(found) or found.is_queued_for_deletion():
+		found = Node2D.new()
+		found.name = node_name
+		add_child(found)
+	found.z_as_relative = false
+	if z != 0:
+		found.z_index = z
+	set(field_name, found)
+	return found
+
+func _rf_live_enemies_root() -> Node2D:
+	return _rf_live_node2d("enemies_root", "Enemies", 20)
+
+func _rf_live_projectiles_root() -> Node2D:
+	return _rf_live_node2d("projectiles_root", "Projectiles", 40)
+
+func _rf_live_spawn_points_root() -> Node2D:
+	return _rf_live_node2d("spawn_points_root", "SpawnPoints", 0)
+
+func _rf_live_obstacles_root() -> Node2D:
+	return _rf_live_node2d("obstacles_root", "Obstacles", 0)
+
 func _enemy_spawn_points() -> Array[Node]:
 	var result: Array[Node] = []
-	for child: Node in spawn_points_root.get_children():
+	for child: Node in _rf_safe_children(_rf_live_spawn_points_root()):
 		if child is Marker2D and not str(child.name).begins_with("PlayerSpawn"):
 			result.append(child)
 	return result
@@ -573,11 +633,13 @@ func _spawn_enemy(enemy_data: Dictionary) -> void:
 		push_warning("CombatArena enemy_scene is missing.")
 		return
 	var enemy: RVEnemyActor = enemy_scene.instantiate()
-	enemies_root.add_child(enemy)
+	_rf_live_enemies_root().add_child(enemy)
 	_rf_prepare_enemy_visual_layer(enemy)
 	enemy.setup(enemy_data)
+	if str(activity.get("kind", "")) == "map":
+		enemy.global_position = constrain_actor_position(enemy.global_position, float(enemy.get("radius") if enemy.get("radius") != null else 16.0))
 	enemy.died.connect(_on_enemy_died)
-	enemy.hit_player.connect(_on_enemy_hit_player)
+	enemy.hit_player.connect(_on_enemy_hit_player.bind(enemy))
 	if enemy.has_signal("damaged"):
 		enemy.damaged.connect(_on_enemy_damaged)
 	if enemy.has_signal("projectile_requested"):
@@ -592,7 +654,7 @@ func _spawn_projectile(pos: Vector2, vel: Vector2, damage: float, radius: float,
 		push_warning("CombatArena projectile_scene is missing.")
 		return
 	var projectile: RVProjectileActor = projectile_scene.instantiate()
-	projectiles_root.add_child(projectile)
+	_rf_live_projectiles_root().add_child(projectile)
 	projectile.setup(pos, vel, damage, radius, tags, from_enemy)
 
 func _check_projectile_enemy_hits(projectile: RVProjectileActor, state: RVGameState) -> void:
@@ -602,6 +664,8 @@ func _check_projectile_enemy_hits(projectile: RVProjectileActor, state: RVGameSt
 		if enemy_node is RVEnemyActor:
 			var enemy: RVEnemyActor = enemy_node
 			if projectile.global_position.distance_to(enemy.global_position) <= projectile.radius + enemy.radius:
+				if not _rf_combat_los_hit_allowed(projectile.global_position, enemy.global_position, max(float(projectile.radius), float(enemy.radius)), 180.0):
+					continue
 				var projectile_damage: float = CombatStatusComboSystemScript.modify_damage_for_enemy(enemy, projectile.tags, projectile.damage)
 				enemy.take_damage(projectile_damage, projectile.tags, "projectile")
 				_rf_spawn_damage_number(enemy.global_position, projectile_damage, projectile.tags)
@@ -614,6 +678,35 @@ func _check_projectile_enemy_hits(projectile: RVProjectileActor, state: RVGameSt
 				projectile.queue_free()
 				return
 
+
+func _damage_enemies_along_lance(origin: Vector2, end_pos: Vector2, width: float, damage: float, state: RVGameState, tags: Array = []) -> int:
+	var hits: int = 0
+	var segment: Vector2 = end_pos - origin
+	var len_sq: float = max(segment.length_squared(), 0.001)
+	for enemy_node: Node in _rf_safe_children(enemies_root):
+		if not is_instance_valid(enemy_node) or enemy_node.is_queued_for_deletion():
+			continue
+		if enemy_node is RVEnemyActor:
+			var enemy: RVEnemyActor = enemy_node
+			var enemy_pos: Vector2 = enemy.global_position
+			var t: float = clampf((enemy_pos - origin).dot(segment) / len_sq, 0.0, 1.0)
+			var closest: Vector2 = origin + segment * t
+			var hit_radius: float = width + enemy.radius
+			if enemy_pos.distance_to(closest) <= hit_radius:
+				# Storm Lance is a fast lightning lance, not a tiny physical bullet. It still respects walls at distance,
+				# but gets generous close-range/edge grace so map-layout seams do not eat every hit.
+				if not _rf_combat_los_hit_allowed(origin, enemy_pos, hit_radius, 180.0):
+					continue
+				var final_damage: float = CombatStatusComboSystemScript.modify_damage_for_enemy(enemy, tags, damage)
+				enemy.take_damage(final_damage, tags, "storm_lance")
+				_rf_spawn_damage_number(enemy.global_position, final_damage, tags)
+				_apply_skill_statuses(enemy, tags, final_damage)
+				if tags.has("lightning_chains") or tags.has("chain_plus"):
+					var bonus_chain: int = 1 if tags.has("chain_plus") else 0
+					_chain_lightning(enemy, final_damage * 0.42, 2 + bonus_chain, tags)
+				hits += 1
+	return hits
+
 func _damage_enemies_in_radius(center: Vector2, radius: float, damage: float, state: RVGameState, tags: Array = [], excluded: RVEnemyActor = null) -> int:
 	var hits: int = 0
 	for enemy_node: Node in _rf_safe_children(enemies_root):
@@ -624,6 +717,10 @@ func _damage_enemies_in_radius(center: Vector2, radius: float, damage: float, st
 			if enemy == excluded:
 				continue
 			if center.distance_to(enemy.global_position) <= radius + enemy.radius:
+				if not _rf_combat_los_hit_allowed(center, enemy.global_position, max(8.0, float(enemy.radius)), 118.0):
+					continue
+				if not _rf_area_damage_has_los(center, enemy.global_position, tags):
+					continue
 				var final_damage: float = damage
 				if tags.has("close_combat_bonus") and center.distance_to(enemy.global_position) <= radius * 0.50:
 					final_damage *= 1.18
@@ -671,6 +768,7 @@ func _on_enemy_died(enemy: RVEnemyActor) -> void:
 	CombatFeedbackSystemScript.enemy_death(self, death_root, enemy.global_position, [])
 	if state_ref != null:
 		RVProgressionSystem.award_kill(state_ref)
+		FlaskSystemScript.on_enemy_killed(state_ref, enemy)
 		if str(activity.get("kind", "")) == "map":
 			var depth: int = max(1, int(Dictionary(activity.get("map", {})).get("map_level", state_ref.level)))
 			var drop_chance: float = 0.09 if enemy.is_elite else 0.045
@@ -683,14 +781,23 @@ func _on_enemy_died(enemy: RVEnemyActor) -> void:
 	_rf_drop_enemy_loot(enemy)
 	enemy.queue_free()
 
-func _on_enemy_hit_player(amount: float) -> void:
-	if state_ref != null:
-		_damage_player(state_ref, amount)
+func _on_enemy_hit_player(amount: float, source_enemy: Node = null) -> void:
+	if state_ref == null:
+		return
+	if source_enemy is Node2D:
+		var enemy_node: Node2D = source_enemy as Node2D
+		if not _rf_has_combat_los(enemy_node.global_position, state_ref.player_pos, 14.0):
+			return
+	_damage_player(state_ref, amount)
 
 func _on_enemy_projectile_requested(pos: Vector2, vel: Vector2, damage: float, radius: float, tags: Array) -> void:
+	if not _rf_enemy_attack_has_los(pos, radius):
+		return
 	_spawn_projectile(pos, vel, damage, radius, tags, true)
 
 func _on_enemy_zone_requested(pos: Vector2, radius: float, delay: float, duration: float, damage: float, tags: Array, color: Color) -> void:
+	if not _rf_enemy_attack_has_los(pos, radius):
+		return
 	enemy_zones.append({
 		"pos": pos,
 		"radius": radius,
@@ -707,7 +814,8 @@ func _on_enemy_spawn_requested(enemy_type: String, pos: Vector2, count: int) -> 
 		return
 	for i: int in range(max(1, count)):
 		var offset: Vector2 = Vector2(28.0, 0.0).rotated(float(i) * TAU / float(max(1, count)))
-		var enemy_data: Dictionary = RVEnemyDB.make(enemy_type, pos + offset, float(activity.get("threat", 1.0)), _rf_child_count(enemies_root) + i)
+		var summon_pos: Vector2 = _rf_constrain_entity_movement(pos, pos + offset, 16.0)
+		var enemy_data: Dictionary = RVEnemyDB.make(enemy_type, summon_pos, float(activity.get("threat", 1.0)), _rf_child_count(enemies_root) + i)
 		enemy_data["wake_radius"] = 999.0
 		enemy_data["pack_id"] = "summoned"
 		_spawn_enemy(enemy_data)
@@ -720,9 +828,10 @@ func _set_exit_visible(value: bool) -> void:
 	if exit_portal != null:
 		exit_portal.visible = value
 
-func _clear_children(root: Node) -> void:
-	for child: Node in root.get_children():
-		child.queue_free()
+func _clear_children(root: Variant) -> void:
+	for child: Node in _rf_safe_children(root):
+		if child != null and is_instance_valid(child) and not child.is_queued_for_deletion():
+			child.queue_free()
 
 func dev_spawn_enemy(enemy_type: String, count: int = 1) -> void:
 	if state_ref == null:
@@ -802,6 +911,8 @@ func _chain_lightning(source: RVEnemyActor, damage: float, count: int, tags: Arr
 					var enemy: RVEnemyActor = enemy_node
 					if chained.has(enemy):
 						continue
+					if not _rf_has_combat_los(current.global_position, enemy.global_position, 8.0):
+						continue
 					var dist: float = current.global_position.distance_to(enemy.global_position)
 					if dist < best_dist and dist <= 220.0:
 						best = enemy
@@ -822,6 +933,8 @@ func _chain_lightning(source: RVEnemyActor, damage: float, count: int, tags: Arr
 # class cache has not refreshed after installing new scripts.
 # -----------------------------------------------------------------------------
 func _rf_ensure_combat_layers() -> void:
+	_rf_live_enemies_root()
+	_rf_live_projectiles_root()
 	_rf_named_node2d("MapGroundLayer", -100)
 	_rf_named_node2d("MapDressingLayer", -50)
 	_rf_named_node2d("GroundTelegraphLayer", -20)
@@ -983,6 +1096,12 @@ func get_combat_bounds() -> Rect2:
 func constrain_player_position(pos: Vector2) -> Vector2:
 	return RVCombatGeometrySystem.constrain_point(get_current_map_layout(), pos, 18.0)
 
+func constrain_player_movement(previous_pos: Vector2, target_pos: Vector2, radius: float = 18.0) -> Vector2:
+	return _rf_constrain_entity_movement(previous_pos, target_pos, radius)
+
+func constrain_actor_movement(previous_pos: Vector2, target_pos: Vector2, radius: float = 16.0) -> Vector2:
+	return _rf_constrain_entity_movement(previous_pos, target_pos, radius)
+
 func constrain_actor_position(pos: Vector2, radius: float = 16.0) -> Vector2:
 	return RVCombatGeometrySystem.constrain_point(get_current_map_layout(), pos, radius)
 
@@ -1039,8 +1158,8 @@ func enforce_layout_projectile_collisions(delta: float) -> void:
 		if is_instance_valid(projectile):
 			projectile.set_meta("rv_prev_projectile_pos", projectile.global_position)
 
-func _collect_layout_enemy_nodes(root: Node, out: Array[Node2D]) -> void:
-	for child: Node in root.get_children():
+func _collect_layout_enemy_nodes(root: Variant, out: Array[Node2D]) -> void:
+	for child: Node in _rf_safe_children(root):
 		if child is Node2D:
 			var node2d: Node2D = child as Node2D
 			if _looks_like_enemy_node(node2d):
@@ -1056,8 +1175,8 @@ func _looks_like_enemy_node(node: Node) -> bool:
 		return true
 	return node.has_method("take_damage") and (node.has_method("update_actor") or node.has_method("update_enemy") or node.has_method("update_combat"))
 
-func _collect_layout_projectile_nodes(root: Node, out: Array[Node2D]) -> void:
-	for child: Node in root.get_children():
+func _collect_layout_projectile_nodes(root: Variant, out: Array[Node2D]) -> void:
+	for child: Node in _rf_safe_children(root):
 		if child is Node2D:
 			var node2d: Node2D = child as Node2D
 			if _looks_like_projectile_node(node2d):
@@ -1115,15 +1234,379 @@ func _set_projectile_bounces(node: Node, bounces: int) -> void:
 			return
 
 
+
+
+# -----------------------------------------------------------------------------
+# Patch 081A: active map instance capture/restore.
+# This keeps the map state stable when the player portals to hub or dies and
+# re-enters through a remaining portal entry.
+# -----------------------------------------------------------------------------
+func capture_map_instance_state(state: Object = null) -> Dictionary:
+	if str(activity.get("kind", "")) != "map":
+		return {}
+	var snapshot: Dictionary = {}
+	snapshot["activity"] = activity.duplicate(true)
+	snapshot["map_layout"] = map_layout.duplicate(true)
+	snapshot["encounter_plan"] = encounter_plan.duplicate(true)
+	snapshot["room_clear"] = room_clear
+	snapshot["reward_claimed"] = reward_claimed
+	snapshot["map_pack_total"] = map_pack_total
+	snapshot["map_pack_cleared"] = map_pack_cleared
+	snapshot["map_boss_alive"] = map_boss_alive
+	snapshot["enemy_zones"] = enemy_zones.duplicate(true)
+	var resume_pos: Vector2 = Vector2(map_layout.get("start_pos", Vector2(640.0, 594.0)))
+	if state != null:
+		var state_pos: Variant = state.get("player_pos")
+		if typeof(state_pos) == TYPE_VECTOR2:
+			resume_pos = Vector2(state_pos)
+	snapshot["player_resume_pos"] = resume_pos
+	if state != null:
+		snapshot["room_reward_ready"] = bool(state.get("room_reward_ready"))
+		snapshot["room_reward_claimed"] = bool(state.get("room_reward_claimed"))
+		snapshot["room_exit_ready"] = bool(state.get("room_exit_ready"))
+		snapshot["room_objective"] = str(state.get("room_objective"))
+	else:
+		snapshot["room_reward_ready"] = false
+		snapshot["room_reward_claimed"] = reward_claimed
+		snapshot["room_exit_ready"] = false
+		snapshot["room_objective"] = ""
+	var enemy_snapshots: Array[Dictionary] = []
+	for enemy_node: Node in _rf_safe_children(enemies_root):
+		if enemy_node is RVEnemyActor and is_instance_valid(enemy_node) and not enemy_node.is_queued_for_deletion():
+			var enemy: RVEnemyActor = enemy_node
+			if enemy.hp > 0.0:
+				enemy_snapshots.append(_rf_081a_enemy_snapshot(enemy))
+	snapshot["enemies"] = enemy_snapshots
+	var loot_snapshots: Array[Dictionary] = []
+	var loot_root: Node2D = _rf_loot_root()
+	for loot_node: Node in _rf_safe_children(loot_root):
+		if loot_node is Node2D and is_instance_valid(loot_node) and not loot_node.is_queued_for_deletion():
+			var payload_value: Variant = loot_node.get("payload")
+			if typeof(payload_value) == TYPE_DICTIONARY:
+				loot_snapshots.append({
+					"payload": Dictionary(payload_value).duplicate(true),
+					"pos": (loot_node as Node2D).global_position
+				})
+	snapshot["loot"] = loot_snapshots
+	return snapshot
+
+func _rf_081a_enemy_snapshot(enemy: RVEnemyActor) -> Dictionary:
+	var data: Dictionary = {
+		"id": enemy.enemy_id,
+		"type": enemy.enemy_type,
+		"role": enemy.role,
+		"pos": enemy.global_position,
+		"hp": enemy.hp,
+		"max_hp": enemy.max_hp,
+		"speed": enemy.speed,
+		"damage": enemy.damage,
+		"radius": enemy.radius,
+		"color": enemy.enemy_color,
+		"pack_id": enemy.pack_id,
+		"encounter_role": enemy.encounter_role,
+		"encounter_pack_type": enemy.encounter_pack_type,
+		"is_map_boss": enemy.is_map_boss,
+		"elite": enemy.is_elite,
+		"wake_radius": _rf_float_prop(enemy, "wake_radius", 360.0),
+		"leash_center": enemy.get("leash_center") if enemy.get("leash_center") != null else enemy.global_position,
+		"leash_radius": _rf_float_prop(enemy, "leash_radius", 320.0)
+	}
+	return data
+
+func _rf_081a_restore_map_instance(state: RVGameState, snapshot: Dictionary) -> void:
+	map_layout = Dictionary(snapshot.get("map_layout", {})).duplicate(true)
+	encounter_plan = Dictionary(snapshot.get("encounter_plan", {})).duplicate(true)
+	_apply_map_layout_art(map_layout)
+	_set_static_room_visible(false)
+	_set_authored_obstacles_visible(false)
+	room_clear = bool(snapshot.get("room_clear", false))
+	reward_claimed = bool(snapshot.get("reward_claimed", false))
+	map_pack_total = int(snapshot.get("map_pack_total", 0))
+	map_pack_cleared = int(snapshot.get("map_pack_cleared", 0))
+	map_boss_alive = bool(snapshot.get("map_boss_alive", false))
+	enemy_zones = Array(snapshot.get("enemy_zones", [])).duplicate(true)
+	state.room_reward_ready = bool(snapshot.get("room_reward_ready", false))
+	state.room_reward_claimed = bool(snapshot.get("room_reward_claimed", reward_claimed))
+	state.room_exit_ready = bool(snapshot.get("room_exit_ready", false))
+	state.room_objective = str(snapshot.get("room_objective", "Clear the map."))
+	state.player_pos = Vector2(snapshot.get("player_resume_pos", map_layout.get("start_pos", Vector2(640.0, 594.0))))
+	_ensure_runtime_map_camera()
+	_update_runtime_map_camera(state.player_pos)
+	if reward_chest != null:
+		reward_chest.global_position = Vector2(map_layout.get("reward_pos", Vector2(640.0, 178.0)))
+	if exit_portal != null:
+		exit_portal.global_position = Vector2(map_layout.get("exit_pos", Vector2(640.0, 594.0)))
+	for enemy_value: Variant in Array(snapshot.get("enemies", [])):
+		if typeof(enemy_value) == TYPE_DICTIONARY:
+			var enemy_data: Dictionary = Dictionary(enemy_value).duplicate(true)
+			if float(enemy_data.get("hp", 0.0)) > 0.0:
+				_spawn_enemy(enemy_data)
+	for loot_value: Variant in Array(snapshot.get("loot", [])):
+		if typeof(loot_value) == TYPE_DICTIONARY:
+			var loot: Dictionary = Dictionary(loot_value)
+			var payload: Dictionary = Dictionary(loot.get("payload", {})).duplicate(true)
+			var pos: Vector2 = Vector2(loot.get("pos", state.player_pos))
+			if not payload.is_empty():
+				_rf_spawn_ground_loot(payload, pos)
+	_set_reward_visible(state.room_reward_ready and not state.room_reward_claimed)
+	_set_exit_visible(state.room_exit_ready)
+	_update_map_objective(state)
+	state.add_notice("Returned to map instance")
+
+# -----------------------------------------------------------------------------
+# Patch 079F: combat awareness / line-of-sight contract for continuous maps.
+# The large-map system uses generated blockers. These helpers make combat respect
+# those blockers without requiring a full pathfinding pass yet.
+# -----------------------------------------------------------------------------
+
+func _rf_enemy_attack_has_los(origin: Vector2, radius: float = 8.0) -> bool:
+	if state_ref == null:
+		return true
+	if map_layout.is_empty():
+		return true
+	return _rf_has_combat_los(origin, state_ref.player_pos, max(8.0, radius + 8.0))
+
+func _rf_area_damage_has_los(center: Vector2, target: Vector2, tags: Array = []) -> bool:
+	if map_layout.is_empty():
+		return true
+	# Ground-targeted rifts/traps/nova effects should still be blocked by hard map
+	# blockers. Later we can add explicit tags like "ignores_los" for special skills.
+	if tags.has("ignores_los") or tags.has("wall_pierce"):
+		return true
+	return _rf_has_combat_los(center, target, 10.0)
+
+func _rf_enemy_has_awareness(enemy: RVEnemyActor, player: RVPlayerActor) -> bool:
+	if enemy == null or player == null:
+		return false
+	if not is_instance_valid(enemy) or enemy.is_queued_for_deletion():
+		return false
+	if map_layout.is_empty():
+		return true
+	var enemy_pos: Vector2 = enemy.global_position
+	var player_pos: Vector2 = player.global_position
+	var distance: float = enemy_pos.distance_to(player_pos)
+	var wake_radius: float = _rf_float_prop(enemy, "wake_radius", 360.0)
+	var leash_radius: float = max(_rf_float_prop(enemy, "leash_radius", wake_radius * 1.75), wake_radius)
+	var has_los: bool = _rf_has_combat_los(enemy_pos, player_pos, 18.0)
+	var aggroed: bool = bool(enemy.get_meta("rv_aggroed", false))
+	if distance <= wake_radius and has_los:
+		enemy.set_meta("rv_aggroed", true)
+		return true
+	if aggroed:
+		if distance <= leash_radius and (has_los or distance <= 90.0):
+			return true
+		if distance > leash_radius * 1.25:
+			enemy.set_meta("rv_aggroed", false)
+	# Prevent offscreen/no-LOS packs from attacking through generated walls.
+	return false
+
+func _rf_float_prop(node: Object, key: String, fallback: float) -> float:
+	if node == null:
+		return fallback
+	var value: Variant = node.get(key)
+	if typeof(value) == TYPE_FLOAT or typeof(value) == TYPE_INT:
+		return float(value)
+	return fallback
+
+
+# -----------------------------------------------------------------------------
+# Patch 079H: missing combat helper repair.
+# These helpers are intentionally local to CombatArena. They keep the continuous
+# map LOS/collision patches parse-safe even if the geometry system changes later.
+# -----------------------------------------------------------------------------
+
+func _rf_has_combat_los(from_pos: Vector2, to_pos: Vector2, padding: float = 10.0) -> bool:
+	var layout: Dictionary = get_current_map_layout()
+	if layout.is_empty():
+		return true
+	# Small overlaps and near-edge hits should not be eaten by coarse generated blockers.
+	if from_pos.distance_to(to_pos) <= max(96.0, padding * 4.25):
+		return true
+	return CombatGeometrySystemScript.has_line_of_sight(layout, from_pos, to_pos, padding)
+
+func _rf_combat_los_hit_allowed(from_pos: Vector2, to_pos: Vector2, padding: float = 10.0, close_grace: float = 180.0) -> bool:
+	var layout: Dictionary = get_current_map_layout()
+	if layout.is_empty():
+		return true
+	if from_pos.distance_to(to_pos) <= close_grace:
+		return true
+	return _rf_has_combat_los(from_pos, to_pos, padding)
+
+func _rf_constrain_entity_movement(previous_pos: Vector2, desired_pos: Vector2, radius: float = 16.0) -> Vector2:
+	if str(activity.get("kind", "")) != "map":
+		return desired_pos
+	var layout: Dictionary = get_current_map_layout()
+	if layout.is_empty():
+		return desired_pos
+	var constrained: Vector2 = CombatGeometrySystemScript.constrain_point(layout, desired_pos, radius)
+	if previous_pos.distance_to(desired_pos) <= 0.75:
+		return constrained
+	var velocity: Vector2 = desired_pos - previous_pos
+	var result: Dictionary = CombatGeometrySystemScript.resolve_projectile_segment(layout, previous_pos, desired_pos, velocity, radius, 0)
+	if not bool(result.get("hit", false)):
+		return constrained
+
+	# Wall slide: try horizontal and vertical movement separately so enemies do not
+	# simply tunnel through blocker edges or get glued to corners.
+	var x_candidate: Vector2 = CombatGeometrySystemScript.constrain_point(layout, Vector2(desired_pos.x, previous_pos.y), radius)
+	var y_candidate: Vector2 = CombatGeometrySystemScript.constrain_point(layout, Vector2(previous_pos.x, desired_pos.y), radius)
+	var x_dist: float = x_candidate.distance_squared_to(desired_pos)
+	var y_dist: float = y_candidate.distance_squared_to(desired_pos)
+	var picked: Vector2 = x_candidate if x_dist <= y_dist else y_candidate
+	if picked.distance_to(previous_pos) <= 0.5:
+		var hit_pos: Vector2 = Vector2(result.get("position", previous_pos))
+		return CombatGeometrySystemScript.constrain_point(layout, hit_pos, radius)
+	return picked
+
 func _rf_node_alive(node: Node) -> bool:
 	return node != null and is_instance_valid(node) and not node.is_queued_for_deletion()
 
-func _rf_safe_children(node: Node) -> Array:
-	if not _rf_node_alive(node):
+func _rf_safe_children(root: Variant) -> Array:
+	if root == null:
+		return []
+	if not is_instance_valid(root):
+		return []
+	if not (root is Node):
+		return []
+	var node: Node = root as Node
+	if node == null:
+		return []
+	if node.is_queued_for_deletion():
 		return []
 	return node.get_children()
 
-func _rf_child_count(node: Node) -> int:
-	if not _rf_node_alive(node):
+func _rf_child_count(root: Variant) -> int:
+	if root == null:
+		return 0
+	if not is_instance_valid(root):
+		return 0
+	if not (root is Node):
+		return 0
+	var node: Node = root as Node
+	if node == null:
+		return 0
+	if node.is_queued_for_deletion():
 		return 0
 	return node.get_child_count()
+
+# -----------------------------------------------------------------------------
+# Patch 081C: active map instance snapshot / restore.
+# Used by map portals so leaving or dying in a map does not respawn the whole map.
+# -----------------------------------------------------------------------------
+
+func capture_map_instance_snapshot() -> Dictionary:
+	var out: Dictionary = {}
+	out["activity"] = activity.duplicate(true)
+	out["map_layout"] = map_layout.duplicate(true)
+	out["encounter_plan"] = encounter_plan.duplicate(true)
+	out["room_clear"] = room_clear
+	out["reward_claimed"] = reward_claimed
+	out["enemy_zones"] = enemy_zones.duplicate(true)
+	out["map_pack_total"] = map_pack_total
+	out["map_pack_cleared"] = map_pack_cleared
+	out["map_boss_alive"] = map_boss_alive
+	out["player_pos"] = state_ref.player_pos if state_ref != null else Vector2(map_layout.get("start_pos", Vector2(640.0, 360.0)))
+	if state_ref != null:
+		out["room_reward_ready"] = state_ref.room_reward_ready
+		out["room_reward_claimed"] = state_ref.room_reward_claimed
+		out["room_exit_ready"] = state_ref.room_exit_ready
+		out["room_objective"] = state_ref.room_objective
+	var enemy_snapshots: Array[Dictionary] = []
+	for enemy_node: Node in _rf_safe_children(enemies_root):
+		if enemy_node is RVEnemyActor and is_instance_valid(enemy_node) and not enemy_node.is_queued_for_deletion():
+			var enemy: RVEnemyActor = enemy_node
+			if enemy.hp > 0.0:
+				enemy_snapshots.append(_rf_081c_enemy_snapshot(enemy))
+	out["enemies"] = enemy_snapshots
+	out["ground_loot"] = _rf_081c_ground_loot_snapshot()
+	return out
+
+func restore_map_instance_snapshot(state: RVGameState, snapshot: Dictionary) -> void:
+	_rf_live_enemies_root()
+	_rf_live_projectiles_root()
+	state_ref = state
+	active = true
+	activity = Dictionary(snapshot.get("activity", activity)).duplicate(true)
+	map_layout = Dictionary(snapshot.get("map_layout", {})).duplicate(true)
+	encounter_plan = Dictionary(snapshot.get("encounter_plan", {})).duplicate(true)
+	room_clear = bool(snapshot.get("room_clear", false))
+	reward_claimed = bool(snapshot.get("reward_claimed", false))
+	enemy_zones = Array(snapshot.get("enemy_zones", [])).duplicate(true)
+	map_pack_total = int(snapshot.get("map_pack_total", 0))
+	map_pack_cleared = int(snapshot.get("map_pack_cleared", 0))
+	map_boss_alive = bool(snapshot.get("map_boss_alive", false))
+	_clear_children(enemies_root)
+	_clear_children(projectiles_root)
+	_clear_runtime_vfx()
+	_clear_map_layout_art()
+	if not map_layout.is_empty():
+		_apply_map_layout_art(map_layout)
+	_set_static_room_visible(false)
+	_set_authored_obstacles_visible(false)
+	state.room_reward_ready = bool(snapshot.get("room_reward_ready", room_clear and not reward_claimed))
+	state.room_reward_claimed = bool(snapshot.get("room_reward_claimed", reward_claimed))
+	state.room_exit_ready = bool(snapshot.get("room_exit_ready", reward_claimed))
+	state.room_objective = str(snapshot.get("room_objective", state.room_objective))
+	state.player_pos = Vector2(snapshot.get("player_pos", map_layout.get("start_pos", state.player_pos)))
+	if reward_chest != null:
+		reward_chest.global_position = Vector2(map_layout.get("reward_pos", reward_chest.global_position))
+	if exit_portal != null:
+		exit_portal.global_position = Vector2(map_layout.get("exit_pos", exit_portal.global_position))
+	for enemy_value: Variant in Array(snapshot.get("enemies", [])):
+		if typeof(enemy_value) == TYPE_DICTIONARY:
+			_spawn_enemy(Dictionary(enemy_value))
+	_rf_081c_restore_ground_loot(Array(snapshot.get("ground_loot", [])))
+	_set_reward_visible(state.room_reward_ready and not state.room_reward_claimed)
+	_set_exit_visible(state.room_exit_ready)
+	_ensure_runtime_map_camera()
+	_update_runtime_map_camera(state.player_pos)
+	_update_map_objective(state)
+
+func _rf_081c_enemy_snapshot(enemy: RVEnemyActor) -> Dictionary:
+	return {
+		"id": str(enemy.get("enemy_id")),
+		"type": str(enemy.get("enemy_type")),
+		"role": str(enemy.get("role")),
+		"pos": enemy.global_position,
+		"hp": float(enemy.get("hp")),
+		"max_hp": float(enemy.get("max_hp")),
+		"speed": float(enemy.get("speed")),
+		"damage": float(enemy.get("damage")),
+		"radius": float(enemy.get("radius")),
+		"color": enemy.get("enemy_color"),
+		"pack_id": str(enemy.get("pack_id")),
+		"encounter_role": str(enemy.get("encounter_role")),
+		"encounter_pack_type": str(enemy.get("encounter_pack_type")),
+		"is_map_boss": bool(enemy.get("is_map_boss")),
+		"elite": bool(enemy.get("is_elite")),
+		"wake_radius": float(enemy.get("wake_radius") if enemy.get("wake_radius") != null else 360.0),
+		"leash_center": enemy.get("leash_center") if enemy.get("leash_center") != null else enemy.global_position,
+		"leash_radius": float(enemy.get("leash_radius") if enemy.get("leash_radius") != null else 360.0),
+	}
+
+func _rf_081c_ground_loot_snapshot() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var root: Node2D = _rf_loot_root()
+	for child: Node in _rf_safe_children(root):
+		if not (child is Node2D):
+			continue
+		var payload_value: Variant = child.get("payload")
+		if typeof(payload_value) != TYPE_DICTIONARY:
+			continue
+		result.append({
+			"pos": (child as Node2D).global_position,
+			"payload": Dictionary(payload_value).duplicate(true),
+		})
+	return result
+
+func _rf_081c_restore_ground_loot(items: Array) -> void:
+	var root: Node2D = _rf_loot_root()
+	_clear_children(root)
+	for item_value: Variant in items:
+		if typeof(item_value) != TYPE_DICTIONARY:
+			continue
+		var item: Dictionary = Dictionary(item_value)
+		var payload: Dictionary = Dictionary(item.get("payload", {}))
+		var pos: Vector2 = Vector2(item.get("pos", Vector2.ZERO))
+		if not payload.is_empty():
+			_rf_spawn_ground_loot(payload, pos)
