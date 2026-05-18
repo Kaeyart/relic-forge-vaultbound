@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://ccj80iwiepxy0"]
 
 [ext_resource type="Script" uid="uid://f0n2vofg0vu5" path="res://scripts/ui/GameHUD.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/ui/hud/FlaskHUD.tscn" id="flask_hud_scene"]
+[ext_resource type="PackedScene" uid="uid://ca1cuum0fvv8q" path="res://scenes/ui/hud/FlaskHUD.tscn" id="flask_hud_scene"]
 
 [node name="GameHUD" type="CanvasLayer" unique_id=111235464]
 script = ExtResource("1")
@@ -51,17 +51,21 @@ offset_bottom = 44.0
 value = 100.0
 show_percentage = false
 
-[node name="SkillBar" type="HBoxContainer" parent="Root/BottomHUD" unique_id=288037336]
+[node name="SkillBar" type="Control" parent="Root/BottomHUD" unique_id=1841671932]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 420.0
-offset_right = 890.0
-offset_bottom = 58.0
-theme_override_constants/separation = 8
+anchors_preset = 0
+offset_left = 787.0
+offset_top = 50.0
+offset_right = 1259.0
+offset_bottom = 108.0
 
 [node name="Slot0" type="PanelContainer" parent="Root/BottomHUD/SkillBar" unique_id=1388516290]
 custom_minimum_size = Vector2(72, 52)
-layout_mode = 2
+layout_mode = 0
+offset_left = 257.0
+offset_top = -213.0
+offset_right = 329.0
+offset_bottom = -155.0
 
 [node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot0" unique_id=1290458316]
 layout_mode = 2
@@ -73,7 +77,11 @@ text = "1"
 
 [node name="Slot1" type="PanelContainer" parent="Root/BottomHUD/SkillBar" unique_id=1198561577]
 custom_minimum_size = Vector2(72, 52)
-layout_mode = 2
+layout_mode = 0
+offset_left = 329.0
+offset_top = -213.0
+offset_right = 401.0
+offset_bottom = -155.0
 
 [node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot1" unique_id=305990830]
 visible = false
@@ -86,7 +94,11 @@ text = "2"
 
 [node name="Slot2" type="PanelContainer" parent="Root/BottomHUD/SkillBar" unique_id=574223364]
 custom_minimum_size = Vector2(72, 52)
-layout_mode = 2
+layout_mode = 0
+offset_left = 401.0
+offset_top = -213.0
+offset_right = 473.0
+offset_bottom = -155.0
 
 [node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot2" unique_id=1777653693]
 visible = false
@@ -99,7 +111,11 @@ text = "3"
 
 [node name="Slot3" type="PanelContainer" parent="Root/BottomHUD/SkillBar" unique_id=898071218]
 custom_minimum_size = Vector2(72, 52)
-layout_mode = 2
+layout_mode = 0
+offset_left = 257.0
+offset_top = -155.0
+offset_right = 329.0
+offset_bottom = -97.0
 
 [node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot3" unique_id=490740402]
 visible = false
@@ -112,7 +128,11 @@ text = "4"
 
 [node name="Slot4" type="PanelContainer" parent="Root/BottomHUD/SkillBar" unique_id=1290545740]
 custom_minimum_size = Vector2(72, 52)
-layout_mode = 2
+layout_mode = 0
+offset_left = 329.0
+offset_top = -155.0
+offset_right = 401.0
+offset_bottom = -97.0
 
 [node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot4" unique_id=1550423675]
 visible = false
@@ -125,7 +145,11 @@ text = "5"
 
 [node name="Slot5" type="PanelContainer" parent="Root/BottomHUD/SkillBar" unique_id=1043787264]
 custom_minimum_size = Vector2(72, 52)
-layout_mode = 2
+layout_mode = 0
+offset_left = 401.0
+offset_top = -155.0
+offset_right = 473.0
+offset_bottom = -97.0
 
 [node name="SelectedFrame" type="ColorRect" parent="Root/BottomHUD/SkillBar/Slot5" unique_id=9451966]
 visible = false
@@ -172,6 +196,4 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Objective"
 
-[node name="FlaskHUD" parent="." instance=ExtResource("flask_hud_scene")]
-unique_name_in_owner = true
-visible = true
+[node name="FlaskHUD" parent="." unique_id=1563063865 instance=ExtResource("flask_hud_scene")]

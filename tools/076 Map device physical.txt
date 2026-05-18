@@ -1,4 +1,11 @@
-Next: 082A — Progression, Drops, and Flask Visibility Foundation
-Then: 082B — Crafting UI/UX
-Then: 083 — Atlas Foundation
-Then: 084 — Classes + Passive Tree
+083B — CombatArena Decomposition Prep. We do not fully rewrite combat yet. We split out obvious helper systems: map instance persistence, combat roots/layers, projectile collision, enemy spawning, and reward/exit logic. The goal is to stop CombatArena.gd from being the graveyard where every system gets patched.
+
+
+084A — Drop Economy Tuning Pass. This is the next “real gameplay” patch. Run 10 maps mentally/systemically and make sure rewards make sense: normal packs, elites, bosses, maps, gems, flask upgrades, crafting currency, and equipment. Tune rarity rates, item level scaling, forge potential ranges, and boss guarantees.
+
+
+084B — Crafting UI/UX Pass. Scene-authored crafting panel. Proper buttons. Selected item card. Prefix/suffix display. Forge potential bar. Cost display. Disabled states. This will make the crafting system usable instead of just technically present.
+
+085 — Atlas Foundation. Only after maps/drops are stable. Atlas should track completed map types, bonus objectives, tiers, atlas points, and maybe early atlas passives. Not the full giant atlas tree yet.
+
+086 — Classes/Ascendancies/Passive Foundation. This is important, but doing it before progression/drop/crafting stability would be a trap. Classes should interact with skill gems, item tags, affixes, and map rewards. Otherwise it becomes stat filler.
