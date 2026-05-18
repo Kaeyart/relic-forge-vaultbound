@@ -19,6 +19,7 @@ const MapLayoutSystemScript := preload("res://scripts/systems/MapLayoutSystem.gd
 const MapEncounterDirectorScript := preload("res://scripts/systems/MapEncounterDirector.gd")
 const CombatJuiceSystemScript := preload("res://scripts/systems/CombatJuiceSystem.gd")
 const CombatStatusComboSystemScript := preload("res://scripts/systems/CombatStatusComboSystem.gd")
+const PassiveBuildApplicationSystemScript := preload("res://scripts/systems/PassiveBuildApplicationSystem.gd")
 const CombatPackAISystemScript := preload("res://scripts/systems/CombatPackAISystem.gd")
 const BossPhaseDirectorScript := preload("res://scripts/systems/BossPhaseDirector.gd")
 
@@ -318,6 +319,9 @@ func cast_selected_skill(state: RVGameState, aim: Vector2) -> void:
 	_emit_skill_proxy_vfx(skill_name, state.player_pos, aim, direction, skill_data, tags)
 	RVSpellVFXSystem.spawn_skill_cast(self, skill_name, state.player_pos, aim, tags)
 	tags = CombatStatusComboSystemScript.augment_skill_tags(skill_name, tags)
+	# PATCH_085Q_DAMAGE_TAG_APPLICATION
+	tags = PassiveBuildApplicationSystemScript.augment_skill_tags(state, skill_name, tags)
+	damage = PassiveBuildApplicationSystemScript.modify_skill_damage(state, skill_name, damage, tags)
 	CombatJuiceSystemScript.skill_cast_feedback(self, _rf_feedback_root(), skill_name, state.player_pos, tags)
 	match skill_name:
 		"Storm Lance":

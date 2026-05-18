@@ -61,3 +61,19 @@ func _update_skill_bar(state: RVGameState) -> void:
 
 		if selected_frame != null:
 			selected_frame.visible = index == state.selected_skill_index
+
+func _ready() -> void:
+	_rf_set_descendant_mouse_filter(Control.MOUSE_FILTER_IGNORE)
+# Patch 085N marker: _rf_085n_hud_input_guard
+
+func _rf_set_descendant_mouse_filter(value: int) -> void:
+	_rf_set_descendant_mouse_filter_recursive(self as Node, value)
+
+func _rf_set_descendant_mouse_filter_recursive(root: Node, value: int) -> void:
+	if root == null:
+		return
+	if root is Control:
+		var control: Control = root as Control
+		control.mouse_filter = value
+	for child: Node in root.get_children():
+		_rf_set_descendant_mouse_filter_recursive(child, value)

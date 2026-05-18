@@ -17,6 +17,12 @@ func _ready() -> void:
 	_ensure_loot_filter_panel()
 
 func update_from_state(state: RVGameState) -> void:
+	_rf_085n_sync_input_ownership(state)
+	if loot_filter_panel != null and is_instance_valid(loot_filter_panel):
+		if loot_filter_panel is CanvasItem:
+			(loot_filter_panel as CanvasItem).visible = str(state.get("panel_mode")) == "loot_filter"
+		if loot_filter_panel.has_method("update_from_state"):
+			loot_filter_panel.call("update_from_state", state)
 	_ensure_map_device_panel()
 	_ensure_loot_filter_panel()
 	_set_visible("inventory", inventory_panel, state)
@@ -77,3 +83,21 @@ func _ensure_loot_filter_panel() -> void:
 		root_node.add_child(loot_filter_panel)
 	else:
 		add_child(loot_filter_panel)
+
+
+# Patch 085N: root input ownership guard.
+func _rf_085n_sync_input_ownership(state: Object) -> void:
+	var panel_open: bool = state != null and str(state.get("panel_mode")) != ""
+	mouse_filter = Control.MOUSE_FILTER_PASS if panel_open else Control.MOUSE_FILTER_IGNORE
+
+func _rf_set_descendant_mouse_filter(value: int) -> void:
+	_rf_set_descendant_mouse_filter_recursive(self as Node, value)
+
+func _rf_set_descendant_mouse_filter_recursive(root: Node, value: int) -> void:
+	if root == null:
+		return
+	if root is Control:
+		var control: Control = root as Control
+		control.mouse_filter = value
+	for child: Node in root.get_children():
+		_rf_set_descendant_mouse_filter_recursive(child, value)

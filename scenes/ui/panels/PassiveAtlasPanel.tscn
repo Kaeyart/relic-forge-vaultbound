@@ -4,7 +4,6 @@
 [ext_resource type="Script" uid="uid://by3mn1btwprs2" path="res://scripts/ui/components/PassiveTreeConnectionCanvas.gd" id="2_conn"]
 
 [node name="PassiveAtlasPanel" type="Control" unique_id=1706221151]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -74,6 +73,10 @@ mouse_filter = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(3600, 2600)
 anchors_preset = 0
+offset_left = -73.56
+offset_top = -98.06801
+offset_right = 3526.44
+offset_bottom = 2501.932
 mouse_filter = 2
 script = ExtResource("2_conn")
 

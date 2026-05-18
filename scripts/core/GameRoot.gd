@@ -13,8 +13,6 @@ var autosave_timer: float = 0.0
 var dev_tools_panel: Node = null
 var world_camera: Camera2D = null
 var loot_pickup_pet: Node2D = null
-var loot_filter_panel: Node = null
-var flask_hud: Node = null
 var map_return_portal: Node2D = null
 
 func _ready() -> void:
@@ -24,6 +22,7 @@ func _ready() -> void:
 	FlaskSystemScript.ensure_defaults(state)
 	RVMapSystem.ensure_defaults(state)
 	state.enter_hub()
+	_rf_restore_gameplay_input_after_load()
 	combat.visible = false
 	hub.visible = true
 	combat.combat_finished.connect(_on_combat_finished)
@@ -34,54 +33,7 @@ func _ready() -> void:
 	_install_world_camera()
 	_install_dev_tools()
 	_install_loot_pickup_pet()
-	_install_loot_filter_panel()
-	_install_flask_hud()
 	_install_map_return_portal()
-
-func _process(delta: float) -> void:
-	if not state.pending_start_activity.is_empty():
-		var pending_activity: Dictionary = state.pending_start_activity.duplicate(true)
-		state.pending_start_activity.clear()
-		state.panel_mode = ""
-		_start_activity(pending_activity)
-		return
-
-	_update_player(delta)
-	RVSkillSystem.update(state, delta)
-
-	if state.mode == "hub":
-		hub.update_focus(state)
-		if _has_active_map_portal() and state.prompt_text == "":
-			state.prompt_text = "E - Re-enter Map Portal (" + str(state.active_map_portal_entries) + " left)"
-	else:
-		combat.update_combat(state, player, delta)
-		if combat.has_method("enforce_layout_entity_collisions"):
-			combat.call("enforce_layout_entity_collisions")
-		if combat.has_method("enforce_layout_projectile_collisions"):
-			combat.call("enforce_layout_projectile_collisions", delta)
-		RVLootPickupAssistSystem.update(state, combat, player, delta)
-		if combat != null and is_instance_valid(combat) and not combat.is_queued_for_deletion():
-			RVLootFilterSystem.update_ground_loot(state, combat)
-		if loot_pickup_pet != null and is_instance_valid(loot_pickup_pet) and not loot_pickup_pet.is_queued_for_deletion() and loot_pickup_pet.has_method("sync_from_state"):
-			loot_pickup_pet.call("sync_from_state", state, player)
-
-	if state.notice_time > 0.0:
-		state.notice_time = max(0.0, state.notice_time - delta)
-
-	autosave_timer += delta
-	if autosave_timer >= 10.0:
-		autosave_timer = 0.0
-		RVSaveSystem.save(state)
-
-	hud.update_from_state(state)
-	if flask_hud != null and is_instance_valid(flask_hud) and flask_hud.has_method("update_from_state"):
-		flask_hud.call("update_from_state", state)
-	panels.update_from_state(state)
-	if loot_filter_panel != null and loot_filter_panel.has_method("update_from_state"):
-		loot_filter_panel.call("update_from_state", state)
-	_update_world_camera(delta)
-	_sync_map_return_portal()
-	_consume_pending_map_activity()
 
 func _update_player(delta: float) -> void:
 	if state.panel_mode != "":
@@ -120,6 +72,10 @@ func _unhandled_input(event: InputEvent) -> void:
 					combat.cast_selected_skill(state, get_global_mouse_position())
 
 func _handle_key(keycode: int) -> void:
+	if keycode == KEY_F8:
+		state.panel_mode = ""
+		player.sync_from_state(state)
+		return
 	if keycode == KEY_F10:
 		_toggle_dev_tools()
 		return
@@ -299,33 +255,6 @@ func _install_loot_pickup_pet() -> void:
 		loot_pickup_pet.call("sync_from_state", state, player)
 
 
-func _install_loot_filter_panel() -> void:
-	if loot_filter_panel != null and is_instance_valid(loot_filter_panel):
-		return
-	var scene_path: String = "res://scenes/ui/panels/LootFilterPanel.tscn"
-	if not ResourceLoader.exists(scene_path):
-		push_warning("Loot filter panel scene missing: " + scene_path)
-		return
-	var packed: PackedScene = load(scene_path)
-	loot_filter_panel = packed.instantiate()
-	add_child(loot_filter_panel)
-	if loot_filter_panel.has_method("update_from_state"):
-		loot_filter_panel.call("update_from_state", state)
-
-
-func _install_flask_hud() -> void:
-	if flask_hud != null and is_instance_valid(flask_hud):
-		return
-	var scene_path: String = "res://scenes/ui/hud/FlaskHUD.tscn"
-	if not ResourceLoader.exists(scene_path):
-		push_warning("Flask HUD scene missing: " + scene_path)
-		return
-	var packed: PackedScene = load(scene_path)
-	flask_hud = packed.instantiate()
-	add_child(flask_hud)
-	if flask_hud.has_method("update_from_state"):
-		flask_hud.call("update_from_state", state)
-
 func _toggle_dev_tools() -> void:
 	if dev_tools_panel == null:
 		_install_dev_tools()
@@ -373,6 +302,32 @@ func _try_reenter_active_map_portal() -> bool:
 		# Keep the current combat instance alive; clear the stored re-entry only if the player dies again.
 		state.active_map_portal_activity = activity.duplicate(true)
 	return true
+
+
+# -----------------------------------------------------------------------------
+# Patch 085N: input-lock repair after scene-owned HUD/panel cleanup.
+# panel_mode is transient UI state. It should not soft-lock movement after load or
+# after moving panels/HUD into scene-owned containers.
+# -----------------------------------------------------------------------------
+func _rf_restore_gameplay_input_after_load() -> void:
+	if state == null:
+		return
+	state.panel_mode = ""
+	if panels != null:
+		_rf_set_control_tree_mouse_filter(panels as Node, Control.MOUSE_FILTER_IGNORE)
+	if hud != null:
+		_rf_set_control_tree_mouse_filter(hud as Node, Control.MOUSE_FILTER_IGNORE)
+
+func _rf_update_ui_input_ownership() -> void:
+	var panel_open: bool = state != null and str(state.panel_mode) != ""
+	if panels != null:
+		var panel_control: Control = _rf_node_as_control(panels as Node)
+		panel_control.mouse_filter = Control.MOUSE_FILTER_PASS if panel_open else Control.MOUSE_FILTER_IGNORE
+	if hud != null:
+		var hud_control: Control = _rf_node_as_control(hud as Node)
+		# HUD should never block world movement/mouse casting. Its children can still
+		# draw and update normally.
+		hud_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
@@ -623,3 +578,17 @@ func _rf_081a_update_active_map_portal_visual() -> void:
 			portal_node.call("set_portal_state", enabled, _rf_081a_portal_entries())
 		elif portal_node is CanvasItem:
 			(portal_node as CanvasItem).visible = enabled
+
+func _rf_node_as_control(root: Node) -> Control:
+	if root != null and root is Control:
+		return root as Control
+	return null
+
+func _rf_set_control_tree_mouse_filter(root: Node, value: int) -> void:
+	if root == null:
+		return
+	if root is Control:
+		var control: Control = root as Control
+		control.mouse_filter = value
+	for child: Node in root.get_children():
+		_rf_set_control_tree_mouse_filter(child, value)

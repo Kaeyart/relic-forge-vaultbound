@@ -1,5 +1,8 @@
 class_name RVGameState
 extends RefCounted
+
+const PassiveTreeSystemScript := preload("res://scripts/systems/PassiveTreeSystem.gd")
+const PassiveBuildApplicationSystemScript := preload("res://scripts/systems/PassiveBuildApplicationSystem.gd")
 # Patch 085A: character passive tree state.
 var unlocked_passive_nodes: Array[String] = []
 var passive_stat_bonuses: Dictionary = {}
@@ -249,7 +252,11 @@ func ensure_defaults() -> void:
 	support_gem_cursor = clamp(support_gem_cursor, 0, max(0, support_gem_inventory.size() - 1))
 	spirit_gem_cursor = clamp(spirit_gem_cursor, 0, max(0, spirit_gem_inventory.size() - 1))
 	RVClassAscendancySystem.ensure_defaults(self)
+	PassiveTreeSystemScript.ensure_defaults(self)
+	PassiveBuildApplicationSystemScript.ensure_defaults(self)
 	RVPassiveTreeSystem.ensure_defaults(self)
+	# PATCH_085Q_DERIVED_PLAYER_STATS
+	PassiveBuildApplicationSystemScript.apply_derived_player_stats(self)
 	_recompute_spirit_reserved()
 
 func _ensure_default_gems() -> void:
@@ -349,6 +356,7 @@ func recompute_stats() -> void:
 	max_hp = 120.0 + float(level - 1) * 5.0
 	max_mana = 100.0 + float(level - 1) * 3.0
 	spirit_max = 30 + int(level / 5) * 5
+	player_speed = 245.0 # PATCH_085Q_BASE_SPEED_RESET
 	build_stats = {}
 	build_flags = []
 	if bool(passive_nodes.get("life_1", false)):
@@ -359,6 +367,14 @@ func recompute_stats() -> void:
 	build_stats = Dictionary(class_bundle.get("stats", {})).duplicate(true)
 	for flag_value: Variant in class_bundle.get("flags", []):
 		build_flags.append(str(flag_value))
+	# PATCH_085Q_PASSIVE_BUILD_MERGE
+	var passive_bundle_085q: Dictionary = PassiveBuildApplicationSystemScript.collect_passive_bundle(self)
+	PassiveBuildApplicationSystemScript.merge_passive_bundle_into_state(self, passive_bundle_085q)
+	build_stats = PassiveBuildApplicationSystemScript.merge_stats(build_stats, Dictionary(passive_bundle_085q.get("stats", {})))
+	for passive_rule_value_085q: Variant in Array(passive_bundle_085q.get("rules", [])):
+		var passive_rule_085q: String = str(passive_rule_value_085q)
+		if passive_rule_085q != "" and not build_flags.has(passive_rule_085q):
+			build_flags.append(passive_rule_085q)
 	max_hp += float(build_stats.get("Maximum Life", 0.0))
 	max_mana += float(build_stats.get("Maximum Mana", 0.0))
 	spirit_max += int(round(float(build_stats.get("Maximum Spirit", 0.0))))
@@ -368,6 +384,8 @@ func recompute_stats() -> void:
 			continue
 		var item: Dictionary = item_value
 		var stats: Dictionary = item.get("stats", item.get("total_stats", {}))
+		# PATCH_085Q_ITEM_STATS_MERGE
+		build_stats = PassiveBuildApplicationSystemScript.merge_stats(build_stats, stats)
 		max_hp += float(stats.get("Maximum Life", 0.0))
 		max_mana += float(stats.get("Maximum Mana", 0.0))
 		spirit_max += int(round(float(stats.get("Maximum Spirit", 0.0))))
