@@ -2,7 +2,8 @@ class_name RVPassiveTreeConnectionCanvas
 extends Control
 
 const PassiveDBScript := preload("res://scripts/data/PassiveAtlasDB.gd")
-const TREE_OFFSET: Vector2 = Vector2(80.0, 80.0)
+const TREE_OFFSET: Vector2 = Vector2(120.0, 120.0)
+const NODE_CENTER_OFFSET: Vector2 = Vector2(42.0, 20.0)
 
 var node_positions: Dictionary = {}
 var connection_pairs: Array = []
@@ -25,21 +26,21 @@ func refresh() -> void:
 func _rebuild_positions() -> void:
 	node_positions.clear()
 	connection_pairs.clear()
-	for node_value: Variant in PassiveDBScript.nodes():
-		var node_data: Dictionary = _node_data_from_value(node_value)
+	for value: Variant in Array(PassiveDBScript.nodes()):
+		var node_data: Dictionary = _node_data_from_value(value)
 		if node_data.is_empty():
 			continue
 		var node_id: String = str(node_data.get("id", ""))
 		if node_id == "":
 			continue
-		node_positions[node_id] = _node_position(node_data)
+		node_positions[node_id] = _node_position(node_data) + NODE_CENTER_OFFSET
 	_rebuild_connections()
 
 func _rebuild_connections() -> void:
 	var seen: Dictionary = {}
 	for key_value: Variant in node_positions.keys():
 		var node_id: String = str(key_value)
-		for other_value: Variant in PassiveDBScript.connected_ids(node_id):
+		for other_value: Variant in Array(PassiveDBScript.connected_ids(node_id)):
 			var other_id: String = str(other_value)
 			if other_id == "" or not node_positions.has(other_id):
 				continue
@@ -54,6 +55,24 @@ func _rebuild_connections() -> void:
 				continue
 			seen[pair_key] = true
 			connection_pairs.append([a, b])
+
+func _draw() -> void:
+	for pair_value: Variant in connection_pairs:
+		var pair: Array = Array(pair_value)
+		if pair.size() < 2:
+			continue
+		var a_id: String = str(pair[0])
+		var b_id: String = str(pair[1])
+		if not node_positions.has(a_id) or not node_positions.has(b_id):
+			continue
+		var a: Vector2 = Vector2(node_positions[a_id])
+		var b: Vector2 = Vector2(node_positions[b_id])
+		var color: Color = Color(0.45, 0.31, 0.15, 0.78)
+		var width: float = 2.0
+		if _is_unlocked(a_id) and _is_unlocked(b_id):
+			color = Color(1.00, 0.68, 0.25, 0.98)
+			width = 4.0
+		draw_line(a, b, color, width, true)
 
 func _node_data_from_value(value: Variant) -> Dictionary:
 	if typeof(value) == TYPE_DICTIONARY:
@@ -79,24 +98,6 @@ func _node_position(node_data: Dictionary) -> Vector2:
 		if arr.size() >= 2:
 			pos = Vector2(float(arr[0]), float(arr[1]))
 	return pos + TREE_OFFSET
-
-func _draw() -> void:
-	for pair_value: Variant in connection_pairs:
-		var pair: Array = Array(pair_value)
-		if pair.size() < 2:
-			continue
-		var a_id: String = str(pair[0])
-		var b_id: String = str(pair[1])
-		if not node_positions.has(a_id) or not node_positions.has(b_id):
-			continue
-		var a: Vector2 = Vector2(node_positions[a_id])
-		var b: Vector2 = Vector2(node_positions[b_id])
-		var color: Color = Color(0.33, 0.25, 0.17, 0.72)
-		var width: float = 2.0
-		if _is_unlocked(a_id) and _is_unlocked(b_id):
-			color = Color(1.00, 0.68, 0.30, 0.95)
-			width = 3.0
-		draw_line(a, b, color, width, true)
 
 func _is_unlocked(node_id: String) -> bool:
 	if state_ref == null:

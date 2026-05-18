@@ -1,197 +1,274 @@
 class_name RVPassiveAtlasPanel
-extends RVUIPanelBase
+extends Control
 
 const PassiveDBScript := preload("res://scripts/data/PassiveAtlasDB.gd")
 const PassiveTreeSystemScript := preload("res://scripts/systems/PassiveTreeSystem.gd")
 const NodeButtonScene := preload("res://scenes/ui/components/PassiveTreeNodeButton.tscn")
 
+const TREE_OFFSET: Vector2 = Vector2(120.0, 120.0)
+const TREE_SIZE: Vector2 = Vector2(3600.0, 2600.0)
+
 var state_ref: Object = null
-var selected_node_id: String = PassiveDBScript.START_NODE_ID
+var selected_node_id: String = ""
 var node_buttons: Dictionary = {}
 
-@onready var summary_label: Label = get_node_or_null("%SummaryLabel") as Label
-@onready var detail_label: RichTextLabel = get_node_or_null("%DetailLabel") as RichTextLabel
-@onready var tree_root: Control = _find_tree_root()
-@onready var connection_canvas: Control = _find_connection_canvas()
-@onready var allocate_button: Button = get_node_or_null("%AllocateButton") as Button
-@onready var refund_button: Button = get_node_or_null("%RefundButton") as Button
+var tree_scroll: ScrollContainer = null
+var tree_content: Control = null
+var connection_canvas: Control = null
+var detail_text: RichTextLabel = null
+var summary_label: Label = null
+var allocate_button: Button = null
+var refund_button: Button = null
+var hint_label: Label = null
+
+var panning: bool = false
+var pan_last_global: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
-	visible = false
+	mouse_filter = Control.MOUSE_FILTER_PASS
+	_bind_scene_nodes()
 	_connect_buttons()
-	_rebuild_tree_buttons()
+	selected_node_id = str(PassiveDBScript.START_NODE_ID)
+	_rebuild_tree()
+	_update_detail()
 
-func update_from_state(state: RVGameState) -> void:
+func update_from_state(state: Object) -> void:
 	state_ref = state
-	PassiveTreeSystemScript.ensure_defaults(state_ref)
-	if selected_node_id == "" or PassiveDBScript.node_by_id(selected_node_id).is_empty():
-		selected_node_id = PassiveDBScript.START_NODE_ID
-	_rebuild_tree_buttons()
-	_update_text()
-	_update_button_states()
-	if connection_canvas != null and connection_canvas.has_method("update_from_state"):
-		connection_canvas.call("update_from_state", state_ref)
+	if state_ref != null:
+		PassiveTreeSystemScript.ensure_defaults(state_ref)
+		visible = str(_state_get(state_ref, "panel_mode", "")) == "passive_atlas"
+	_bind_scene_nodes()
+	_connect_buttons()
+	if selected_node_id == "":
+		selected_node_id = str(PassiveDBScript.START_NODE_ID)
+	_rebuild_tree()
+	_update_detail()
 
-func handle_panel_key(state: Object, keycode: int) -> bool:
-	state_ref = state
-	match keycode:
-		KEY_ENTER:
-			return _try_unlock_selected()
-		KEY_BACKSPACE, KEY_DELETE:
-			return _try_refund_selected()
-		KEY_LEFT, KEY_A:
-			_select_neighbor(-1)
-			return true
-		KEY_RIGHT, KEY_D:
-			_select_neighbor(1)
-			return true
-	return false
+func refresh() -> void:
+	_bind_scene_nodes()
+	_rebuild_tree()
+	_update_detail()
+
+func _bind_scene_nodes() -> void:
+	tree_scroll = get_node_or_null("%TreeScroll") as ScrollContainer
+	tree_content = get_node_or_null("%TreeContent") as Control
+	connection_canvas = get_node_or_null("%ConnectionCanvas") as Control
+	detail_text = get_node_or_null("%DetailText") as RichTextLabel
+	summary_label = get_node_or_null("%SummaryLabel") as Label
+	allocate_button = get_node_or_null("%AllocateButton") as Button
+	refund_button = get_node_or_null("%RefundButton") as Button
+	hint_label = get_node_or_null("%HintLabel") as Label
+
+	if tree_scroll == null or tree_content == null:
+		push_error("PassiveAtlasPanel scene is missing %TreeScroll or %TreeContent. Reinstall patch 085J.")
+		return
+
+	tree_content.custom_minimum_size = TREE_SIZE
+	tree_content.mouse_filter = Control.MOUSE_FILTER_PASS
+	if not tree_content.gui_input.is_connected(Callable(self, "_on_tree_content_gui_input")):
+		tree_content.gui_input.connect(Callable(self, "_on_tree_content_gui_input"))
+
+	if connection_canvas != null:
+		connection_canvas.custom_minimum_size = TREE_SIZE
+		connection_canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func _connect_buttons() -> void:
-	if allocate_button != null and not allocate_button.pressed.is_connected(_on_allocate_pressed):
-		allocate_button.pressed.connect(_on_allocate_pressed)
-	if refund_button != null and not refund_button.pressed.is_connected(_on_refund_pressed):
-		refund_button.pressed.connect(_on_refund_pressed)
+	if allocate_button != null:
+		var alloc_cb: Callable = Callable(self, "_on_allocate_pressed")
+		if not allocate_button.pressed.is_connected(alloc_cb):
+			allocate_button.pressed.connect(alloc_cb)
+	if refund_button != null:
+		var refund_cb: Callable = Callable(self, "_on_refund_pressed")
+		if not refund_button.pressed.is_connected(refund_cb):
+			refund_button.pressed.connect(refund_cb)
 
-func _rebuild_tree_buttons() -> void:
-	if tree_root == null:
+func _rebuild_tree() -> void:
+	if tree_content == null:
 		return
-	for child: Node in tree_root.get_children():
-		if child == connection_canvas:
-			continue
-		child.queue_free()
+	_clear_runtime_node_buttons()
 	node_buttons.clear()
-	for node_data: Dictionary in PassiveDBScript.nodes():
-		var id: String = str(node_data.get("id", ""))
-		if id == "":
+
+	if connection_canvas != null and connection_canvas.has_method("update_from_state"):
+		connection_canvas.call("update_from_state", state_ref)
+
+	for node_data: Dictionary in _all_node_data():
+		var node_id: String = str(node_data.get("id", ""))
+		if node_id == "":
 			continue
-		var button: Button = _make_node_button()
-		button.name = "PassiveNode_" + id
+		var button: Button = _make_node_button(node_data)
+		if button == null:
+			continue
 		button.position = _node_position(node_data)
-		button.custom_minimum_size = Vector2(34, 34)
-		button.size = Vector2(34, 34)
-		button.tooltip_text = str(node_data.get("name", id))
-		var state_name: String = "locked"
-		if state_ref != null:
-			state_name = PassiveTreeSystemScript.node_state(state_ref, id)
-		if button.has_method("setup"):
-			button.call("setup", node_data, state_name, id == selected_node_id)
-		else:
-			button.text = _fallback_node_label(node_data)
-		if not button.pressed.is_connected(_on_node_pressed.bind(id)):
-			button.pressed.connect(_on_node_pressed.bind(id))
-		tree_root.add_child(button)
-		node_buttons[id] = button
+		button.z_as_relative = false
+		button.z_index = 30
+		button.set_meta("rv_passive_runtime_button", true)
+		tree_content.add_child(button)
+		node_buttons[node_id] = button
 
-func _make_node_button() -> Button:
-	var button: Button = null
-	if NodeButtonScene != null:
-		var inst: Node = NodeButtonScene.instantiate()
-		if inst is Button:
-			button = inst as Button
-	if button == null:
-		button = Button.new()
-	return button
-
-func _node_position(node_data: Dictionary) -> Vector2:
-	var raw: Variant = node_data.get("pos", Vector2.ZERO)
-	var pos: Vector2 = Vector2.ZERO
-	if typeof(raw) == TYPE_VECTOR2:
-		pos = Vector2(raw)
-	elif typeof(raw) == TYPE_VECTOR2I:
-		var p: Vector2i = raw
-		pos = Vector2(float(p.x), float(p.y))
-	elif typeof(raw) == TYPE_ARRAY:
-		var arr: Array = Array(raw)
-		if arr.size() >= 2:
-			pos = Vector2(float(arr[0]), float(arr[1]))
-	elif typeof(raw) == TYPE_DICTIONARY:
-		var d: Dictionary = Dictionary(raw)
-		pos = Vector2(float(d.get("x", 0)), float(d.get("y", 0)))
-	return pos + Vector2(80, 80)
-
-func _fallback_node_label(node_data: Dictionary) -> String:
-	match str(node_data.get("type", "small")):
-		"start": return "●"
-		"notable": return "◆"
-		"keystone": return "⬢"
-	return "•"
-
-func _on_node_pressed(id: String) -> void:
-	selected_node_id = id
-	_update_text()
-	_update_button_states()
-	_rebuild_tree_buttons()
-	if connection_canvas != null:
+	if connection_canvas != null and connection_canvas.get_parent() == tree_content:
+		tree_content.move_child(connection_canvas, 0)
 		connection_canvas.queue_redraw()
 
+func _clear_runtime_node_buttons() -> void:
+	if tree_content == null:
+		return
+	for child: Node in tree_content.get_children():
+		if child == connection_canvas:
+			continue
+		if bool(child.get_meta("rv_passive_runtime_button", false)) or str(child.name).begins_with("Node_") or str(child.name).begins_with("PassiveNode_"):
+			child.queue_free()
+
+func _all_node_data() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for value: Variant in Array(PassiveDBScript.nodes()):
+		var data: Dictionary = _node_data_from_value(value)
+		if not data.is_empty():
+			result.append(data)
+	return result
+
+func _make_node_button(node_data: Dictionary) -> Button:
+	var node_id: String = str(node_data.get("id", ""))
+	if node_id == "":
+		return null
+	var button_node: Node = NodeButtonScene.instantiate()
+	if not (button_node is Button):
+		button_node.queue_free()
+		return null
+	var button: Button = button_node as Button
+	var state_name: String = "locked"
+	if state_ref != null:
+		state_name = PassiveTreeSystemScript.node_state(state_ref, node_id)
+	elif node_id == str(PassiveDBScript.START_NODE_ID):
+		state_name = "unlocked"
+	var is_selected: bool = selected_node_id == node_id
+	if button.has_method("setup"):
+		button.call("setup", node_data, state_name, is_selected)
+	else:
+		button.name = "Node_" + node_id
+		button.text = str(node_data.get("name", node_id))
+		button.custom_minimum_size = Vector2(86.0, 38.0)
+
+	var press_cb: Callable = Callable(self, "_on_node_pressed")
+	if button.has_signal("passive_node_pressed") and not button.is_connected("passive_node_pressed", press_cb):
+		button.connect("passive_node_pressed", press_cb)
+	else:
+		var fallback_cb: Callable = Callable(self, "_on_button_pressed").bind(node_id)
+		if not button.pressed.is_connected(fallback_cb):
+			button.pressed.connect(fallback_cb)
+
+	var secondary_cb: Callable = Callable(self, "_on_node_secondary_pressed")
+	if button.has_signal("passive_node_secondary_pressed") and not button.is_connected("passive_node_secondary_pressed", secondary_cb):
+		button.connect("passive_node_secondary_pressed", secondary_cb)
+
+	button.tooltip_text = _tooltip_for(node_data)
+	return button
+
+func _on_button_pressed(node_id: String) -> void:
+	_on_node_pressed(node_id)
+
+func _on_node_pressed(node_id: String) -> void:
+	# Left click only selects/highlights. It does not spend points.
+	selected_node_id = node_id
+	_rebuild_tree()
+	_update_detail()
+
+func _on_node_secondary_pressed(node_id: String) -> void:
+	# Right click immediately allocates if available.
+	selected_node_id = node_id
+	if state_ref != null and PassiveTreeSystemScript.can_unlock(state_ref, node_id):
+		PassiveTreeSystemScript.unlock_node(state_ref, node_id)
+	_rebuild_tree()
+	_update_detail()
+
 func _on_allocate_pressed() -> void:
-	_try_unlock_selected()
+	if state_ref != null and selected_node_id != "":
+		PassiveTreeSystemScript.unlock_node(state_ref, selected_node_id)
+	_rebuild_tree()
+	_update_detail()
 
 func _on_refund_pressed() -> void:
-	_try_refund_selected()
+	if state_ref != null and selected_node_id != "":
+		PassiveTreeSystemScript.refund_node(state_ref, selected_node_id)
+	_rebuild_tree()
+	_update_detail()
 
-func _try_unlock_selected() -> bool:
-	if state_ref == null:
-		return false
-	var ok: bool = PassiveTreeSystemScript.unlock_node(state_ref, selected_node_id)
-	_rebuild_tree_buttons()
-	_update_text()
-	_update_button_states()
-	if connection_canvas != null and connection_canvas.has_method("update_from_state"):
-		connection_canvas.call("update_from_state", state_ref)
-	return ok
-
-func _try_refund_selected() -> bool:
-	if state_ref == null:
-		return false
-	var ok: bool = PassiveTreeSystemScript.refund_node(state_ref, selected_node_id)
-	_rebuild_tree_buttons()
-	_update_text()
-	_update_button_states()
-	if connection_canvas != null and connection_canvas.has_method("update_from_state"):
-		connection_canvas.call("update_from_state", state_ref)
-	return ok
-
-func _select_neighbor(delta: int) -> void:
-	var ids: Array[String] = PassiveDBScript.ordered_ids()
-	if ids.is_empty():
+func _on_tree_content_gui_input(event: InputEvent) -> void:
+	if tree_scroll == null:
 		return
-	var index: int = ids.find(selected_node_id)
-	if index < 0:
-		index = 0
-	selected_node_id = ids[wrapi(index + delta, 0, ids.size())]
-	_update_text()
-	_update_button_states()
-	_rebuild_tree_buttons()
+	if event is InputEventMouseButton:
+		var mb: InputEventMouseButton = event as InputEventMouseButton
+		if mb.button_index == MOUSE_BUTTON_LEFT:
+			panning = mb.pressed
+			pan_last_global = mb.global_position
+			if mb.pressed:
+				accept_event()
+		elif mb.button_index == MOUSE_BUTTON_WHEEL_UP and mb.pressed:
+			tree_scroll.scroll_vertical = max(0, tree_scroll.scroll_vertical - 72)
+			accept_event()
+		elif mb.button_index == MOUSE_BUTTON_WHEEL_DOWN and mb.pressed:
+			tree_scroll.scroll_vertical += 72
+			accept_event()
+	elif event is InputEventMouseMotion and panning:
+		var mm: InputEventMouseMotion = event as InputEventMouseMotion
+		var delta: Vector2 = mm.global_position - pan_last_global
+		pan_last_global = mm.global_position
+		tree_scroll.scroll_horizontal = max(0, tree_scroll.scroll_horizontal - int(delta.x))
+		tree_scroll.scroll_vertical = max(0, tree_scroll.scroll_vertical - int(delta.y))
+		accept_event()
 
-func _update_text() -> void:
-	if state_ref == null:
-		return
+func _update_detail() -> void:
 	if summary_label != null:
-		summary_label.text = PassiveTreeSystemScript.summary_text(state_ref)
-	if detail_label != null:
-		detail_label.clear()
-		detail_label.append_text(PassiveTreeSystemScript.detail_text(state_ref, selected_node_id))
-
-func _update_button_states() -> void:
-	if state_ref == null:
-		return
+		if state_ref != null:
+			summary_label.text = PassiveTreeSystemScript.summary_text(state_ref)
+		else:
+			summary_label.text = "Passive Tree"
+	if detail_text != null:
+		if state_ref != null and selected_node_id != "":
+			detail_text.text = PassiveTreeSystemScript.detail_text(state_ref, selected_node_id)
+		else:
+			detail_text.text = "Select a passive node."
 	if allocate_button != null:
-		allocate_button.disabled = not PassiveTreeSystemScript.can_unlock(state_ref, selected_node_id)
+		allocate_button.disabled = state_ref == null or selected_node_id == "" or not PassiveTreeSystemScript.can_unlock(state_ref, selected_node_id)
 	if refund_button != null:
-		refund_button.disabled = not PassiveTreeSystemScript.can_refund(state_ref, selected_node_id)
+		refund_button.disabled = state_ref == null or selected_node_id == "" or not PassiveTreeSystemScript.can_refund(state_ref, selected_node_id)
+	if hint_label != null:
+		hint_label.text = "Drag empty tree space to pan. Left-click selects. Right-click allocates. Allocate/Refund buttons are fallbacks."
 
-func _find_tree_root() -> Control:
-	for path: String in ["%TreeRoot", "%NodeLayer", "%NodeButtons", "%TreeContent", "%TreeCanvas"]:
-		var node: Node = get_node_or_null(path)
-		if node is Control:
-			return node as Control
-	return self
+func _node_data_from_value(value: Variant) -> Dictionary:
+	if typeof(value) == TYPE_DICTIONARY:
+		return Dictionary(value).duplicate(true)
+	var node_id: String = str(value)
+	if node_id == "":
+		return {}
+	return PassiveDBScript.node_by_id(node_id)
 
-func _find_connection_canvas() -> Control:
-	for path: String in ["%ConnectionCanvas", "%TreeConnections", "%PassiveTreeConnectionCanvas"]:
-		var node: Node = get_node_or_null(path)
-		if node is Control:
-			return node as Control
-	return null
+func _node_position(node_data: Dictionary) -> Vector2:
+	var raw_pos: Variant = node_data.get("pos", Vector2.ZERO)
+	var pos: Vector2 = Vector2.ZERO
+	if typeof(raw_pos) == TYPE_VECTOR2:
+		pos = Vector2(raw_pos)
+	elif typeof(raw_pos) == TYPE_VECTOR2I:
+		var pos_i: Vector2i = raw_pos
+		pos = Vector2(float(pos_i.x), float(pos_i.y))
+	elif typeof(raw_pos) == TYPE_DICTIONARY:
+		var d: Dictionary = Dictionary(raw_pos)
+		pos = Vector2(float(d.get("x", 0.0)), float(d.get("y", 0.0)))
+	elif typeof(raw_pos) == TYPE_ARRAY:
+		var arr: Array = Array(raw_pos)
+		if arr.size() >= 2:
+			pos = Vector2(float(arr[0]), float(arr[1]))
+	return pos + TREE_OFFSET
+
+func _tooltip_for(node_data: Dictionary) -> String:
+	var node_id: String = str(node_data.get("id", ""))
+	var text: String = str(node_data.get("name", node_id))
+	var desc: String = str(node_data.get("description", ""))
+	if desc != "":
+		text += "\n" + desc
+	return text
+
+func _state_get(state: Object, key: String, fallback: Variant = null) -> Variant:
+	if state == null:
+		return fallback
+	var value: Variant = state.get(key)
+	return fallback if value == null else value
