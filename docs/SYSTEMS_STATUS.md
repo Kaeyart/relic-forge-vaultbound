@@ -818,3 +818,7 @@ CombatArena root/layer lifecycle helpers now delegate to `RVCombatRootSystem`. A
 - Item drops now derive item level from map/activity level and include rarity, affix tags, best affix tier, and forge potential data for filtering.
 - Bosses/elites now create stronger reward pressure than normal trash packs.
 - This is a tuning baseline; rates still need QA across repeated map runs.
+
+## Patch 084C Note
+
+Crafting UI/UX has been moved to a scene-authored panel. The crafting script binds selected item state, forge potential, affixes, currency summary, and verb button state without creating layout controls in code.

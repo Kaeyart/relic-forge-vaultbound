@@ -30,8 +30,8 @@ text = "Status"
 anchors_preset = 0
 offset_left = 18.0
 offset_top = 610.0
-offset_right = 1260.0
-offset_bottom = 704.0
+offset_right = 282.0
+offset_bottom = 660.0
 
 [node name="HealthBar" type="ProgressBar" parent="Root/BottomHUD" unique_id=203744444]
 unique_name_in_owner = true
