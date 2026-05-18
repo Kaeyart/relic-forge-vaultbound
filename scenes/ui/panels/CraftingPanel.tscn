@@ -1,354 +1,456 @@
 [gd_scene format=3 uid="uid://ccsax5wmd5smc"]
 
-[ext_resource type="Script" uid="uid://da1wrhjexbwyc" path="res://scripts/ui/panels/CraftingPanel.gd" id="1_crafting_script"]
+[ext_resource type="Script" uid="uid://da1wrhjexbwyc" path="res://scripts/ui/panels/CraftingPanel.gd" id="1_crafting_panel"]
+[ext_resource type="Script" uid="uid://bo142x2f01wke" path="res://scripts/ui/controls/CraftingItemDragButton.gd" id="2_drag_button"]
+[ext_resource type="Script" uid="uid://eyhje4xd260b" path="res://scripts/ui/controls/CraftingTargetDropZone.gd" id="3_drop_zone"]
 
-[node name="CraftingPanel" type="Control" unique_id=469340841]
-visible = false
+[node name="CraftingPanel" type="Control" unique_id=1944864828]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 7.0
-offset_top = -5.0
-offset_right = 13.0
-offset_bottom = -94.0
+offset_left = -90.0
+offset_top = -43.0
+offset_right = 88.0
+offset_bottom = 74.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-script = ExtResource("1_crafting_script")
+script = ExtResource("1_crafting_panel")
 
-[node name="Dim" type="ColorRect" parent="." unique_id=1897153291]
+[node name="Dim" type="ColorRect" parent="." unique_id=3957377]
 visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 87.0
+offset_top = 33.0
+offset_right = 46.0
+offset_bottom = 24.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
-color = Color(0, 0, 0, 0.58)
+color = Color(0, 0, 0, 0.56)
 
-[node name="MainPanel" type="Panel" parent="." unique_id=681108758]
+[node name="MainPanel" type="Panel" parent="." unique_id=393043149]
+custom_minimum_size = Vector2(1260, 720)
 layout_mode = 0
-offset_left = -6.0
-offset_top = 5.0
-offset_right = 1296.0
-offset_bottom = 626.0
+offset_left = 90.0
+offset_top = 45.0
+offset_right = 1350.0
+offset_bottom = 765.0
 
-[node name="Title" type="Label" parent="MainPanel" unique_id=2044819024]
-layout_mode = 0
-offset_left = 26.0
-offset_top = 16.0
-offset_right = 484.0
-offset_bottom = 54.0
-theme_override_font_sizes/font_size = 28
-text = "RELIC FORGE"
-
-[node name="Subtitle" type="Label" parent="MainPanel" unique_id=253052472]
-layout_mode = 0
-offset_left = 231.0
-offset_top = 14.0
-offset_right = 1053.0
-offset_bottom = 40.0
-theme_override_font_sizes/font_size = 15
-text = "Crafting verbs consume currency and forge potential. Items are projects, not stat sticks."
-
-[node name="CloseButton" type="Button" parent="MainPanel" unique_id=658500635]
+[node name="TitleLabel" type="Label" parent="MainPanel" unique_id=788248679]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 1136.0
+offset_left = 28.0
 offset_top = 18.0
-offset_right = 1208.0
-offset_bottom = 54.0
-focus_mode = 0
-text = "Close"
+offset_right = 520.0
+offset_bottom = 50.0
+text = "RELIC FORGE — CRAFTING TABLE"
 
-[node name="LeftItemPanel" type="Panel" parent="MainPanel" unique_id=322062299]
+[node name="HintLabel" type="Label" parent="MainPanel" unique_id=329736483]
 layout_mode = 0
-offset_left = 4.0
-offset_top = 66.0
-offset_right = 456.0
-offset_bottom = 718.0
-scale = Vector2(1, 0.84000003)
+offset_left = 690.0
+offset_top = 20.0
+offset_right = 1210.0
+offset_bottom = 48.0
+text = "Drag item → choose verb → spend material + forge potential"
+horizontal_alignment = 2
 
-[node name="SelectedItemTitle" type="Label" parent="MainPanel/LeftItemPanel" unique_id=1611977073]
-unique_name_in_owner = true
+[node name="BackpackPanel" type="Panel" parent="MainPanel" unique_id=611980068]
 layout_mode = 0
-offset_left = 18.0
-offset_top = 16.0
-offset_right = 418.0
-offset_bottom = 46.0
-theme_override_font_sizes/font_size = 22
-text = "Selected Item"
+offset_left = 24.0
+offset_top = 68.0
+offset_right = 430.0
+offset_bottom = 676.0
 
-[node name="SelectedItemMeta" type="Label" parent="MainPanel/LeftItemPanel" unique_id=1959095932]
-unique_name_in_owner = true
+[node name="BackpackTitle" type="Label" parent="MainPanel/BackpackPanel" unique_id=980599753]
 layout_mode = 0
-offset_left = 18.0
-offset_top = 50.0
-offset_right = 418.0
-offset_bottom = 76.0
-theme_override_font_sizes/font_size = 14
-text = "Rarity · Slot · Item Level"
-
-[node name="SelectedIndexLabel" type="Label" parent="MainPanel/LeftItemPanel" unique_id=1367073954]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 18.0
-offset_top = 82.0
+offset_left = 14.0
+offset_top = 10.0
 offset_right = 220.0
-offset_bottom = 106.0
-theme_override_font_sizes/font_size = 13
-text = "Backpack 1 / 1"
+offset_bottom = 34.0
+text = "Backpack Items"
 
-[node name="PreviousItemButton" type="Button" parent="MainPanel/LeftItemPanel" unique_id=1273505448]
+[node name="BackpackPageLabel" type="Label" parent="MainPanel/BackpackPanel" unique_id=461053911]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 236.0
-offset_top = 78.0
-offset_right = 316.0
-offset_bottom = 110.0
-focus_mode = 0
+offset_left = 220.0
+offset_top = 10.0
+offset_right = 390.0
+offset_bottom = 34.0
+text = "Backpack Page 1 / 1"
+horizontal_alignment = 2
+
+[node name="BackpackPrevButton" type="Button" parent="MainPanel/BackpackPanel" unique_id=1218400281]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 552.0
+offset_right = 118.0
+offset_bottom = 588.0
 text = "Prev"
 
-[node name="NextItemButton" type="Button" parent="MainPanel/LeftItemPanel" unique_id=1891974272]
+[node name="BackpackNextButton" type="Button" parent="MainPanel/BackpackPanel" unique_id=241655918]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 326.0
-offset_top = 78.0
-offset_right = 406.0
-offset_bottom = 110.0
-focus_mode = 0
+offset_left = 286.0
+offset_top = 552.0
+offset_right = 390.0
+offset_bottom = 588.0
 text = "Next"
 
-[node name="ForgePotentialLabel" type="Label" parent="MainPanel/LeftItemPanel" unique_id=637992291]
+[node name="BackpackSlot01" type="Button" parent="MainPanel/BackpackPanel" unique_id=1610286417]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 18.0
-offset_top = 124.0
-offset_right = 420.0
-offset_bottom = 148.0
-theme_override_font_sizes/font_size = 14
-text = "Forge Potential: 0 / 0"
+offset_left = 14.0
+offset_top = 46.0
+offset_right = 390.0
+offset_bottom = 74.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 0
 
-[node name="ForgePotentialBar" type="ProgressBar" parent="MainPanel/LeftItemPanel" unique_id=918971231]
+[node name="BackpackSlot02" type="Button" parent="MainPanel/BackpackPanel" unique_id=1770442813]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 18.0
-offset_top = 152.0
-offset_right = 420.0
-offset_bottom = 178.0
+offset_left = 14.0
+offset_top = 78.0
+offset_right = 390.0
+offset_bottom = 106.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 1
+
+[node name="BackpackSlot03" type="Button" parent="MainPanel/BackpackPanel" unique_id=1253594367]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 110.0
+offset_right = 390.0
+offset_bottom = 138.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 2
+
+[node name="BackpackSlot04" type="Button" parent="MainPanel/BackpackPanel" unique_id=2117169953]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 142.0
+offset_right = 390.0
+offset_bottom = 170.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 3
+
+[node name="BackpackSlot05" type="Button" parent="MainPanel/BackpackPanel" unique_id=755784429]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 174.0
+offset_right = 390.0
+offset_bottom = 202.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 4
+
+[node name="BackpackSlot06" type="Button" parent="MainPanel/BackpackPanel" unique_id=445771072]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 206.0
+offset_right = 390.0
+offset_bottom = 234.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 5
+
+[node name="BackpackSlot07" type="Button" parent="MainPanel/BackpackPanel" unique_id=490753176]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 238.0
+offset_right = 390.0
+offset_bottom = 266.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 6
+
+[node name="BackpackSlot08" type="Button" parent="MainPanel/BackpackPanel" unique_id=1782057448]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 270.0
+offset_right = 390.0
+offset_bottom = 298.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 7
+
+[node name="BackpackSlot09" type="Button" parent="MainPanel/BackpackPanel" unique_id=2094380286]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 302.0
+offset_right = 390.0
+offset_bottom = 330.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 8
+
+[node name="BackpackSlot10" type="Button" parent="MainPanel/BackpackPanel" unique_id=794557337]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 334.0
+offset_right = 390.0
+offset_bottom = 362.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 9
+
+[node name="BackpackSlot11" type="Button" parent="MainPanel/BackpackPanel" unique_id=1134760124]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 366.0
+offset_right = 390.0
+offset_bottom = 394.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 10
+
+[node name="BackpackSlot12" type="Button" parent="MainPanel/BackpackPanel" unique_id=1739262087]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 398.0
+offset_right = 390.0
+offset_bottom = 426.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 11
+
+[node name="BackpackSlot13" type="Button" parent="MainPanel/BackpackPanel" unique_id=2065325389]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 430.0
+offset_right = 390.0
+offset_bottom = 458.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 12
+
+[node name="BackpackSlot14" type="Button" parent="MainPanel/BackpackPanel" unique_id=976966087]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 462.0
+offset_right = 390.0
+offset_bottom = 490.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 13
+
+[node name="BackpackSlot15" type="Button" parent="MainPanel/BackpackPanel" unique_id=2109941962]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 494.0
+offset_right = 390.0
+offset_bottom = 522.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 14
+
+[node name="BackpackSlot16" type="Button" parent="MainPanel/BackpackPanel" unique_id=1509274420]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 526.0
+offset_right = 390.0
+offset_bottom = 554.0
+text = "— empty —"
+script = ExtResource("2_drag_button")
+slot_index = 15
+
+[node name="TargetPanel" type="Panel" parent="MainPanel" unique_id=1785649345]
+layout_mode = 0
+offset_left = 452.0
+offset_top = 68.0
+offset_right = 840.0
+offset_bottom = 676.0
+
+[node name="TargetDropZone" type="Button" parent="MainPanel/TargetPanel" unique_id=2131330127]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 20.0
+offset_top = 16.0
+offset_right = 368.0
+offset_bottom = 84.0
+text = "DROP ITEM HERE"
+script = ExtResource("3_drop_zone")
+
+[node name="TargetTitleLabel" type="Label" parent="MainPanel/TargetPanel" unique_id=1339506236]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 20.0
+offset_top = 96.0
+offset_right = 368.0
+offset_bottom = 126.0
+text = "No Item Inserted"
+
+[node name="TargetMetaLabel" type="Label" parent="MainPanel/TargetPanel" unique_id=356430908]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 20.0
+offset_top = 126.0
+offset_right = 368.0
+offset_bottom = 154.0
+text = "Drag a backpack item here."
+
+[node name="ForgePotentialLabel" type="Label" parent="MainPanel/TargetPanel" unique_id=652474125]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 20.0
+offset_top = 166.0
+offset_right = 368.0
+offset_bottom = 190.0
+text = "Forge Potential: —"
+
+[node name="ForgePotentialBar" type="ProgressBar" parent="MainPanel/TargetPanel" unique_id=103920113]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 20.0
+offset_top = 194.0
+offset_right = 368.0
+offset_bottom = 218.0
 show_percentage = false
 
-[node name="SelectedItemDetails" type="RichTextLabel" parent="MainPanel/LeftItemPanel" unique_id=1067702128]
+[node name="TargetStatsLabel" type="RichTextLabel" parent="MainPanel/TargetPanel" unique_id=891147536]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 18.0
-offset_top = 198.0
-offset_right = 420.0
-offset_bottom = 628.0
+offset_left = 20.0
+offset_top = 232.0
+offset_right = 368.0
+offset_bottom = 356.0
 bbcode_enabled = true
-text = "No item selected."
 
-[node name="AffixPanel" type="Panel" parent="MainPanel" unique_id=189622225]
-layout_mode = 0
-offset_left = 460.0
-offset_top = 64.0
-offset_right = 904.0
-offset_bottom = 716.0
-scale = Vector2(1, 0.84000003)
-
-[node name="AffixTitle" type="Label" parent="MainPanel/AffixPanel" unique_id=1572730173]
-layout_mode = 0
-offset_left = 18.0
-offset_top = 16.0
-offset_right = 380.0
-offset_bottom = 44.0
-theme_override_font_sizes/font_size = 22
-text = "Affixes"
-
-[node name="PrefixHeader" type="Label" parent="MainPanel/AffixPanel" unique_id=1571048516]
-layout_mode = 0
-offset_left = 18.0
-offset_top = 58.0
-offset_right = 380.0
-offset_bottom = 84.0
-theme_override_font_sizes/font_size = 16
-text = "Prefixes"
-
-[node name="PrefixList" type="RichTextLabel" parent="MainPanel/AffixPanel" unique_id=1630779278]
+[node name="TargetAffixesLabel" type="RichTextLabel" parent="MainPanel/TargetPanel" unique_id=2015157046]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 18.0
-offset_top = 88.0
-offset_right = 410.0
-offset_bottom = 258.0
+offset_left = 20.0
+offset_top = 370.0
+offset_right = 368.0
+offset_bottom = 574.0
 bbcode_enabled = true
-text = "No prefixes."
 
-[node name="SuffixHeader" type="Label" parent="MainPanel/AffixPanel" unique_id=1039947014]
+[node name="RightPanel" type="Panel" parent="MainPanel" unique_id=67431822]
 layout_mode = 0
-offset_left = 18.0
-offset_top = 278.0
-offset_right = 380.0
-offset_bottom = 304.0
-theme_override_font_sizes/font_size = 16
-text = "Suffixes"
+offset_left = 862.0
+offset_top = 68.0
+offset_right = 1236.0
+offset_bottom = 676.0
 
-[node name="SuffixList" type="RichTextLabel" parent="MainPanel/AffixPanel" unique_id=1688327201]
-unique_name_in_owner = true
+[node name="VerbTitle" type="Label" parent="MainPanel/RightPanel" unique_id=197924293]
 layout_mode = 0
-offset_left = 18.0
-offset_top = 308.0
-offset_right = 410.0
-offset_bottom = 478.0
-bbcode_enabled = true
-text = "No suffixes."
-
-[node name="CraftedHeader" type="Label" parent="MainPanel/AffixPanel" unique_id=1335853639]
-layout_mode = 0
-offset_left = 18.0
-offset_top = 498.0
-offset_right = 380.0
-offset_bottom = 524.0
-theme_override_font_sizes/font_size = 16
-text = "Crafted Modifier"
-
-[node name="CraftedList" type="RichTextLabel" parent="MainPanel/AffixPanel" unique_id=1805695781]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 18.0
-offset_top = 528.0
-offset_right = 410.0
-offset_bottom = 626.0
-bbcode_enabled = true
-text = "No crafted modifier."
-
-[node name="RightVerbPanel" type="Panel" parent="MainPanel" unique_id=1732781871]
-layout_mode = 0
-offset_left = 903.0
-offset_top = 75.0
-offset_right = 1281.0
-offset_bottom = 727.0
-scale = Vector2(1, 0.84000003)
-
-[node name="VerbTitle" type="Label" parent="MainPanel/RightVerbPanel" unique_id=249641674]
-layout_mode = 0
-offset_left = 18.0
-offset_top = 16.0
-offset_right = 330.0
-offset_bottom = 44.0
-theme_override_font_sizes/font_size = 22
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 356.0
+offset_bottom = 36.0
 text = "Crafting Verbs"
 
-[node name="AshTemperButton" type="Button" parent="MainPanel/RightVerbPanel" unique_id=1487231328]
+[node name="AshTemperButton" type="Button" parent="MainPanel/RightPanel" unique_id=1042542706]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 20.0
-offset_top = 62.0
-offset_right = 348.0
-offset_bottom = 104.0
-focus_mode = 0
+offset_left = 16.0
+offset_top = 48.0
+offset_right = 176.0
+offset_bottom = 84.0
 text = "T  Ash Temper"
 
-[node name="VaultAlchemyButton" type="Button" parent="MainPanel/RightVerbPanel" unique_id=294262126]
+[node name="VaultAlchemyButton" type="Button" parent="MainPanel/RightPanel" unique_id=381401200]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 20.0
-offset_top = 112.0
-offset_right = 348.0
-offset_bottom = 154.0
-focus_mode = 0
+offset_left = 196.0
+offset_top = 48.0
+offset_right = 356.0
+offset_bottom = 84.0
 text = "A  Vault Alchemy"
 
-[node name="RegalEmberButton" type="Button" parent="MainPanel/RightVerbPanel" unique_id=361450656]
+[node name="RegalEmberButton" type="Button" parent="MainPanel/RightPanel" unique_id=901838305]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 20.0
-offset_top = 162.0
-offset_right = 348.0
-offset_bottom = 204.0
-focus_mode = 0
+offset_left = 16.0
+offset_top = 92.0
+offset_right = 176.0
+offset_bottom = 128.0
 text = "R  Regal Ember"
 
-[node name="ChaosCrucibleButton" type="Button" parent="MainPanel/RightVerbPanel" unique_id=1637672753]
+[node name="ChaosCrucibleButton" type="Button" parent="MainPanel/RightPanel" unique_id=2084471910]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 20.0
-offset_top = 212.0
-offset_right = 348.0
-offset_bottom = 254.0
-focus_mode = 0
+offset_left = 196.0
+offset_top = 92.0
+offset_right = 356.0
+offset_bottom = 128.0
 text = "C  Chaos Crucible"
 
-[node name="ExaltedShardButton" type="Button" parent="MainPanel/RightVerbPanel" unique_id=1160620074]
+[node name="ExaltedShardButton" type="Button" parent="MainPanel/RightPanel" unique_id=255870958]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 20.0
-offset_top = 262.0
-offset_right = 348.0
-offset_bottom = 304.0
-focus_mode = 0
+offset_left = 16.0
+offset_top = 136.0
+offset_right = 176.0
+offset_bottom = 172.0
 text = "E  Exalted Shard"
 
-[node name="ScouringAshButton" type="Button" parent="MainPanel/RightVerbPanel" unique_id=540104182]
+[node name="ScouringAshButton" type="Button" parent="MainPanel/RightPanel" unique_id=1145517213]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 20.0
-offset_top = 312.0
-offset_right = 348.0
-offset_bottom = 354.0
-focus_mode = 0
+offset_left = 196.0
+offset_top = 136.0
+offset_right = 356.0
+offset_bottom = 172.0
 text = "S  Scouring Ash"
 
-[node name="EssenceBrandButton" type="Button" parent="MainPanel/RightVerbPanel" unique_id=717021983]
+[node name="EssenceBrandButton" type="Button" parent="MainPanel/RightPanel" unique_id=326328673]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 20.0
-offset_top = 362.0
-offset_right = 348.0
-offset_bottom = 404.0
-focus_mode = 0
+offset_left = 16.0
+offset_top = 180.0
+offset_right = 176.0
+offset_bottom = 216.0
 text = "B  Essence Brand"
 
-[node name="ForgeSealButton" type="Button" parent="MainPanel/RightVerbPanel" unique_id=1494734631]
+[node name="ForgeSealButton" type="Button" parent="MainPanel/RightPanel" unique_id=1533469069]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 20.0
-offset_top = 412.0
-offset_right = 348.0
-offset_bottom = 454.0
-focus_mode = 0
+offset_left = 196.0
+offset_top = 180.0
+offset_right = 356.0
+offset_bottom = 216.0
 text = "F  Forge Seal"
 
-[node name="CurrencySummary" type="RichTextLabel" parent="MainPanel/RightVerbPanel" unique_id=1171959635]
+[node name="MaterialsLabel" type="RichTextLabel" parent="MainPanel/RightPanel" unique_id=975845724]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 20.0
-offset_top = 476.0
-offset_right = 348.0
-offset_bottom = 592.0
+offset_left = 16.0
+offset_top = 236.0
+offset_right = 356.0
+offset_bottom = 530.0
 bbcode_enabled = true
-text = "Currency summary."
+text = "Currency + Crafting Materials"
 
-[node name="ResultHintLabel" type="Label" parent="MainPanel/RightVerbPanel" unique_id=796531832]
+[node name="CraftingNoticeLabel" type="Label" parent="MainPanel/RightPanel" unique_id=1220623264]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 20.0
-offset_top = 604.0
-offset_right = 348.0
-offset_bottom = 636.0
-theme_override_font_sizes/font_size = 13
-text = "Select a crafting target."
-autowrap_mode = 3
-
-[node name="FooterHint" type="Label" parent="MainPanel" unique_id=887904975]
-visible = false
-layout_mode = 0
-offset_left = -8.0
-offset_top = 724.0
-offset_right = 1202.0
-offset_bottom = 750.0
-scale = Vector2(1, 0.84000003)
-theme_override_font_sizes/font_size = 13
-text = "Hotkeys still work: T/A/R/C/E/S/B/F. Inventory cursor chooses the crafting target."
+offset_left = 16.0
+offset_top = 542.0
+offset_right = 356.0
+offset_bottom = 588.0
+text = "Drag an item from the backpack list into the forge slot."
+autowrap_mode = 2
